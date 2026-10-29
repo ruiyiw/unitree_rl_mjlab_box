@@ -1,0 +1,433 @@
+{
+  "source": "/home/rwang/humanoid-full/results/autoresearch-20261029/final-selection",
+  "bundle_sha256": "324a76c836b5a8e1f24b53ca93c0d636fae5fcb481bc008cce3d5a8ddbbbeed7",
+  "hardware_validated": false,
+  "actors": {
+    "go-to": {
+      "actor": "navigation",
+      "checkpoint_source": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+      "checkpoint_sha256": "66a51b1664a8f869bbae2950a1470c96b2ce66c4a6674bff3687b4863a03db28",
+      "onnx_sha256": "56aa24f657a29af67ee6bde73fa55030534860f3e2e5f98e6c758dceed9b8034",
+      "reference_source_sha256": "89f9b98d0d1e142c3163f7afe67710c2f88468a271b20c420ab7e60a46cf341e",
+      "frames": 391
+    },
+    "take": {
+      "actor": "take",
+      "checkpoint_source": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+      "checkpoint_sha256": "464b1fd367ab45c5576622c42ead1f679d101d9cf48c9aff9a98269fce7f0b91",
+      "onnx_sha256": "3cac63ce89c3c2c16d1294d4fe0d673c39ed3526d855f16a2a3b183cf8680a7b",
+      "reference_source_sha256": "cb21ab5104b7d5027fd5032de451025819ec3f4291cd2e78530c823c0aa9cb76",
+      "frames": 796
+    },
+    "carry": {
+      "actor": "carry",
+      "checkpoint_source": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+      "checkpoint_sha256": "709c05c875f73b1c1cb7538ffc65edd97bbe6fbfa0aa773b39461c9638dc9c6d",
+      "onnx_sha256": "98f19913d145609b91f5d0e1b48ecbfc2f5e933256caf7a7b404276c6dab3fc6",
+      "reference_source_sha256": "7530d343cde8039cd91cb0db84a479d7bc2a4dbeaafe272006153a129639b7aa",
+      "frames": 391
+    },
+    "put-down": {
+      "actor": "put-down",
+      "checkpoint_source": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r3-selected-handoffs/model_200.pt",
+      "checkpoint_sha256": "5f50391c191b76d08900af99592bcec867640ca666fc110efcf546da4da19261",
+      "onnx_sha256": "303c90f76b243fb184898af0fea3ffc9ee7efd506492802ae232afae77f9421e",
+      "reference_source_sha256": "a27fc1682a6246b4a68cf1f6b0e4a72f8cad11f98f5759fd2e1dadd88f5ae749",
+      "frames": 1001
+    },
+    "return": {
+      "actor": "return",
+      "checkpoint_source": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt",
+      "checkpoint_sha256": "f4f0e69af9f9f1c7880e67692f8ecba74364d4be9c58e5544adff3c97a365367",
+      "onnx_sha256": "3bbe142c68a5e65940c25ccebca440b5133e82e99136e4b73d43310eb20ad8b7",
+      "reference_source_sha256": "32b13a562c630eb0aa0b7ac9fe355969fa5af461949346f4feebee3c0d00d81c",
+      "frames": 466
+    }
+  },
+  "files": {
+    "evaluation.json": "1c233b64ca70c2d96df1002314380f9655308b174988a5ba453082b34b2338ee",
+    "report.json": "c03d6e2ab9b53a65df1311cda97fb254d7529c206cfbf4de971e7088e74a0151",
+    "README.txt": "580bda38c8c729e0fe1865319e67f824bef27b5c5000ca1aecb1a5057268686a",
+    "policy.pt": "324a76c836b5a8e1f24b53ca93c0d636fae5fcb481bc008cce3d5a8ddbbbeed7",
+    "take/reference.bin": "d84d9074cda1c07cef245063ddecaebce29cd128a3d6196bd504f75998830b2a",
+    "take/checkpoint.pt": "464b1fd367ab45c5576622c42ead1f679d101d9cf48c9aff9a98269fce7f0b91",
+    "take/source_metadata.json": "4e740d91a39ad18822be0ab8304caa1fc945eb0d5a240d7c640245f9fd3585ca",
+    "take/policy.onnx": "3cac63ce89c3c2c16d1294d4fe0d673c39ed3526d855f16a2a3b183cf8680a7b",
+    "return/reference.bin": "0d8b88bf52f0cb325cc214ac5e2edcc632d1bcaabe04dcd19ddd6c1444959d1c",
+    "return/checkpoint.pt": "f4f0e69af9f9f1c7880e67692f8ecba74364d4be9c58e5544adff3c97a365367",
+    "return/source_metadata.json": "90b611f7bd35c85faca76f216835bb40636878b675d3d43f191891886fc150ef",
+    "return/policy.onnx": "3bbe142c68a5e65940c25ccebca440b5133e82e99136e4b73d43310eb20ad8b7",
+    "put-down/reference.bin": "6c82cabe334bfe4cb49ffcc089323838279e3dbf6e55f48fa2b3e27dda48c8fa",
+    "put-down/checkpoint.pt": "5f50391c191b76d08900af99592bcec867640ca666fc110efcf546da4da19261",
+    "put-down/source_metadata.json": "e038179c01338e82bf4c5622f6902249966f23c687452ad2052a7aeeba11cf7a",
+    "put-down/policy.onnx": "303c90f76b243fb184898af0fea3ffc9ee7efd506492802ae232afae77f9421e",
+    "go-to/reference.bin": "9c851b72e87d3c1ab78dd5d94afc4c1891b9dbb51ac623956566f7f74cb1025e",
+    "go-to/checkpoint.pt": "66a51b1664a8f869bbae2950a1470c96b2ce66c4a6674bff3687b4863a03db28",
+    "go-to/source_metadata.json": "66e93ec36c428252a4fff5e907c2809a122d7e0090366f3614f4d75a3bdc3d21",
+    "go-to/policy.onnx": "56aa24f657a29af67ee6bde73fa55030534860f3e2e5f98e6c758dceed9b8034",
+    "carry/reference.bin": "aa138367abacc519fee5a3dcf78376a981b342d75586b7b939624865b6c1683d",
+    "carry/checkpoint.pt": "709c05c875f73b1c1cb7538ffc65edd97bbe6fbfa0aa773b39461c9638dc9c6d",
+    "carry/source_metadata.json": "ba4e8c1445e5e918962827a873cde2d9347d1dd73a654d1f5817481469f09ed3",
+    "carry/policy.onnx": "98f19913d145609b91f5d0e1b48ecbfc2f5e933256caf7a7b404276c6dab3fc6",
+    "params/contract.json": "4de2695800ef727a82e54581a4afe2fc1c4ffc1ac3050d8ae2d6a40680c087f8",
+    "params/layout.json": "c00eb6e503388c22bdbc45a41279b802bb3654c59377c85c03d046d6000b1552",
+    "params/PolicyConfig.h": "c288ad9b7c1c5c1b63a5643234adc03480e5ee2c5f914dec0c0dc62b37d693fc"
+  },
+  "interface": {
+    "actor_columns": [
+      "base_ang_vel/0",
+      "base_ang_vel/1",
+      "base_ang_vel/2",
+      "projected_gravity/0",
+      "projected_gravity/1",
+      "projected_gravity/2",
+      "joint_pos/left_hip_pitch_joint",
+      "joint_pos/left_hip_roll_joint",
+      "joint_pos/left_hip_yaw_joint",
+      "joint_pos/left_knee_joint",
+      "joint_pos/left_ankle_pitch_joint",
+      "joint_pos/left_ankle_roll_joint",
+      "joint_pos/right_hip_pitch_joint",
+      "joint_pos/right_hip_roll_joint",
+      "joint_pos/right_hip_yaw_joint",
+      "joint_pos/right_knee_joint",
+      "joint_pos/right_ankle_pitch_joint",
+      "joint_pos/right_ankle_roll_joint",
+      "joint_pos/waist_yaw_joint",
+      "joint_pos/left_shoulder_pitch_joint",
+      "joint_pos/left_shoulder_roll_joint",
+      "joint_pos/left_shoulder_yaw_joint",
+      "joint_pos/left_elbow_joint",
+      "joint_pos/left_wrist_roll_joint",
+      "joint_pos/right_shoulder_pitch_joint",
+      "joint_pos/right_shoulder_roll_joint",
+      "joint_pos/right_shoulder_yaw_joint",
+      "joint_pos/right_elbow_joint",
+      "joint_pos/right_wrist_roll_joint",
+      "joint_vel/left_hip_pitch_joint",
+      "joint_vel/left_hip_roll_joint",
+      "joint_vel/left_hip_yaw_joint",
+      "joint_vel/left_knee_joint",
+      "joint_vel/left_ankle_pitch_joint",
+      "joint_vel/left_ankle_roll_joint",
+      "joint_vel/right_hip_pitch_joint",
+      "joint_vel/right_hip_roll_joint",
+      "joint_vel/right_hip_yaw_joint",
+      "joint_vel/right_knee_joint",
+      "joint_vel/right_ankle_pitch_joint",
+      "joint_vel/right_ankle_roll_joint",
+      "joint_vel/waist_yaw_joint",
+      "joint_vel/left_shoulder_pitch_joint",
+      "joint_vel/left_shoulder_roll_joint",
+      "joint_vel/left_shoulder_yaw_joint",
+      "joint_vel/left_elbow_joint",
+      "joint_vel/left_wrist_roll_joint",
+      "joint_vel/right_shoulder_pitch_joint",
+      "joint_vel/right_shoulder_roll_joint",
+      "joint_vel/right_shoulder_yaw_joint",
+      "joint_vel/right_elbow_joint",
+      "joint_vel/right_wrist_roll_joint",
+      "actions/left_hip_pitch_joint",
+      "actions/left_hip_roll_joint",
+      "actions/left_hip_yaw_joint",
+      "actions/left_knee_joint",
+      "actions/left_ankle_pitch_joint",
+      "actions/left_ankle_roll_joint",
+      "actions/right_hip_pitch_joint",
+      "actions/right_hip_roll_joint",
+      "actions/right_hip_yaw_joint",
+      "actions/right_knee_joint",
+      "actions/right_ankle_pitch_joint",
+      "actions/right_ankle_roll_joint",
+      "actions/waist_yaw_joint",
+      "actions/left_shoulder_pitch_joint",
+      "actions/left_shoulder_roll_joint",
+      "actions/left_shoulder_yaw_joint",
+      "actions/left_elbow_joint",
+      "actions/left_wrist_roll_joint",
+      "actions/right_shoulder_pitch_joint",
+      "actions/right_shoulder_roll_joint",
+      "actions/right_shoulder_yaw_joint",
+      "actions/right_elbow_joint",
+      "actions/right_wrist_roll_joint"
+    ],
+    "joint_order": [
+      "left_hip_pitch_joint",
+      "left_hip_roll_joint",
+      "left_hip_yaw_joint",
+      "left_knee_joint",
+      "left_ankle_pitch_joint",
+      "left_ankle_roll_joint",
+      "right_hip_pitch_joint",
+      "right_hip_roll_joint",
+      "right_hip_yaw_joint",
+      "right_knee_joint",
+      "right_ankle_pitch_joint",
+      "right_ankle_roll_joint",
+      "waist_yaw_joint",
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint"
+    ],
+    "action_order": [
+      "left_hip_pitch_joint",
+      "left_hip_roll_joint",
+      "left_hip_yaw_joint",
+      "left_knee_joint",
+      "left_ankle_pitch_joint",
+      "left_ankle_roll_joint",
+      "right_hip_pitch_joint",
+      "right_hip_roll_joint",
+      "right_hip_yaw_joint",
+      "right_knee_joint",
+      "right_ankle_pitch_joint",
+      "right_ankle_roll_joint",
+      "waist_yaw_joint",
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint"
+    ],
+    "action_scale": [
+      0.5475464629911068,
+      0.35066146637882434,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.43857731392336724,
+      0.43857731392336724,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.43857731392336724,
+      0.43857731392336724,
+      0.5475464629911068,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.43857731392336724,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.43857731392336724
+    ],
+    "default_joint_positions": [
+      -0.312,
+      0.0,
+      0.0,
+      0.669,
+      -0.363,
+      0.0,
+      -0.312,
+      0.0,
+      0.0,
+      0.669,
+      -0.363,
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.0,
+      0.6,
+      0.0,
+      0.2,
+      -0.2,
+      0.0,
+      0.6,
+      0.0
+    ],
+    "kp": [
+      40.17923863450712,
+      99.09842777666111,
+      40.17923863450712,
+      99.09842777666111,
+      28.50124619574858,
+      28.50124619574858,
+      40.17923863450712,
+      99.09842777666111,
+      40.17923863450712,
+      99.09842777666111,
+      28.50124619574858,
+      28.50124619574858,
+      40.17923863450712,
+      40.0,
+      40.0,
+      40.0,
+      40.0,
+      14.25062309787429,
+      40.0,
+      40.0,
+      40.0,
+      40.0,
+      14.25062309787429
+    ],
+    "kd": [
+      2.557889775413375,
+      6.308801853496639,
+      2.557889775413375,
+      6.308801853496639,
+      1.814445686584846,
+      1.814445686584846,
+      2.557889775413375,
+      6.308801853496639,
+      2.557889775413375,
+      6.308801853496639,
+      1.814445686584846,
+      1.814445686584846,
+      2.557889775413375,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      0.907222843292423,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      0.907222843292423
+    ],
+    "force_limits": [
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ]
+    ],
+    "physics_dt": 0.005,
+    "decimation": 4,
+    "policy_dt": 0.02,
+    "dimensions": {
+      "nq": 30,
+      "nv": 29,
+      "nu": 23
+    }
+  },
+  "observation_contract": {
+    "id": "g1-five-proprio-v1",
+    "actor_dim": 75,
+    "terms": [
+      "base_ang_vel",
+      "projected_gravity",
+      "joint_pos",
+      "joint_vel",
+      "actions"
+    ],
+    "widths": [
+      3,
+      3,
+      23,
+      23,
+      23
+    ],
+    "frame": "pelvis",
+    "joint_order": "robot.joint_names",
+    "joint_position": "measured minus default_joint_pos",
+    "joint_velocity": "rad/s (zero default velocity)",
+    "previous_action": "unclipped residual, preserved across stage switches",
+    "action": "local qcmd[clock+1] + action_scale * residual",
+    "reference_clock": "50 Hz local counter; no contact or world-state gates",
+    "handoff": "reference ended and proprioceptive endpoint settled for 1 second"
+  }
+}

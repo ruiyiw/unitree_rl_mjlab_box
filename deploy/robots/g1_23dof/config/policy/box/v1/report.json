@@ -1,0 +1,1004 @@
+{
+  "finalized_utc": "2026-10-29T16:58:05.595463+00:00",
+  "research_window_utc": [
+    "2026-10-29T08:01:05Z",
+    "2026-10-29T17:01:05Z"
+  ],
+  "simulation_actuation_mode": "none",
+  "actor_inputs": 75,
+  "critic_inputs": {
+    "manipulation": 224,
+    "navigation": 200
+  },
+  "estimators_required": false,
+  "actor_architecture": "75 -> 512 -> 256 -> 128 -> 23, ELU, existing normalization",
+  "original_completion_gates_preserved": true,
+  "original_sensor_only_controller_preserved": true,
+  "selected_bundle": "/home/rwang/humanoid-full/results/autoresearch-20261029/final-selection/policy.pt",
+  "bundle_sha256": "324a76c836b5a8e1f24b53ca93c0d636fae5fcb481bc008cce3d5a8ddbbbeed7",
+  "source_bundle": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-fresh200-original_return-full/policy.pt",
+  "source_evaluation": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-fresh200-original_return-full/evaluation/evaluation.json",
+  "actors": {
+    "navigation": {
+      "checkpoint": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+      "sha256": "66a51b1664a8f869bbae2950a1470c96b2ce66c4a6674bff3687b4863a03db28",
+      "input_dim": 75,
+      "output_dim": 23
+    },
+    "take": {
+      "checkpoint": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+      "sha256": "464b1fd367ab45c5576622c42ead1f679d101d9cf48c9aff9a98269fce7f0b91",
+      "input_dim": 75,
+      "output_dim": 23
+    },
+    "carry": {
+      "checkpoint": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+      "sha256": "709c05c875f73b1c1cb7538ffc65edd97bbe6fbfa0aa773b39461c9638dc9c6d",
+      "input_dim": 75,
+      "output_dim": 23
+    },
+    "put-down": {
+      "checkpoint": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r3-selected-handoffs/model_200.pt",
+      "sha256": "5f50391c191b76d08900af99592bcec867640ca666fc110efcf546da4da19261",
+      "input_dim": 75,
+      "output_dim": 23
+    },
+    "return": {
+      "checkpoint": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt",
+      "sha256": "f4f0e69af9f9f1c7880e67692f8ecba74364d4be9c58e5544adff3c97a365367",
+      "input_dim": 75,
+      "output_dim": 23
+    }
+  },
+  "actor_exports": {
+    "navigation": {
+      "directory": "/home/rwang/humanoid-full/results/autoresearch-20261029/final-selection/actors/navigation",
+      "onnx_max_abs_error": 2.384185791015625e-07,
+      "estimator_required": false,
+      "validated_simulation_mode": "none",
+      "onnx_sha256": "56aa24f657a29af67ee6bde73fa55030534860f3e2e5f98e6c758dceed9b8034",
+      "torchscript_sha256": "c1940ecb48a9affdcfa8d64607524f028502c0ddd6b0bda3e679e679b9d6c35e"
+    },
+    "take": {
+      "directory": "/home/rwang/humanoid-full/results/autoresearch-20261029/final-selection/actors/take",
+      "onnx_max_abs_error": 4.76837158203125e-07,
+      "estimator_required": false,
+      "validated_simulation_mode": "none",
+      "onnx_sha256": "3cac63ce89c3c2c16d1294d4fe0d673c39ed3526d855f16a2a3b183cf8680a7b",
+      "torchscript_sha256": "6b4ff3332d59236f2ecc6970d565f07e213f86bb7f825f4969ddcba6d69639c6"
+    },
+    "carry": {
+      "directory": "/home/rwang/humanoid-full/results/autoresearch-20261029/final-selection/actors/carry",
+      "onnx_max_abs_error": 3.5762786865234375e-07,
+      "estimator_required": false,
+      "validated_simulation_mode": "none",
+      "onnx_sha256": "98f19913d145609b91f5d0e1b48ecbfc2f5e933256caf7a7b404276c6dab3fc6",
+      "torchscript_sha256": "ebfa0dc0792e800a7240a35d9107327dfb1f93b7a9a05f6ef8b04b0c296974be"
+    },
+    "put-down": {
+      "directory": "/home/rwang/humanoid-full/results/autoresearch-20261029/final-selection/actors/put-down",
+      "onnx_max_abs_error": 3.5762786865234375e-07,
+      "estimator_required": false,
+      "validated_simulation_mode": "none",
+      "onnx_sha256": "303c90f76b243fb184898af0fea3ffc9ee7efd506492802ae232afae77f9421e",
+      "torchscript_sha256": "223ad27c412095dbd09dd797b2f241500ca9d3f17fe2fb74729a846282a3e825"
+    },
+    "return": {
+      "directory": "/home/rwang/humanoid-full/results/autoresearch-20261029/final-selection/actors/return",
+      "onnx_max_abs_error": 1.4901161193847656e-07,
+      "estimator_required": false,
+      "validated_simulation_mode": "none",
+      "onnx_sha256": "3bbe142c68a5e65940c25ccebca440b5133e82e99136e4b73d43310eb20ad8b7",
+      "torchscript_sha256": "952eb46daa6863bf1ee4d579e3b8c91e2f964b8d4c86c31b6e4b485d8716c411"
+    }
+  },
+  "nominal_evaluation": {
+    "episodes": 1024,
+    "seed": 116002,
+    "conditional_completion": {
+      "go-to": 1.0,
+      "take": 0.9921875,
+      "carry": 0.9242125984251969,
+      "put-down": 0.9243876464323749,
+      "return": 0.5414746543778802
+    },
+    "prefix_completion": {
+      "go-to": 1.0,
+      "take": 0.9921875,
+      "carry": 0.9169921875,
+      "put-down": 0.84765625,
+      "return": 0.458984375
+    },
+    "full_sequence_completion": 0.458984375,
+    "failures": {
+      "time_out": 0,
+      "tracking": 4,
+      "fell": 0,
+      "postrelease_posture": 2,
+      "heading": 0,
+      "postrelease_collision": 2,
+      "box_lost": 20,
+      "phase_timeout": 0
+    },
+    "failure_phase": {
+      "go-to": 0,
+      "take": 1,
+      "carry": 6,
+      "put-down": 16,
+      "return": 5
+    }
+  },
+  "repeat_evidence": [
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-precision-take2-early/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-preload/put-down.pt",
+        "return": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.998046875,
+        "carry": 0.9275929549902152
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.998046875,
+        "carry": 0.92578125
+      },
+      "full_sequence_completion": null
+    },
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-precision-take2-repeat/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-preload/put-down.pt",
+        "return": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.9970703125,
+        "carry": 0.9020568070519099
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.9970703125,
+        "carry": 0.8994140625
+      },
+      "full_sequence_completion": null
+    },
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-selected-carry-preload200-sequence/evaluation/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r1-preload/model_200.pt",
+        "return": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.9931640625,
+        "carry": 0.9203539823008849,
+        "put-down": 0.9038461538461539,
+        "return": 0.4787234042553192
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.9931640625,
+        "carry": 0.9140625,
+        "put-down": 0.826171875,
+        "return": 0.3955078125
+      },
+      "full_sequence_completion": 0.3955078125
+    },
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-manipulation-repeat/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r1-preload/model_200.pt",
+        "return": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.994140625,
+        "carry": 0.9096267190569745,
+        "put-down": 0.906047516198704
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.994140625,
+        "carry": 0.904296875,
+        "put-down": 0.8193359375
+      },
+      "full_sequence_completion": null
+    },
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r2-bias6-continuous/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r2-bias/model_6.pt",
+        "return": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.99609375,
+        "carry": 0.9068627450980392,
+        "put-down": 0.9254054054054054
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.99609375,
+        "carry": 0.9033203125,
+        "put-down": 0.8359375
+      },
+      "full_sequence_completion": null
+    },
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-bias6-full-repeat/evaluation/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r2-bias/model_6.pt",
+        "return": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.9921875,
+        "carry": 0.8996062992125984,
+        "put-down": 0.9179431072210066,
+        "return": 0.4684147794994041
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.9921875,
+        "carry": 0.892578125,
+        "put-down": 0.8193359375,
+        "return": 0.3837890625
+      },
+      "full_sequence_completion": 0.3837890625
+    },
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-fresh200-continuous/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r3-selected-handoffs/model_200.pt",
+        "return": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.9921875,
+        "carry": 0.906496062992126,
+        "put-down": 0.9370249728555917
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.9921875,
+        "carry": 0.8994140625,
+        "put-down": 0.8427734375
+      },
+      "full_sequence_completion": null
+    },
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-fresh200-returnbias10-sequence/evaluation/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r3-selected-handoffs/model_200.pt",
+        "return": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-return-bias/model_10.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.9921875,
+        "carry": 0.9094488188976378,
+        "put-down": 0.9307359307359307,
+        "return": 0.5197674418604651
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.9921875,
+        "carry": 0.90234375,
+        "put-down": 0.83984375,
+        "return": 0.4365234375
+      },
+      "full_sequence_completion": 0.4365234375
+    },
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-fresh200-terminal200-full/evaluation/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r3-selected-handoffs/model_200.pt",
+        "return": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-return-r2-terminal/model_200.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.9912109375,
+        "carry": 0.9133004926108375,
+        "put-down": 0.9018338727076591,
+        "return": 0.4964114832535885
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.9912109375,
+        "carry": 0.9052734375,
+        "put-down": 0.81640625,
+        "return": 0.4052734375
+      },
+      "full_sequence_completion": 0.4052734375
+    },
+    {
+      "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-final-repeat/evaluation/evaluation.json",
+      "episodes": 1024,
+      "checkpoints": {
+        "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+        "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+        "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+        "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r3-selected-handoffs/model_200.pt",
+        "return": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt"
+      },
+      "conditional_completion": {
+        "go-to": 1.0,
+        "take": 0.9921875,
+        "carry": 0.9035433070866141,
+        "put-down": 0.9183006535947712,
+        "return": 0.498220640569395
+      },
+      "prefix_completion": {
+        "go-to": 1.0,
+        "take": 0.9921875,
+        "carry": 0.896484375,
+        "put-down": 0.8232421875,
+        "return": 0.41015625
+      },
+      "full_sequence_completion": 0.41015625
+    }
+  ],
+  "manipulation_repeat_summary": {
+    "carry": {
+      "batches": 11,
+      "successes": 10199,
+      "eligible": 11193,
+      "descriptive_pooled_rate": 0.9111944965603502,
+      "observed_batch_range": [
+        0.8996062992125984,
+        0.9275929549902152
+      ],
+      "scope": "Descriptive nominal batches with matching preceding actors; not an independent deployment-trial estimate."
+    },
+    "put-down": {
+      "batches": 5,
+      "successes": 4270,
+      "eligible": 4629,
+      "descriptive_pooled_rate": 0.9224454525815511,
+      "observed_batch_range": [
+        0.9018338727076591,
+        0.9370249728555917
+      ],
+      "scope": "Descriptive nominal batches with matching preceding actors; not an independent deployment-trial estimate."
+    }
+  },
+  "full_sequence_repeat_summary": {
+    "batches": 2,
+    "observed_batch_range": [
+      0.41015625,
+      0.458984375
+    ],
+    "descriptive_pooled_rate": 0.4345703125,
+    "scope": "Nominal simulated batch counts, not an independent deployment-trial estimate."
+  },
+  "physics_correction": {
+    "legacy_upward_base_assistance_newtons": 59.87885,
+    "equivalent_mass_kg": 6.103858,
+    "removed": true,
+    "evidence": "/home/rwang/humanoid-full/results/autoresearch-20261029/gravity-compensation-audit.json",
+    "legacy_results_are_not_corrected_physics_results": true
+  },
+  "failure_audit": {
+    "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-final-original-return-audit/audit.json",
+    "bundle": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-fresh200-original_return-full/policy.pt",
+    "scope": "Continuous unchanged physical-gate audit of the bundle identified here; consult its checkpoint provenance before comparing candidates.",
+    "summary": {
+      "go-to": {
+        "valid_preceding_prefix": 512,
+        "failed": 0,
+        "failed_environment_ids": [],
+        "failed_with_sensor_handoff": 0,
+        "failed_before_sensor_handoff": 0,
+        "failed_gates": {},
+        "release_subchecks": {},
+        "failed_error_statistics": {}
+      },
+      "take": {
+        "valid_preceding_prefix": 512,
+        "failed": 3,
+        "failed_environment_ids": [
+          196,
+          210,
+          337
+        ],
+        "failed_with_sensor_handoff": 2,
+        "failed_before_sensor_handoff": 1,
+        "failed_gates": {
+          "required_xy": 0,
+          "required_heading": 0,
+          "required_posture": 0,
+          "required_no_prop_contact": 0,
+          "required_feet": 0,
+          "required_bilateral_contact": 0,
+          "required_palm_side": 1,
+          "required_box_tilt": 1,
+          "required_box_position": 2
+        },
+        "release_subchecks": {},
+        "failed_error_statistics": {
+          "xy_error_m": {
+            "minimum": 0.04442155733704567,
+            "median": 0.04442155733704567,
+            "maximum": 0.07087583094835281
+          },
+          "box_error_m": {
+            "minimum": 0.08811791241168976,
+            "median": 0.08811791241168976,
+            "maximum": 0.13959303498268127
+          },
+          "heading_error_rad": {
+            "minimum": 0.02086452767252922,
+            "median": 0.02086452767252922,
+            "maximum": 0.0228086169809103
+          },
+          "palm_side_error_m": {
+            "minimum": 0.0411548912525177,
+            "median": 0.0411548912525177,
+            "maximum": 0.14004042744636536
+          },
+          "box_tilt_rad": {
+            "minimum": 0.06816386431455612,
+            "median": 0.06816386431455612,
+            "maximum": 1.3773860931396484
+          },
+          "root_height_error_m": {
+            "minimum": -0.0075133442878723145,
+            "median": -0.0075133442878723145,
+            "maximum": -0.006664872169494629
+          },
+          "box_height_error_m": {
+            "minimum": -0.07845580577850342,
+            "median": -0.07845580577850342,
+            "maximum": -0.024931788444519043
+          },
+          "box_relative_height_error_m": {
+            "minimum": -0.0709424614906311,
+            "median": -0.0709424614906311,
+            "maximum": -0.018266916275024414
+          }
+        }
+      },
+      "carry": {
+        "valid_preceding_prefix": 509,
+        "failed": 47,
+        "failed_environment_ids": [
+          14,
+          25,
+          36,
+          61,
+          65,
+          66,
+          78,
+          96,
+          108,
+          129,
+          133,
+          154,
+          179,
+          190,
+          198,
+          223,
+          242,
+          259,
+          276,
+          293,
+          302,
+          315,
+          333,
+          344,
+          345,
+          352,
+          356,
+          359,
+          362,
+          370,
+          375,
+          377,
+          396,
+          416,
+          419,
+          423,
+          431,
+          441,
+          449,
+          451,
+          458,
+          461,
+          477,
+          479,
+          483,
+          484,
+          490
+        ],
+        "failed_with_sensor_handoff": 47,
+        "failed_before_sensor_handoff": 0,
+        "failed_gates": {
+          "required_xy": 5,
+          "required_heading": 1,
+          "required_posture": 0,
+          "required_no_prop_contact": 0,
+          "required_feet": 0,
+          "required_bilateral_contact": 0,
+          "required_palm_side": 1,
+          "required_box_tilt": 9,
+          "required_box_position": 44
+        },
+        "release_subchecks": {},
+        "failed_error_statistics": {
+          "xy_error_m": {
+            "minimum": 0.025664202868938446,
+            "median": 0.05902860686182976,
+            "maximum": 0.15909278392791748
+          },
+          "box_error_m": {
+            "minimum": 0.05544709786772728,
+            "median": 0.08935102820396423,
+            "maximum": 0.1699817180633545
+          },
+          "heading_error_rad": {
+            "minimum": 9.73040732787922e-05,
+            "median": 0.053994376212358475,
+            "maximum": 0.2565411329269409
+          },
+          "palm_side_error_m": {
+            "minimum": 0.02813885360956192,
+            "median": 0.04371686652302742,
+            "maximum": 0.08789033442735672
+          },
+          "box_tilt_rad": {
+            "minimum": 0.0015049839857965708,
+            "median": 0.0620235837996006,
+            "maximum": 0.4796482026576996
+          },
+          "root_height_error_m": {
+            "minimum": -0.015134453773498535,
+            "median": -0.01045072078704834,
+            "maximum": -0.004655778408050537
+          },
+          "box_height_error_m": {
+            "minimum": -0.08912277221679688,
+            "median": -0.04113781452178955,
+            "maximum": -0.030092477798461914
+          },
+          "box_relative_height_error_m": {
+            "minimum": -0.08446699380874634,
+            "median": -0.03032153844833374,
+            "maximum": -0.01981937885284424
+          }
+        }
+      },
+      "put-down": {
+        "valid_preceding_prefix": 462,
+        "failed": 38,
+        "failed_environment_ids": [
+          1,
+          22,
+          38,
+          39,
+          48,
+          59,
+          90,
+          100,
+          121,
+          124,
+          139,
+          151,
+          174,
+          178,
+          180,
+          187,
+          205,
+          247,
+          248,
+          257,
+          264,
+          292,
+          299,
+          323,
+          365,
+          374,
+          376,
+          382,
+          393,
+          400,
+          405,
+          426,
+          443,
+          445,
+          453,
+          485,
+          487,
+          511
+        ],
+        "failed_with_sensor_handoff": 37,
+        "failed_before_sensor_handoff": 1,
+        "failed_gates": {
+          "required_xy": 7,
+          "required_heading": 0,
+          "required_posture": 0,
+          "required_no_prop_contact": 0,
+          "required_feet": 0,
+          "required_arms_down": 0,
+          "required_released": 30
+        },
+        "release_subchecks": {
+          "release_supported": 11,
+          "release_box_still": 0,
+          "release_box_upright": 0,
+          "release_no_hand_touch": 0,
+          "release_hand_gap": 0,
+          "box_position": 19
+        },
+        "failed_error_statistics": {
+          "xy_error_m": {
+            "minimum": 0.01869579218327999,
+            "median": 0.05828111991286278,
+            "maximum": 0.11299123615026474
+          },
+          "box_error_m": {
+            "minimum": 0.008527560159564018,
+            "median": 0.08046455681324005,
+            "maximum": 0.11347106844186783
+          },
+          "heading_error_rad": {
+            "minimum": 0.0022003650665283203,
+            "median": 0.050075531005859375,
+            "maximum": 0.15947747230529785
+          },
+          "palm_side_error_m": {
+            "minimum": 0.8675462007522583,
+            "median": 0.9309727549552917,
+            "maximum": 0.9593263864517212
+          },
+          "box_tilt_rad": {
+            "minimum": 0.0003452669770922512,
+            "median": 0.0012448779307305813,
+            "maximum": 0.0015822122804820538
+          },
+          "root_height_error_m": {
+            "minimum": -0.0034952163696289062,
+            "median": -0.0031147003173828125,
+            "maximum": -0.0024911165237426758
+          },
+          "box_height_error_m": {
+            "minimum": -0.0016002655029296875,
+            "median": 4.7326087951660156e-05,
+            "maximum": 0.0003095865249633789
+          },
+          "box_relative_height_error_m": {
+            "minimum": 0.0017642974853515625,
+            "median": 0.003054797649383545,
+            "maximum": 0.0038028955459594727
+          }
+        }
+      },
+      "return": {
+        "valid_preceding_prefix": 424,
+        "failed": 189,
+        "failed_environment_ids": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          15,
+          16,
+          21,
+          28,
+          31,
+          33,
+          43,
+          44,
+          46,
+          49,
+          51,
+          53,
+          56,
+          57,
+          60,
+          63,
+          64,
+          68,
+          70,
+          72,
+          74,
+          75,
+          79,
+          83,
+          84,
+          86,
+          87,
+          89,
+          91,
+          92,
+          95,
+          97,
+          102,
+          105,
+          107,
+          109,
+          111,
+          112,
+          114,
+          116,
+          118,
+          125,
+          126,
+          132,
+          140,
+          143,
+          146,
+          149,
+          152,
+          153,
+          157,
+          161,
+          165,
+          166,
+          167,
+          168,
+          170,
+          171,
+          172,
+          173,
+          176,
+          177,
+          181,
+          184,
+          191,
+          192,
+          195,
+          199,
+          202,
+          207,
+          208,
+          209,
+          211,
+          214,
+          216,
+          218,
+          225,
+          226,
+          230,
+          231,
+          233,
+          236,
+          238,
+          243,
+          245,
+          250,
+          253,
+          258,
+          261,
+          263,
+          265,
+          267,
+          269,
+          271,
+          272,
+          274,
+          277,
+          279,
+          280,
+          281,
+          285,
+          287,
+          288,
+          289,
+          300,
+          304,
+          308,
+          309,
+          312,
+          313,
+          314,
+          317,
+          319,
+          322,
+          325,
+          327,
+          329,
+          331,
+          334,
+          338,
+          340,
+          341,
+          342,
+          343,
+          346,
+          351,
+          354,
+          361,
+          366,
+          369,
+          373,
+          380,
+          384,
+          385,
+          388,
+          390,
+          398,
+          407,
+          413,
+          415,
+          418,
+          420,
+          425,
+          427,
+          429,
+          430,
+          432,
+          437,
+          440,
+          444,
+          446,
+          447,
+          448,
+          450,
+          452,
+          454,
+          455,
+          456,
+          457,
+          459,
+          464,
+          465,
+          466,
+          469,
+          470,
+          471,
+          472,
+          473,
+          475,
+          476,
+          478,
+          482,
+          488,
+          492,
+          494,
+          496,
+          499,
+          500,
+          501,
+          502,
+          506,
+          507,
+          510
+        ],
+        "failed_with_sensor_handoff": 187,
+        "failed_before_sensor_handoff": 2,
+        "failed_gates": {
+          "required_xy": 187,
+          "required_heading": 15,
+          "required_posture": 0,
+          "required_no_prop_contact": 0,
+          "required_feet": 0,
+          "required_arms_down": 0,
+          "required_released": 5
+        },
+        "release_subchecks": {
+          "release_supported": 4,
+          "release_box_still": 0,
+          "release_box_upright": 0,
+          "release_no_hand_touch": 0,
+          "release_hand_gap": 0,
+          "box_position": 1
+        },
+        "failed_error_statistics": {
+          "xy_error_m": {
+            "minimum": 0.1016559973359108,
+            "median": 0.1709580421447754,
+            "maximum": 0.40036025643348694
+          },
+          "box_error_m": {
+            "minimum": 0.001793238683603704,
+            "median": 0.03953336551785469,
+            "maximum": 0.08175680786371231
+          },
+          "heading_error_rad": {
+            "minimum": 0.0006935596466064453,
+            "median": 0.05251479521393776,
+            "maximum": 0.29637742042541504
+          },
+          "palm_side_error_m": {
+            "minimum": 2.7364604473114014,
+            "median": 2.827690601348877,
+            "maximum": 2.9048564434051514
+          },
+          "box_tilt_rad": {
+            "minimum": 0.0003452669770922512,
+            "median": 0.0013810680247843266,
+            "maximum": 0.001691456069238484
+          },
+          "root_height_error_m": {
+            "minimum": -0.010550260543823242,
+            "median": -0.009324967861175537,
+            "maximum": -0.007654011249542236
+          },
+          "box_height_error_m": {
+            "minimum": -0.0012067556381225586,
+            "median": 8.106231689453125e-06,
+            "maximum": 0.00031197071075439453
+          },
+          "box_relative_height_error_m": {
+            "minimum": 0.007595837116241455,
+            "median": 0.009358346462249756,
+            "maximum": 0.010558366775512695
+          }
+        }
+      }
+    }
+  },
+  "sensor_sensitivity": {
+    "report": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-selected-smallnoise/summary.json",
+    "scope": "Earlier selected pair with bias6 put-down and old return. Synthetic training-range noise, not measured G1 specifications."
+  },
+  "hardware_validated": false,
+  "deployment_ready": false,
+  "scope": "Nominal fixed-layout simulation batches. Seeds and floating-point variability do not establish independent randomized deployment trials.",
+  "next_steps": [
+    "Increase carry position margin inside the unchanged 8 cm gate.",
+    "Adapt return using exact final put-down handoffs and prioritize terminal XY accuracy.",
+    "Calibrate sensor noise, delays, PD gains and physical parameters from the G1 before deployment.",
+    "Audit instantaneous shelf-contact scoring against sustained support without silently changing benchmark gates."
+  ],
+  "optional_gait_style": "No corrected-physics style candidate selected; original go-to retained.",
+  "video": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-final-sequence-video/evaluation/sequence.mp4",
+  "source_snapshot": "/home/rwang/humanoid-full/results/autoresearch-20261029/final-source-snapshot",
+  "verification": {
+    "observation_and_stage_selection_tests_passed": 10,
+    "all_five_actor_exports_checked": true,
+    "max_export_error": 4.76837158203125e-07,
+    "all_gpu_research_processes_finished": true,
+    "video": {
+      "path": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-final-sequence-video/evaluation/sequence.mp4",
+      "fps": 50.0,
+      "frames": 3545,
+      "duration_s": 70.9,
+      "metadata_duration_s": 70.9,
+      "size": [
+        960,
+        720
+      ]
+    }
+  }
+}

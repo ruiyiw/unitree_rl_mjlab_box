@@ -1,0 +1,57 @@
+{
+  "actors": {
+    "go-to": {
+      "samples": 128,
+      "max_observation_error": 5.960464477539062e-07,
+      "max_action_error": 2.384185791015625e-06,
+      "max_target_error": 1.0728836059570312e-06
+    },
+    "take": {
+      "samples": 128,
+      "max_observation_error": 5.960464477539062e-07,
+      "max_action_error": 1.0728836059570312e-06,
+      "max_target_error": 4.76837158203125e-07
+    },
+    "carry": {
+      "samples": 128,
+      "max_observation_error": 5.960464477539062e-07,
+      "max_action_error": 1.9073486328125e-06,
+      "max_target_error": 8.344650268554688e-07
+    },
+    "put-down": {
+      "samples": 128,
+      "max_observation_error": 5.960464477539062e-07,
+      "max_action_error": 8.344650268554688e-07,
+      "max_target_error": 3.5762786865234375e-07
+    },
+    "return": {
+      "samples": 128,
+      "max_observation_error": 5.960464477539062e-07,
+      "max_action_error": 1.430511474609375e-06,
+      "max_target_error": 7.152557373046875e-07
+    }
+  },
+  "sequence_ticks": 3329,
+  "transitions": [
+    {
+      "tick": 440,
+      "stage": "take"
+    },
+    {
+      "tick": 1294,
+      "stage": "carry"
+    },
+    {
+      "tick": 1746,
+      "stage": "put-down"
+    },
+    {
+      "tick": 2797,
+      "stage": "return"
+    }
+  ],
+  "archived_source_controller_parity": true,
+  "reset_and_invalid_imu": true,
+  "hardware_tested": false,
+  "physics_tested": false
+}

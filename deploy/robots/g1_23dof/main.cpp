@@ -4,6 +4,8 @@
 #include "FSM/State_RLBase.h"
 #include "State_Mimic.h"
 #include "State_HumanPushRecovery.h"
+#include "State_BoxPolicy.h"
+#include "BoxPreflight.h"
 
 std::unique_ptr<LowCmd_t> FSMState::lowcmd = nullptr;
 std::shared_ptr<LowState_t> FSMState::lowstate = nullptr;
@@ -28,11 +30,29 @@ void init_fsm_state()
 
 int main(int argc, char** argv)
 {
+    // Offline deployment check: return before constructing any DDS objects.
+    if (argc==3 && std::string(argv[1])=="--check-box-config") {
+        try {
+            param::bin_path=param::get_bin_path();
+            param::load_config_file();
+            box_policy::preflight(YAML::LoadFile(argv[2]),param::proj_dir);
+            return 0;
+        } catch (const std::exception& e) {
+            std::cerr<<e.what()<<"\n";
+            return 1;
+        }
+    }
     // Load parameters
     auto vm = param::helper(argc, argv);
 
     std::cout << " --- Unitree Robotics --- \n";
     std::cout << "     G1-23dof Controller \n";
+
+    // Fail a malformed box profile before waiting for or commanding a robot.
+    if (param::config["FSM"]["_"]["BoxPolicy"]) {
+        try { box_policy::preflight(param::config,param::proj_dir); }
+        catch (const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
+    }
 
     // Unitree DDS Config
     unitree::robot::ChannelFactory::Instance()->Init(0, vm["network"].as<std::string>());

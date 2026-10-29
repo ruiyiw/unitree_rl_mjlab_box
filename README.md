@@ -246,3 +246,11 @@ The preserved balance task, frozen checkpoint evaluation, and matched comparison
 `Mjlab-Human-Push-Recovery-G1-23DoF` and its frozen checkpoint, ONNX actor,
 23-DoF hardware profile, and C++ simulation validator are included. See
 [HUMAN_PUSH.md](HUMAN_PUSH.md) for playback, validation and deployment.
+
+## G1 23-DoF box manipulation
+
+The final five 75-input/23-output box actors and their continuous sequence are
+packaged with separate C++ launch profiles for the same 23-DoF G1. See
+[BOX.md](BOX.md) for the five policies, build/launch and human-push comparison,
+[BOX_SEQUENCE.md](BOX_SEQUENCE.md) for sequence switching and evaluation, and
+[BOX_VALIDATION.md](BOX_VALIDATION.md) for validation status.

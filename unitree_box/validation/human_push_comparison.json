@@ -1,0 +1,193 @@
+{
+  "basis": "User reports successful humanoid deployment following HUMAN_PUSH.md",
+  "shared_executable": "deploy/robots/g1_23dof/build/g1_ctrl",
+  "matching_contract_fields": [
+    "joint_order",
+    "action_order",
+    "actor_columns",
+    "default_joint_positions",
+    "physics_dt",
+    "decimation",
+    "policy_dt",
+    "dimensions"
+  ],
+  "passive_profiles_identical": {
+    "go-to": true,
+    "take": true,
+    "carry": true,
+    "put-down": true,
+    "return": true,
+    "sequence": true
+  },
+  "cpp_observation_comparison": {
+    "samples": 128,
+    "absolute_tolerance": 1e-06,
+    "relative_tolerance": 1e-06,
+    "passed": true
+  },
+  "differences": {
+    "kp": [
+      {
+        "joint": "left_shoulder_pitch_joint",
+        "human_push": 14.25062309787429,
+        "box": 40.0
+      },
+      {
+        "joint": "left_shoulder_roll_joint",
+        "human_push": 14.25062309787429,
+        "box": 40.0
+      },
+      {
+        "joint": "left_shoulder_yaw_joint",
+        "human_push": 14.25062309787429,
+        "box": 40.0
+      },
+      {
+        "joint": "left_elbow_joint",
+        "human_push": 14.25062309787429,
+        "box": 40.0
+      },
+      {
+        "joint": "right_shoulder_pitch_joint",
+        "human_push": 14.25062309787429,
+        "box": 40.0
+      },
+      {
+        "joint": "right_shoulder_roll_joint",
+        "human_push": 14.25062309787429,
+        "box": 40.0
+      },
+      {
+        "joint": "right_shoulder_yaw_joint",
+        "human_push": 14.25062309787429,
+        "box": 40.0
+      },
+      {
+        "joint": "right_elbow_joint",
+        "human_push": 14.25062309787429,
+        "box": 40.0
+      }
+    ],
+    "kd": [
+      {
+        "joint": "left_shoulder_pitch_joint",
+        "human_push": 0.907222843292423,
+        "box": 2.0
+      },
+      {
+        "joint": "left_shoulder_roll_joint",
+        "human_push": 0.907222843292423,
+        "box": 2.0
+      },
+      {
+        "joint": "left_shoulder_yaw_joint",
+        "human_push": 0.907222843292423,
+        "box": 2.0
+      },
+      {
+        "joint": "left_elbow_joint",
+        "human_push": 0.907222843292423,
+        "box": 2.0
+      },
+      {
+        "joint": "right_shoulder_pitch_joint",
+        "human_push": 0.907222843292423,
+        "box": 2.0
+      },
+      {
+        "joint": "right_shoulder_roll_joint",
+        "human_push": 0.907222843292423,
+        "box": 2.0
+      },
+      {
+        "joint": "right_shoulder_yaw_joint",
+        "human_push": 0.907222843292423,
+        "box": 2.0
+      },
+      {
+        "joint": "right_elbow_joint",
+        "human_push": 0.907222843292423,
+        "box": 2.0
+      }
+    ],
+    "action_scale": [
+      {
+        "joint": "left_hip_roll_joint",
+        "human_push": 0.22200150389450748,
+        "box": 0.35066146637882434
+      },
+      {
+        "joint": "right_hip_roll_joint",
+        "human_push": 0.22200150389450748,
+        "box": 0.35066146637882434
+      },
+      {
+        "joint": "left_shoulder_pitch_joint",
+        "human_push": 0.43857731392336724,
+        "box": 0.3
+      },
+      {
+        "joint": "left_shoulder_roll_joint",
+        "human_push": 0.43857731392336724,
+        "box": 0.3
+      },
+      {
+        "joint": "left_shoulder_yaw_joint",
+        "human_push": 0.43857731392336724,
+        "box": 0.3
+      },
+      {
+        "joint": "left_elbow_joint",
+        "human_push": 0.43857731392336724,
+        "box": 0.3
+      },
+      {
+        "joint": "right_shoulder_pitch_joint",
+        "human_push": 0.43857731392336724,
+        "box": 0.3
+      },
+      {
+        "joint": "right_shoulder_roll_joint",
+        "human_push": 0.43857731392336724,
+        "box": 0.3
+      },
+      {
+        "joint": "right_shoulder_yaw_joint",
+        "human_push": 0.43857731392336724,
+        "box": 0.3
+      },
+      {
+        "joint": "right_elbow_joint",
+        "human_push": 0.43857731392336724,
+        "box": 0.3
+      }
+    ],
+    "force_limits": [
+      {
+        "joint": "left_hip_roll_joint",
+        "human_push": [
+          -88.0,
+          88.0
+        ],
+        "box": [
+          -139.0,
+          139.0
+        ]
+      },
+      {
+        "joint": "right_hip_roll_joint",
+        "human_push": [
+          -88.0,
+          88.0
+        ],
+        "box": [
+          -139.0,
+          139.0
+        ]
+      }
+    ]
+  },
+  "timing_difference": "Human-push reschedules missed periods; box faults on missed 20 ms deadlines.",
+  "force_limit_scope": "Simulation model limits; neither hardware state programs these firmware limits.",
+  "box_hardware_tested": false
+}

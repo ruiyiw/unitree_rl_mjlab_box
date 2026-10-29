@@ -1,0 +1,32 @@
+{
+  "architecture": "x86_64",
+  "compiler": "GNU 15.2.0",
+  "cmake": "4.2.3",
+  "unitree_sdk2_commit": "d1abf001220d3e5f59e00a0c4aaa595e00089a4a",
+  "binary_sha256": "64ed5fcea2b219bc3fcf9f0059288450d19bcb41081148c7586a8dcc4d75330a",
+  "full_controller_build": true,
+  "cli_help_passed": true,
+  "tests_passed": 33,
+  "dependency_location": "deploy/robots/g1_23dof/build/local-deps (isolated local cache; no system packages installed)",
+  "cuda_available": false,
+  "dds_transport_tested": false,
+  "hardware_tested": false,
+  "all_runtime_libraries_resolved": true,
+  "temporary_runtime_paths": false,
+  "cpp_offline_preflight_passed": [
+    "go-to",
+    "take",
+    "carry",
+    "put-down",
+    "return",
+    "sequence"
+  ],
+  "rejected_profiles": [
+    "enabled absent motor",
+    "incorrect gain",
+    "incorrect initial pose",
+    "non-Passive first state"
+  ],
+  "documented_build_wrapper_passed": true,
+  "aarch64_build_tested": false
+}

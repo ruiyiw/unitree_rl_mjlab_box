@@ -1,0 +1,158 @@
+{
+  "checkpoint": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+  "checkpoint_sha256": "66a51b1664a8f869bbae2950a1470c96b2ce66c4a6674bff3687b4863a03db28",
+  "observation_contract": {
+    "id": "g1-five-proprio-v1",
+    "actor_dim": 75,
+    "terms": [
+      "base_ang_vel",
+      "projected_gravity",
+      "joint_pos",
+      "joint_vel",
+      "actions"
+    ],
+    "widths": [
+      3,
+      3,
+      23,
+      23,
+      23
+    ],
+    "frame": "pelvis",
+    "joint_order": "robot.joint_names",
+    "joint_position": "measured minus default_joint_pos",
+    "joint_velocity": "rad/s (zero default velocity)",
+    "previous_action": "unclipped residual, preserved across stage switches",
+    "action": "local qcmd[clock+1] + action_scale * residual",
+    "reference_clock": "50 Hz local counter; no contact or world-state gates",
+    "handoff": "reference ended and proprioceptive endpoint settled for 1 second"
+  },
+  "input_shape": [
+    1,
+    75
+  ],
+  "output_shape": [
+    1,
+    23
+  ],
+  "hidden_dims": [
+    512,
+    256,
+    128
+  ],
+  "activation": "ELU",
+  "teacher_required": false,
+  "critic_required": false,
+  "estimator_required": false,
+  "history_required": false,
+  "actor_only": true,
+  "controller": "Existing local reference, action scales, stage clock and sensor-only switching remain required.",
+  "output": "23 residual actions; not raw motor commands",
+  "hardware_validated": false,
+  "simulation_actuation_mode": "unspecified",
+  "research_only": true,
+  "complete_sequence_ready": false,
+  "onnx_max_abs_error": 2.384185791015625e-07,
+  "parity_samples": 32,
+  "cpu_architecture": "x86_64",
+  "latency_ms": {
+    "median": 0.024137,
+    "p95": 0.024668,
+    "p99": 0.03194309
+  },
+  "latency_scope": "Single-thread ONNX Runtime on this workstation; not measured on the G1 onboard computer.",
+  "training_metadata": {
+    "teacher_training": {
+      "id": "privileged-teacher-ppo-v1",
+      "student_dim": 75,
+      "hidden_dims": [
+        512,
+        256,
+        128
+      ],
+      "supervision": "Frozen teacher mean actions on student on-policy states; joint PPO + imitation loss",
+      "imitation": "Per-action mean Gaussian KL, sigma=0.05",
+      "weight_initial": 0.1,
+      "hold_updates": 200,
+      "fade_until_update": 1600,
+      "learning_rate": 0.0001,
+      "deployment": "Student only; no teacher, estimator, history network, or extra actor inputs"
+    },
+    "teacher": {
+      "path": "/home/rwang/humanoid-full/policies/five_runs/navigation/actors/policy.pt",
+      "source": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/four-shared-nav-20261028/model_800.pt",
+      "width": 156,
+      "sha256": "c242b6230e437c938d744b25d485696364a2b9072097e168390d55ab1167c3ce",
+      "semantics_checked": {
+        "motion.py": [
+          "observations"
+        ],
+        "five_task.py": [
+          "obs_layout"
+        ],
+        "scene.py": [
+          "action_scale"
+        ],
+        "task.py": [
+          "PlanJointAction",
+          "obs_ref_joints",
+          "obs_ref_anchor",
+          "obs_ref_preview",
+          "obs_ref_box",
+          "obs_ref_clock",
+          "obs_box",
+          "obs_palms",
+          "obs_last_joint_action"
+        ]
+      },
+      "reference_max_differences": {
+        "qpos": 0.1794339418411255,
+        "qcmd": 0.030030488967895508,
+        "qvel": 0.3114490509033203,
+        "body": 0.1879727840423584,
+        "body_lin": 0.1468569040298462,
+        "body_ang": 0.32083964347839355
+      },
+      "reference_mode": "Teacher and student use the current reference and identical residual action scale"
+    },
+    "initialization": {
+      "mode": "from_scratch",
+      "checkpoint": null,
+      "actor": "random hidden layers; zero residual output head",
+      "critic": "random",
+      "normalization": "fresh identity statistics",
+      "optimizer": "empty",
+      "reference": "Existing local reference trajectory retained; no pretrained neural weights loaded"
+    },
+    "observation_contract": {
+      "id": "g1-five-proprio-v1",
+      "actor_dim": 75,
+      "terms": [
+        "base_ang_vel",
+        "projected_gravity",
+        "joint_pos",
+        "joint_vel",
+        "actions"
+      ],
+      "widths": [
+        3,
+        3,
+        23,
+        23,
+        23
+      ],
+      "frame": "pelvis",
+      "joint_order": "robot.joint_names",
+      "joint_position": "measured minus default_joint_pos",
+      "joint_velocity": "rad/s (zero default velocity)",
+      "previous_action": "unclipped residual, preserved across stage switches",
+      "action": "local qcmd[clock+1] + action_scale * residual",
+      "reference_clock": "50 Hz local counter; no contact or world-state gates",
+      "handoff": "reference ended and proprioceptive endpoint settled for 1 second"
+    },
+    "reward_recipe": "proprio-precision-v2",
+    "env_state": {
+      "common_step_counter": 86424
+    }
+  }
+}

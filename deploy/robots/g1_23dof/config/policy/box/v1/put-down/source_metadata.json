@@ -1,0 +1,128 @@
+{
+  "checkpoint": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r3-selected-handoffs/model_200.pt",
+  "checkpoint_sha256": "5f50391c191b76d08900af99592bcec867640ca666fc110efcf546da4da19261",
+  "observation_contract": {
+    "id": "g1-five-proprio-v1",
+    "actor_dim": 75,
+    "terms": [
+      "base_ang_vel",
+      "projected_gravity",
+      "joint_pos",
+      "joint_vel",
+      "actions"
+    ],
+    "widths": [
+      3,
+      3,
+      23,
+      23,
+      23
+    ],
+    "frame": "pelvis",
+    "joint_order": "robot.joint_names",
+    "joint_position": "measured minus default_joint_pos",
+    "joint_velocity": "rad/s (zero default velocity)",
+    "previous_action": "unclipped residual, preserved across stage switches",
+    "action": "local qcmd[clock+1] + action_scale * residual",
+    "reference_clock": "50 Hz local counter; no contact or world-state gates",
+    "handoff": "reference ended and proprioceptive endpoint settled for 1 second"
+  },
+  "input_shape": [
+    1,
+    75
+  ],
+  "output_shape": [
+    1,
+    23
+  ],
+  "hidden_dims": [
+    512,
+    256,
+    128
+  ],
+  "activation": "ELU",
+  "teacher_required": false,
+  "critic_required": false,
+  "estimator_required": false,
+  "history_required": false,
+  "actor_only": true,
+  "controller": "Existing local reference, action scales, stage clock and sensor-only switching remain required.",
+  "output": "23 residual actions; not raw motor commands",
+  "hardware_validated": false,
+  "simulation_actuation_mode": "none",
+  "research_only": true,
+  "complete_sequence_ready": false,
+  "onnx_max_abs_error": 3.5762786865234375e-07,
+  "parity_samples": 32,
+  "cpu_architecture": "x86_64",
+  "latency_ms": {
+    "median": 0.023967,
+    "p95": 0.024688,
+    "p99": 0.0331651
+  },
+  "latency_scope": "Single-thread ONNX Runtime on this workstation; not measured on the G1 onboard computer.",
+  "training_metadata": {
+    "observation_contract": {
+      "id": "g1-five-proprio-v1",
+      "actor_dim": 75,
+      "terms": [
+        "base_ang_vel",
+        "projected_gravity",
+        "joint_pos",
+        "joint_vel",
+        "actions"
+      ],
+      "widths": [
+        3,
+        3,
+        23,
+        23,
+        23
+      ],
+      "frame": "pelvis",
+      "joint_order": "robot.joint_names",
+      "joint_position": "measured minus default_joint_pos",
+      "joint_velocity": "rad/s (zero default velocity)",
+      "previous_action": "unclipped residual, preserved across stage switches",
+      "action": "local qcmd[clock+1] + action_scale * residual",
+      "reference_clock": "50 Hz local counter; no contact or world-state gates",
+      "handoff": "reference ended and proprioceptive endpoint settled for 1 second"
+    },
+    "reward_recipe": "sensor-handoff-research-v1",
+    "research": {
+      "state": "initializing",
+      "skill": "put-down",
+      "variant": "sensor_fixed",
+      "parameters": {
+        "style": "margin",
+        "sensor": true,
+        "std": 0.015,
+        "lr": 1e-06,
+        "fixed": true,
+        "head_only": false,
+        "freeze_normalizer": true,
+        "noise_scale": 0.05
+      },
+      "seed": 101006,
+      "envs": 4096,
+      "iterations": 600,
+      "gpu": "6",
+      "pid": 185851,
+      "checkpoint": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r1-preload/model_200.pt",
+      "states": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-selected-putdown-handoffs/put-down-states.pt",
+      "validation": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-selected-putdown-handoffs/put-down-heldout.pt",
+      "actor_inputs": 75,
+      "critic_inputs": 224,
+      "deadline_epoch": 1793293265.0,
+      "config_sha256": "c00eb6e503388c22bdbc45a41279b802bb3654c59377c85c03d046d6000b1552",
+      "source_sha256": "788a14add8320dd1963cc64571534a521fee9e3a26c4fe71cb32acc37643bc64",
+      "bank_sha256": "a27fc1682a6246b4a68cf1f6b0e4a72f8cad11f98f5759fd2e1dadd88f5ae749",
+      "simulation_actuation_mode": "none",
+      "source_sha256_research": "09d53d7654793af7fa8f8241d24c38789bb459b8df661cf309d1062c5767c333"
+    },
+    "simulation_actuation_mode": "none",
+    "env_state": {
+      "common_step_counter": 105696
+    }
+  }
+}

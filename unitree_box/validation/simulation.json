@@ -1,0 +1,114 @@
+{
+  "go-to": {
+    "stage": "go-to",
+    "elapsed_s": 1.9999999999999793,
+    "stop_reason": "duration reached",
+    "sensor_endpoint_done": false,
+    "transitions": [
+      {
+        "time_s": 0.0,
+        "stage": "go-to"
+      }
+    ],
+    "plain_pd": true,
+    "physics": "native CPU MuJoCo; not the batched GPU evaluation",
+    "physical_task_success": "not scored",
+    "hardware_tested": false
+  },
+  "take": {
+    "stage": "take",
+    "elapsed_s": 1.9999999999999793,
+    "stop_reason": "duration reached",
+    "sensor_endpoint_done": false,
+    "transitions": [
+      {
+        "time_s": 0.0,
+        "stage": "take"
+      }
+    ],
+    "plain_pd": true,
+    "physics": "native CPU MuJoCo; not the batched GPU evaluation",
+    "physical_task_success": "not scored",
+    "hardware_tested": false
+  },
+  "carry": {
+    "stage": "carry",
+    "elapsed_s": 1.9999999999999793,
+    "stop_reason": "duration reached",
+    "sensor_endpoint_done": false,
+    "transitions": [
+      {
+        "time_s": 0.0,
+        "stage": "carry"
+      }
+    ],
+    "plain_pd": true,
+    "physics": "native CPU MuJoCo; not the batched GPU evaluation",
+    "physical_task_success": "not scored",
+    "hardware_tested": false
+  },
+  "put-down": {
+    "stage": "put-down",
+    "elapsed_s": 1.9999999999999793,
+    "stop_reason": "duration reached",
+    "sensor_endpoint_done": false,
+    "transitions": [
+      {
+        "time_s": 0.0,
+        "stage": "put-down"
+      }
+    ],
+    "plain_pd": true,
+    "physics": "native CPU MuJoCo; not the batched GPU evaluation",
+    "physical_task_success": "not scored",
+    "hardware_tested": false
+  },
+  "return": {
+    "stage": "return",
+    "elapsed_s": 1.9999999999999793,
+    "stop_reason": "duration reached",
+    "sensor_endpoint_done": false,
+    "transitions": [
+      {
+        "time_s": 0.0,
+        "stage": "return"
+      }
+    ],
+    "plain_pd": true,
+    "physics": "native CPU MuJoCo; not the batched GPU evaluation",
+    "physical_task_success": "not scored",
+    "hardware_tested": false
+  },
+  "sequence": {
+    "stage": "sequence",
+    "elapsed_s": 124.9999999999588,
+    "stop_reason": "duration reached",
+    "sensor_endpoint_done": true,
+    "transitions": [
+      {
+        "time_s": 0.0,
+        "stage": "go-to"
+      },
+      {
+        "time_s": 8.8,
+        "stage": "take"
+      },
+      {
+        "time_s": 25.72,
+        "stage": "carry"
+      },
+      {
+        "time_s": 34.54,
+        "stage": "put-down"
+      },
+      {
+        "time_s": 55.56,
+        "stage": "return"
+      }
+    ],
+    "plain_pd": true,
+    "physics": "native CPU MuJoCo; not the batched GPU evaluation",
+    "physical_task_success": "not scored",
+    "hardware_tested": false
+  }
+}

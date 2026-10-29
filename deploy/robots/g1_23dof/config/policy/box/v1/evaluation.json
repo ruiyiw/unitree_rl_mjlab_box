@@ -1,0 +1,561 @@
+{
+  "bundle": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-fresh200-original_return-full/policy.pt",
+  "bundle_sha256": "324a76c836b5a8e1f24b53ca93c0d636fae5fcb481bc008cce3d5a8ddbbbeed7",
+  "source_run": "physical-none-fresh200-original_return-full",
+  "episodes": 1024,
+  "seed": 116002,
+  "seconds_limit": 125,
+  "elapsed_simulation_s": 124.98,
+  "final_hold_seconds": 5,
+  "full_sequence_completion": 0.458984375,
+  "completed_and_stable": 0.4287109375,
+  "phase_entered": {
+    "go-to": 1024,
+    "take": 1024,
+    "carry": 1023,
+    "put-down": 1017,
+    "return": 1001
+  },
+  "phase_completion": {
+    "go-to": 1.0,
+    "take": 0.9921875,
+    "carry": 0.91796875,
+    "put-down": 0.8740234375,
+    "return": 0.482421875
+  },
+  "prefix_completion": {
+    "go-to": 1.0,
+    "take": 0.9921875,
+    "carry": 0.9169921875,
+    "put-down": 0.84765625,
+    "return": 0.458984375
+  },
+  "conditional_completion": {
+    "go-to": 1.0,
+    "take": 0.9921875,
+    "carry": 0.9242125984251969,
+    "put-down": 0.9243876464323749,
+    "return": 0.5414746543778802
+  },
+  "failures": {
+    "time_out": 0,
+    "tracking": 4,
+    "fell": 0,
+    "postrelease_posture": 2,
+    "heading": 0,
+    "postrelease_collision": 2,
+    "box_lost": 20,
+    "phase_timeout": 0
+  },
+  "failure_phase": {
+    "go-to": 0,
+    "take": 1,
+    "carry": 6,
+    "put-down": 16,
+    "return": 5
+  },
+  "unfinished": 534,
+  "transitions": [
+    {
+      "time_s": 8.82,
+      "entered": {
+        "take": 1024,
+        "carry": 0,
+        "put-down": 0,
+        "return": 0
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.14537721872329712,
+        "max": 0.16504275798797607
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.05076872557401657,
+        "max": 0.07108622044324875
+      }
+    },
+    {
+      "time_s": 25.74,
+      "entered": {
+        "take": 0,
+        "carry": 1019,
+        "put-down": 0,
+        "return": 0
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.2366361767053604,
+        "max": 0.25490954518318176
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.03437534719705582,
+        "max": 0.06627821922302246
+      }
+    },
+    {
+      "time_s": 27.04,
+      "entered": {
+        "take": 0,
+        "carry": 1,
+        "put-down": 0,
+        "return": 0
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.10469923168420792,
+        "max": 0.10469923168420792
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.04634099081158638,
+        "max": 0.04634099081158638
+      }
+    },
+    {
+      "time_s": 27.2,
+      "entered": {
+        "take": 0,
+        "carry": 1,
+        "put-down": 0,
+        "return": 0
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.15488222241401672,
+        "max": 0.15488222241401672
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.05306466668844223,
+        "max": 0.05306466668844223
+      }
+    },
+    {
+      "time_s": 28.06,
+      "entered": {
+        "take": 0,
+        "carry": 1,
+        "put-down": 0,
+        "return": 0
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.10288077592849731,
+        "max": 0.10288077592849731
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.04699402675032616,
+        "max": 0.04699402675032616
+      }
+    },
+    {
+      "time_s": 30.98,
+      "entered": {
+        "take": 0,
+        "carry": 1,
+        "put-down": 0,
+        "return": 0
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.1036025881767273,
+        "max": 0.1036025881767273
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.044613804668188095,
+        "max": 0.044613804668188095
+      }
+    },
+    {
+      "time_s": 34.56,
+      "entered": {
+        "take": 0,
+        "carry": 0,
+        "put-down": 1015,
+        "return": 0
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.1804783195257187,
+        "max": 0.3543975055217743
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.0408112071454525,
+        "max": 0.14486470818519592
+      }
+    },
+    {
+      "time_s": 35.86,
+      "entered": {
+        "take": 0,
+        "carry": 0,
+        "put-down": 1,
+        "return": 0
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.27771300077438354,
+        "max": 0.27771300077438354
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.1501961648464203,
+        "max": 0.1501961648464203
+      }
+    },
+    {
+      "time_s": 36.88,
+      "entered": {
+        "take": 0,
+        "carry": 0,
+        "put-down": 1,
+        "return": 0
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.30715253949165344,
+        "max": 0.30715253949165344
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.10521510988473892,
+        "max": 0.10521510988473892
+      }
+    },
+    {
+      "time_s": 55.58,
+      "entered": {
+        "take": 0,
+        "carry": 0,
+        "put-down": 0,
+        "return": 1001
+      },
+      "next_reference_max_joint_error_rad": {
+        "mean": 0.13207946717739105,
+        "max": 0.1464148610830307
+      },
+      "next_reference_xy_error_m": {
+        "mean": 0.04940751567482948,
+        "max": 0.14988882839679718
+      }
+    }
+  ],
+  "box_failure_details": [
+    {
+      "environment": 635,
+      "stage": "take",
+      "phase_seconds": 19.42025375366211,
+      "box_height_m": 0.845364511013031,
+      "reference_error_m": 0.2692279815673828,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 626,
+      "stage": "carry",
+      "phase_seconds": 3.6999971866607666,
+      "box_height_m": 0.9888579845428467,
+      "reference_error_m": 0.25939562916755676,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": true
+    },
+    {
+      "environment": 919,
+      "stage": "carry",
+      "phase_seconds": 5.579995632171631,
+      "box_height_m": 1.0418223142623901,
+      "reference_error_m": 0.2503499388694763,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": true
+    },
+    {
+      "environment": 852,
+      "stage": "carry",
+      "phase_seconds": 5.619995594024658,
+      "box_height_m": 1.0215541124343872,
+      "reference_error_m": 0.2531217336654663,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": true
+    },
+    {
+      "environment": 585,
+      "stage": "carry",
+      "phase_seconds": 5.959995269775391,
+      "box_height_m": 1.043624758720398,
+      "reference_error_m": 0.2528994381427765,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": true
+    },
+    {
+      "environment": 901,
+      "stage": "carry",
+      "phase_seconds": 6.199995040893555,
+      "box_height_m": 1.0464674234390259,
+      "reference_error_m": 0.2537436783313751,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": true
+    },
+    {
+      "environment": 417,
+      "stage": "carry",
+      "phase_seconds": 3.7199971675872803,
+      "box_height_m": 1.0337508916854858,
+      "reference_error_m": 0.25306954979896545,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": true
+    },
+    {
+      "environment": 720,
+      "stage": "put-down",
+      "phase_seconds": 1.6799989938735962,
+      "box_height_m": 0.9927802085876465,
+      "reference_error_m": 0.25359398126602173,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 845,
+      "stage": "put-down",
+      "phase_seconds": 1.7199989557266235,
+      "box_height_m": 0.9815893769264221,
+      "reference_error_m": 0.254376620054245,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 212,
+      "stage": "put-down",
+      "phase_seconds": 1.819998860359192,
+      "box_height_m": 0.9810969829559326,
+      "reference_error_m": 0.25067850947380066,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 645,
+      "stage": "put-down",
+      "phase_seconds": 1.819998860359192,
+      "box_height_m": 0.9900696277618408,
+      "reference_error_m": 0.2528817355632782,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 610,
+      "stage": "put-down",
+      "phase_seconds": 1.8999987840652466,
+      "box_height_m": 0.9781975150108337,
+      "reference_error_m": 0.2525983452796936,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 666,
+      "stage": "put-down",
+      "phase_seconds": 1.939998745918274,
+      "box_height_m": 0.9760776162147522,
+      "reference_error_m": 0.2518191933631897,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 170,
+      "stage": "put-down",
+      "phase_seconds": 1.9599987268447876,
+      "box_height_m": 0.974164605140686,
+      "reference_error_m": 0.25394555926322937,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 336,
+      "stage": "put-down",
+      "phase_seconds": 1.9799987077713013,
+      "box_height_m": 0.9863035082817078,
+      "reference_error_m": 0.25423529744148254,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 367,
+      "stage": "put-down",
+      "phase_seconds": 1.999998688697815,
+      "box_height_m": 0.973283588886261,
+      "reference_error_m": 0.25085338950157166,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 161,
+      "stage": "put-down",
+      "phase_seconds": 2.019998788833618,
+      "box_height_m": 0.9769158959388733,
+      "reference_error_m": 0.2507876455783844,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 533,
+      "stage": "put-down",
+      "phase_seconds": 1.139999508857727,
+      "box_height_m": 1.003117561340332,
+      "reference_error_m": 0.2518759071826935,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 578,
+      "stage": "put-down",
+      "phase_seconds": 1.7199989557266235,
+      "box_height_m": 0.9887945652008057,
+      "reference_error_m": 0.2516663372516632,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    },
+    {
+      "environment": 346,
+      "stage": "return",
+      "phase_seconds": 69.30038452148438,
+      "box_height_m": 0.9882344007492065,
+      "reference_error_m": 0.2599831819534302,
+      "height_gate": false,
+      "reference_gate": true,
+      "reference_limit_m": 0.25,
+      "bilateral_contact": false
+    }
+  ],
+  "evaluation_driver_sha256": "0e4da94d0b45f8b4ac7f0d066030d138c84423a5084ed4726e647b06b4f9d4cc",
+  "checkpoints": {
+    "navigation": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/proprio-teacher-scratch-4000-20261028/model_3600.pt",
+    "take": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+    "carry": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-alternate-carry_refine/model_12.pt",
+    "put-down": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-putdown-r3-selected-handoffs/model_200.pt",
+    "return": "/home/rwang/humanoid-full/policies/five_runs/navigation/runs/autoresearch-navigation-r1-shared_full-20261029/model_200.pt"
+  },
+  "observation_contract": {
+    "id": "g1-five-proprio-v1",
+    "actor_dim": 75,
+    "terms": [
+      "base_ang_vel",
+      "projected_gravity",
+      "joint_pos",
+      "joint_vel",
+      "actions"
+    ],
+    "widths": [
+      3,
+      3,
+      23,
+      23,
+      23
+    ],
+    "frame": "pelvis",
+    "joint_order": "robot.joint_names",
+    "joint_position": "measured minus default_joint_pos",
+    "joint_velocity": "rad/s (zero default velocity)",
+    "previous_action": "unclipped residual, preserved across stage switches",
+    "action": "local qcmd[clock+1] + action_scale * residual",
+    "reference_clock": "50 Hz local counter; no contact or world-state gates",
+    "handoff": "reference ended and proprioceptive endpoint settled for 1 second"
+  },
+  "transition_state_audit": "Existing controller asserts qpos/qvel unchanged at every handoff; previous residual preserved",
+  "scope": "Continuous physics from original start; sensor-only switches, no stage resets, mean actions, no pushes",
+  "evaluation_randomization": "None: fixed initial pose, layout, physics parameters and uncorrupted actor observations. Batch contact numerics can still vary.",
+  "hardware_validated": false,
+  "simulation_actuation_mode": "none",
+  "actuation_audit": {
+    "mode": "none",
+    "compensated_body_count": 0,
+    "floating_base_passive_force": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "floating_base_actuator_force": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "no_floating_base_gravity_assistance": true
+  },
+  "confidence_scope": "Wilson intervals describe nominal simulated batch counts only. Starts, sensor noise, pushes, mass and friction are not randomized; independent deployment-trial sampling is not established.",
+  "confidence_95_wilson": {
+    "go-to": [
+      0.9962624591182144,
+      1.0
+    ],
+    "take": [
+      0.9846597450413721,
+      0.9960361131531201
+    ],
+    "carry": [
+      0.8995576827976054,
+      0.9332554666215268
+    ],
+    "put-down": [
+      0.8522912619335975,
+      0.8929597572895981
+    ],
+    "return": [
+      0.4519386840913864,
+      0.5130364638302389
+    ],
+    "full_sequence": [
+      0.4286725921595475,
+      0.48960275299091144
+    ]
+  },
+  "prefix_confidence_95_wilson": {
+    "go-to": [
+      0.9962624591182144,
+      1.0
+    ],
+    "take": [
+      0.9846597450413721,
+      0.9960361131531201
+    ],
+    "carry": [
+      0.8984949099102676,
+      0.9323724143933995
+    ],
+    "put-down": [
+      0.8243492304826192,
+      0.8683645106230142
+    ],
+    "return": [
+      0.4286725921595475,
+      0.48960275299091144
+    ]
+  }
+}

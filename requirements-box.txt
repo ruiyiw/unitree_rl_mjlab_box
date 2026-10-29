@@ -1,0 +1,6 @@
+# Isolated mjlab 1.6 runtime, shared with balance/human-push.
+-r requirements-human-push.txt
+PyYAML>=6
+# Only needed for --record in the preserved GPU sequence evaluation.
+imageio[ffmpeg]>=2.37
+Pillow>=11
