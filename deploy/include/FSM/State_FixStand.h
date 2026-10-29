@@ -15,6 +15,16 @@ public:
         ts_ = param::config["FSM"]["FixStand"]["ts"].as<std::vector<float>>();
         qs_ = param::config["FSM"]["FixStand"]["qs"].as<std::vector<std::vector<float>>>();
         assert(ts_.size() == qs_.size());
+        // (not in unitree_rl_mjlab) another policy's buttons wait for the move to finish
+        const int passive = FSMStringMap.right.at("Passive");
+        for (auto& check : registered_checks) {
+            if (check.second != passive) {
+                auto f = check.first;
+                check.first = [this, f]() -> bool {
+                    return (double)unitree::common::GetCurrentTimeMillisecond() * 1e-3 - t0_ >= ts_.back() && f();
+                };
+            }
+        }
     }
 
     void enter()

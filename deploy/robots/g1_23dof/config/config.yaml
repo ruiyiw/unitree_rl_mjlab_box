@@ -1,5 +1,5 @@
 FSM:
-  _: # enabled fsms
+  _:
     Passive:
       id: 1
     FixStand:
@@ -7,68 +7,235 @@ FSM:
     Velocity:
       id: 3
       type: RLBase
-
-    Mimic_Dance1_subject2:
+    GoTo:
+      id: 4
+      type: BoxPolicy
+    Take:
       id: 5
-      type: Mimic
-
+      type: BoxPolicy
+    Carry:
+      id: 6
+      type: BoxPolicy
+    PutDown:
+      id: 7
+      type: BoxPolicy
+    Return:
+      id: 8
+      type: BoxPolicy
+    Sequence:
+      id: 9
+      type: BoxPolicy
   Passive:
-    transitions: 
+    transitions:
       FixStand: LT + up.on_pressed
-    mode: [
-      1,1,1,1,1,1,
-      1,1,1,1,1,1,
-      1,1,1,
-      1,1,1,1,1,1,1,
-      1,1,1,1,1,1,1,
-    ]
-    kd: [
-      3,3,3,3,3,3,
-      3,3,3,3,3,3,
-      3,3,3,
-      3,3,3,3,3,3,3,  
-      3,3,3,3,3,3,3,  
-    ]
+    mode:
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 0
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 0
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 0
+    - 0
+    kd:
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 0
+    - 0
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 0
+    - 0
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 0
+    - 0
   FixStand:
-    transitions: 
-      Passive: LT + B.on_pressed
-      Velocity: RT + A.on_pressed
-    kp: [
-      100., 100., 100., 150., 40., 40.,
-      100., 100., 100., 150., 40., 40.,
-      200,200,200,
-      40,40,40,40,40,40,40,
-      40,40,40,40,40,40,40,
-    ]
-    kd: [
-      2,2,2,4,2,2,
-      2,2,2,4,2,2,
-      5,5,5,
-      10,10,10,10,10,10,10,
-      10,10,10,10,10,10,10,
-    ]
-    ts: [0, 3]
-    qs: [
-      [],
-      [ -0.1, 0,0,0.3,-0.2,0,
-        -0.1, 0,0,0.3,-0.2,0,
-        0,0,0,
-        0.35, 0.18,0,0.87,0,0,0,
-        0.35,-0.18,0,0.87,0,0,0
-      ]
-    ]
-  Velocity:
-    transitions: 
-      Passive: LT + B.on_pressed
-      Mimic_Dance1_subject2: RB + A.on_pressed
-    policy_dir: config/policy/velocity
-
-  Mimic_Dance1_subject2:
     transitions:
       Passive: LT + B.on_pressed
-      Velocity: RT + A.on_pressed
-
-    motion_file: config/policy/mimic/dance1_subject2/params/dance1_subject2.npz
-    policy_dir: config/policy/mimic/dance1_subject2/
-    time_start: 0.0
-    time_end: 500.0
+      Velocity: RB + X.on_pressed
+      GoTo: RT + A.on_pressed
+    kp:
+    - 40.17923863450712
+    - 99.09842777666111
+    - 40.17923863450712
+    - 99.09842777666111
+    - 28.50124619574858
+    - 28.50124619574858
+    - 40.17923863450712
+    - 99.09842777666111
+    - 40.17923863450712
+    - 99.09842777666111
+    - 28.50124619574858
+    - 28.50124619574858
+    - 40.17923863450712
+    - 0.0
+    - 0.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 14.25062309787429
+    - 0.0
+    - 0.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 14.25062309787429
+    - 0.0
+    - 0.0
+    kd:
+    - 2.557889775413375
+    - 6.308801853496639
+    - 2.557889775413375
+    - 6.308801853496639
+    - 1.814445686584846
+    - 1.814445686584846
+    - 2.557889775413375
+    - 6.308801853496639
+    - 2.557889775413375
+    - 6.308801853496639
+    - 1.814445686584846
+    - 1.814445686584846
+    - 2.557889775413375
+    - 0.0
+    - 0.0
+    - 2.0
+    - 2.0
+    - 2.0
+    - 2.0
+    - 0.907222843292423
+    - 0.0
+    - 0.0
+    - 2.0
+    - 2.0
+    - 2.0
+    - 2.0
+    - 0.907222843292423
+    - 0.0
+    - 0.0
+    ts:
+    - 0
+    - 3
+    qs:
+    - []
+    - - -0.2944693863391876
+      - 0.0001406136289006099
+      - -7.11709726601839e-05
+      - 0.6700074672698975
+      - -0.37627100944519043
+      - -0.00015894720854703337
+      - -0.2944738566875458
+      - 0.0001597002410562709
+      - -8.106663153739646e-05
+      - 0.6700171232223511
+      - -0.3762762248516083
+      - -0.00018043239833787084
+      - -1.1327635007774006e-07
+      - 0.0
+      - 0.0
+      - 0.19998741149902344
+      - 0.19999980926513672
+      - -1.2357638468074583e-07
+      - 0.5999976396560669
+      - 1.172988906006367e-08
+      - 0.0
+      - 0.0
+      - 0.19998742640018463
+      - -0.20000003278255463
+      - 6.078156644662158e-08
+      - 0.5999976396560669
+      - -1.1279433387301196e-08
+      - 0.0
+      - 0.0
+  Velocity:
+    transitions:
+      Passive: LT + B.on_pressed
+      GoTo: RB + Y.on_pressed
+      Take: RB + A.on_pressed
+      Sequence: RB + B.on_pressed
+    policy_dir: config/policy/velocity
+    limit_angle: 1.22
+  GoTo:
+    transitions:
+      Passive: LT + B.on_pressed
+      Take: RB + A.on_pressed
+      Velocity: RB + X.on_pressed
+    policy_dir: config/policy/box/v1
+    stage: go-to
+    blend_s: 0.5
+  Take:
+    transitions:
+      Passive: LT + B.on_pressed
+      Carry: RB + A.on_pressed
+    policy_dir: config/policy/box/v1
+    stage: take
+    blend_s: 0.5
+  Carry:
+    transitions:
+      Passive: LT + B.on_pressed
+      PutDown: RB + A.on_pressed
+    policy_dir: config/policy/box/v1
+    stage: carry
+    blend_s: 0.5
+  PutDown:
+    transitions:
+      Passive: LT + B.on_pressed
+      Return: RB + A.on_pressed
+      Velocity: RB + X.on_pressed
+    policy_dir: config/policy/box/v1
+    stage: put-down
+    blend_s: 0.5
+  Return:
+    transitions:
+      Passive: LT + B.on_pressed
+      Velocity: RB + X.on_pressed
+    policy_dir: config/policy/box/v1
+    stage: return
+    blend_s: 0.5
+  Sequence:
+    transitions:
+      Passive: LT + B.on_pressed
+      Velocity: RB + X.on_pressed
+    policy_dir: config/policy/box/v1
+    stage: sequence
+    blend_s: 0.5

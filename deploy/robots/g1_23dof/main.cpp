@@ -49,7 +49,10 @@ int main(int argc, char** argv)
     std::cout << "     G1-23dof Controller \n";
 
     // Fail a malformed box profile before waiting for or commanding a robot.
-    if (param::config["FSM"]["_"]["BoxPolicy"]) {
+    bool box_profile=false;
+    for (const auto& state:param::config["FSM"]["_"])
+        if (state.second["type"] && state.second["type"].as<std::string>()=="BoxPolicy") box_profile=true;
+    if (box_profile) {
         try { box_policy::preflight(param::config,param::proj_dir); }
         catch (const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
     }
@@ -69,9 +72,12 @@ int main(int argc, char** argv)
     auto fsm = std::make_unique<CtrlFSM>(param::config["FSM"]);
     fsm->start();
 
-    std::cout << "Press [L2 + Up] to enter FixStand mode.\n";
-    std::cout << "And then press [R2 + A] to start controlling the robot.\n";
-    std::cout << "Press [L2 + B] to return to Passive mode.\n";
+    // The profile's buttons (LT, RT, LB, RB are the remote's L2, R2, L1, R1).
+    for (const auto& state:param::config["FSM"]["_"]) {
+        const auto name=state.first.as<std::string>();
+        for (const auto& t:param::config["FSM"][name]["transitions"])
+            std::cout << "  " << name << " -> " << t.first.as<std::string>() << ": [" << t.second.as<std::string>() << "]\n";
+    }
 
     while (true)
     {

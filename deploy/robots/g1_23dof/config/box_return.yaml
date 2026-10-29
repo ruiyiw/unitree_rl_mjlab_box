@@ -4,6 +4,9 @@ FSM:
       id: 1
     FixStand:
       id: 2
+    Velocity:
+      id: 3
+      type: RLBase
     BoxPolicy:
       id: 7
       type: BoxPolicy
@@ -74,6 +77,7 @@ FSM:
     transitions:
       Passive: LT + B.on_pressed
       BoxPolicy: RT + A.on_pressed
+      Velocity: RB + X.on_pressed
     kp:
     - 40.17923863450712
     - 99.09842777666111
@@ -168,8 +172,16 @@ FSM:
       - -1.1279433387301196e-08
       - 0.0
       - 0.0
+  Velocity:
+    transitions:
+      Passive: LT + B.on_pressed
+      BoxPolicy: RT + A.on_pressed
+    policy_dir: config/policy/velocity
+    limit_angle: 1.22
   BoxPolicy:
     transitions:
       Passive: LT + B.on_pressed
+      Velocity: RB + X.on_pressed
     policy_dir: config/policy/box/v1
     stage: return
+    blend_s: 0.5

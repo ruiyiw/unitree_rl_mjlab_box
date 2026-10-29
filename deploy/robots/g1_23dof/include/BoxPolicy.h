@@ -131,6 +131,10 @@ public:
         stage_=selected_==-1?0:selected_; clock_=0; elapsed_=0; stood_=0;
         fresh_=false; first_=true; done_=false; previous_.fill(0);
     }
+    // A stage entered straight from the previous one's settled endpoint keeps
+    // that actor's last residual, as the continuous sequence's handoff does.
+    void reset(const Action& previous) { reset(); previous_=previous; }
+    const Action& previous() const { return previous_; }
     Step step(const Sensors& sensors) {
         auto obs=observation(sensors,previous_);
         // Update the command using the NEW sensors after the previous action.

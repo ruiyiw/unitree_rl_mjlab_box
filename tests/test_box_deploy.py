@@ -29,9 +29,13 @@ def test_packaged_selection_and_profiles(payload):
     ids=np.asarray(MOTOR_IDS); gaps=sorted(set(range(29))-set(MOTOR_IDS))
     for stage in (*ORDER,'sequence'):
         cfg=yaml.safe_load((ROOT/f'deploy/robots/g1_23dof/config/box_{stage}.yaml').read_text())['FSM']
-        assert list(cfg['_'])==['Passive','FixStand','BoxPolicy']
+        assert list(cfg['_'])==['Passive','FixStand','Velocity','BoxPolicy']
         assert cfg['BoxPolicy']['stage']==stage
         assert cfg['FixStand']['transitions']['BoxPolicy']=='RT + A.on_pressed'
+        assert cfg['FixStand']['transitions']['Velocity']=='RB + X.on_pressed'
+        assert cfg['Velocity']['transitions']['BoxPolicy']=='RT + A.on_pressed'
+        # Velocity never follows a stage that ends holding the box.
+        assert ('Velocity' in cfg['BoxPolicy']['transitions'])==(stage in ('go-to','put-down','return','sequence'))
         for key in ('kp','kd'):
             np.testing.assert_allclose(np.asarray(cfg['FixStand'][key])[ids],manifest['interface'][key])
             assert not np.asarray(cfg['FixStand'][key])[gaps].any()
@@ -105,17 +109,29 @@ def controller_binary():
     return binary
 
 
-@pytest.mark.parametrize('stage',(*ORDER,'sequence'))
+def test_combined_profile():
+    cfg=yaml.safe_load((ROOT/'deploy/robots/g1_23dof/config/config.yaml').read_text())['FSM']
+    boxes={name:cfg[name]['stage'] for name,state in cfg['_'].items() if state.get('type')=='BoxPolicy'}
+    assert set(boxes.values())=={*ORDER,'sequence'}
+    assert cfg['Velocity']['transitions']=={'Passive':'LT + B.on_pressed','GoTo':'RB + Y.on_pressed',
+                                            'Take':'RB + A.on_pressed','Sequence':'RB + B.on_pressed'}
+    for name in boxes:assert cfg[name]['transitions']['Passive']=='LT + B.on_pressed'
+    # Each stage's button leads to the next stage, in order.
+    chain=('GoTo','Take','Carry','PutDown','Return')
+    for a,b in zip(chain,chain[1:]):assert b in cfg[a]['transitions']
+
+
+@pytest.mark.parametrize('stage',(*ORDER,'sequence','combined'))
 def test_real_executable_preflight(controller_binary,stage):
     import subprocess
-    cfg=ROOT/f'deploy/robots/g1_23dof/config/box_{stage}.yaml'
+    cfg=ROOT/('deploy/robots/g1_23dof/config/'+('config.yaml' if stage=='combined' else f'box_{stage}.yaml'))
     result=subprocess.run([str(controller_binary),'--check-box-config',str(cfg)],
                           capture_output=True,text=True,timeout=30)
     assert result.returncode==0,result.stderr
     assert 'no DDS connection or motor commands' in result.stdout
 
 
-@pytest.mark.parametrize('corruption',('absent_motor','gain','pose','state_order'))
+@pytest.mark.parametrize('corruption',('absent_motor','gain','pose','state_order','velocity_policy','unknown_target'))
 def test_executable_rejects_bad_profile(controller_binary,tmp_path,corruption):
     import subprocess
     cfg=yaml.safe_load((ROOT/'deploy/robots/g1_23dof/config/box_sequence.yaml').read_text())
@@ -123,6 +139,8 @@ def test_executable_rejects_bad_profile(controller_binary,tmp_path,corruption):
     if corruption=='absent_motor':fsm['Passive']['mode'][13]=1
     elif corruption=='gain':fsm['FixStand']['kp'][15]=14.25
     elif corruption=='pose':fsm['FixStand']['qs'][1][0]=0.7
+    elif corruption=='velocity_policy':fsm['Velocity']['policy_dir']='config/policy/box/v1'
+    elif corruption=='unknown_target':fsm['Velocity']['transitions']['GoTo']='RB + Y.on_pressed'
     else:
         states=fsm['_']
         fsm['_']={'BoxPolicy':states['BoxPolicy'],'Passive':states['Passive'],'FixStand':states['FixStand']}
@@ -154,9 +172,9 @@ def test_human_push_hardware_setup_matches():
         assert fsm['Passive']==human['Passive']
         assert fsm['FixStand']['ts']==human['FixStand']['ts']
         assert fsm['FixStand']['transitions']=={
-            ('BoxPolicy' if key=='HumanPushRecovery' else key):value
-            for key,value in human['FixStand']['transitions'].items()}
-        assert fsm['BoxPolicy']['transitions']==human['HumanPushRecovery']['transitions']
+            **{('BoxPolicy' if key=='HumanPushRecovery' else key):value
+               for key,value in human['FixStand']['transitions'].items()},'Velocity':'RB + X.on_pressed'}
+        assert fsm['BoxPolicy']['transitions']['Passive']==human['HumanPushRecovery']['transitions']['Passive']
 
 
 def test_cpp_observations_match_human_push_on_identical_telemetry(library,tmp_path):

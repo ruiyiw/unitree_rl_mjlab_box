@@ -14,6 +14,8 @@ class Algorithms
 {
 public:
     virtual std::vector<float> act(std::unordered_map<std::string, std::vector<float>> obs) = 0;
+    // throws unless the observation's groups have the model's input sizes (a stale export, a term added on one side)
+    virtual void check(const std::unordered_map<std::string, std::vector<float>>& obs) {}
 
     std::vector<float> get_action()
     {
@@ -34,6 +36,10 @@ public:
         // Init Model
         env = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "onnx_model");
         session_options.SetGraphOptimizationLevel(ORT_ENABLE_EXTENDED);
+        // the policies are small MLPs: one thread, no spinning pool to take the 1 kHz loop's CPU
+        session_options.SetIntraOpNumThreads(1);
+        session_options.SetInterOpNumThreads(1);
+        session_options.AddConfigEntry("session.intra_op.allow_spinning", "0");
 
         session = std::make_unique<Ort::Session>(env, model_path.c_str(), session_options);
 
@@ -61,8 +67,20 @@ public:
         action.resize(output_shape[1]);
     }
 
+    void check(const std::unordered_map<std::string, std::vector<float>>& obs) override
+    {
+        for (size_t i = 0; i < input_names.size(); ++i) {
+            auto it = obs.find(input_names[i]);
+            if (it == obs.end() || static_cast<int64_t>(it->second.size()) != input_sizes[i]) {
+                throw std::runtime_error("ONNX input '" + std::string(input_names[i]) + "' takes " + std::to_string(input_sizes[i]) +
+                                         " values; the observation has " + (it == obs.end() ? std::string("none") : std::to_string(it->second.size())));
+            }
+        }
+    }
+
     std::vector<float> act(std::unordered_map<std::string, std::vector<float>> obs)
     {
+        check(obs);
         auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
 
         // make sure all input names are in obs

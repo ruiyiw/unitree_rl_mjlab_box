@@ -85,6 +85,12 @@ public:
             term->process_actions(term_action);
             idx += term->action_dim();
         }
+        _action.clear();                            // the actions as the terms took them (a rate limit's)
+        for(auto & term : _terms)
+        {
+            auto raw = term->raw_actions();
+            _action.insert(_action.end(), raw.begin(), raw.end());
+        }
     }
 
     int total_action_dim()

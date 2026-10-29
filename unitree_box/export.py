@@ -1,6 +1,5 @@
 """Import the selected immutable actors, references and source runtime."""
 import argparse
-import copy
 import hashlib
 import json
 import shutil
@@ -22,6 +21,59 @@ def fnv(path):
     for byte in Path(path).read_bytes():
         value = ((value ^ byte) * 1099511628211) & ((1 << 64) - 1)
     return value
+
+BOX_DIR = 'config/policy/box/v1'
+VELOCITY_DIR = 'config/policy/velocity'
+# Stages that end with nothing in the hands: Velocity may follow them.
+EMPTY_HANDED = ('go-to', 'put-down', 'return', 'sequence')
+# config.yaml: every stage on its own button (as the humanoid repo's config.yaml),
+# name: (id, stage, transitions besides Passive). Velocity is id 3.
+COMBINED = {
+    'GoTo': (4, 'go-to', {'Take': 'RB + A.on_pressed', 'Velocity': 'RB + X.on_pressed'}),
+    'Take': (5, 'take', {'Carry': 'RB + A.on_pressed'}),
+    'Carry': (6, 'carry', {'PutDown': 'RB + A.on_pressed'}),
+    'PutDown': (7, 'put-down', {'Return': 'RB + A.on_pressed', 'Velocity': 'RB + X.on_pressed'}),
+    'Return': (8, 'return', {'Velocity': 'RB + X.on_pressed'}),
+    'Sequence': (9, 'sequence', {'Velocity': 'RB + X.on_pressed'}),
+}
+COMBINED_STAND = {'Velocity': 'RB + X.on_pressed', 'GoTo': 'RT + A.on_pressed'}
+COMBINED_VELOCITY = {'GoTo': 'RB + Y.on_pressed', 'Take': 'RB + A.on_pressed', 'Sequence': 'RB + B.on_pressed'}
+
+
+def profile(starts, interface, boxes, stand, velocity):
+    """The human-push profile's Passive/FixStand with Velocity and the given box states."""
+    import yaml
+    passive = {'Passive': 'LT + B.on_pressed'}
+    cfg = yaml.safe_load((ROOT / 'deploy/robots/g1_23dof/config/human_push.yaml').read_text()); fsm = cfg['FSM']
+    fsm['_'].pop('HumanPushRecovery'); fsm.pop('HumanPushRecovery')
+    fsm['FixStand']['transitions'] = {**passive, **stand}
+    for key in ('kp', 'kd'):
+        values = [0.]*29
+        for i, motor in enumerate(MOTOR_IDS): values[motor] = interface[key][i]
+        fsm['FixStand'][key] = values
+    # FixStand ends on the start of the box state it leads to (go-to's if none).
+    first = next((boxes[n][1] for n in stand if n in boxes), 'go-to')
+    pose = [0.]*29
+    for i, motor in enumerate(MOTOR_IDS): pose[motor] = starts[0 if first == 'sequence' else ORDER.index(first)][i]
+    fsm['FixStand']['qs'] = [[], pose]
+    fsm['_']['Velocity'] = {'id': 3, 'type': 'RLBase'}
+    fsm['Velocity'] = {'transitions': {**passive, **velocity}, 'policy_dir': VELOCITY_DIR, 'limit_angle': 1.22}
+    for name, (state_id, stage, transitions) in boxes.items():
+        fsm['_'][name] = {'id': state_id, 'type': 'BoxPolicy'}
+        fsm[name] = {'transitions': {**passive, **transitions}, 'policy_dir': BOX_DIR, 'stage': stage,
+                     'blend_s': 0.5}
+    return yaml.safe_dump(cfg, sort_keys=False)
+
+
+def write_profiles(starts, interface):
+    config = ROOT / 'deploy/robots/g1_23dof/config'
+    for choice in (*ORDER, 'sequence'):
+        after = {'Velocity': 'RB + X.on_pressed'} if choice in EMPTY_HANDED else {}
+        (config / f'box_{choice}.yaml').write_text(profile(
+            starts, interface, {'BoxPolicy': (7, choice, after)},
+            {'BoxPolicy': 'RT + A.on_pressed', 'Velocity': 'RB + X.on_pressed'},
+            {'BoxPolicy': 'RT + A.on_pressed'}))
+    (config / 'config.yaml').write_text(profile(starts, interface, COMBINED, COMBINED_STAND, COMBINED_VELOCITY))
 
 
 def export(source, output):
@@ -119,21 +171,7 @@ def export(source, output):
         header += f'inline constexpr std::array<std::array<float,23>,5> {name}{{{{\n'
         header += ',\n'.join('{{'+', '.join(f'{v:.10e}f' for v in row)+'}}' for row in values)+'\n}};\n'
     (params / 'PolicyConfig.h').write_text(header+'}\n')
-    base = yaml.safe_load((ROOT / 'deploy/robots/g1_23dof/config/human_push.yaml').read_text())
-    for choice in (*ORDER,'sequence'):
-        cfg=copy.deepcopy(base); fsm=cfg['FSM']
-        fsm['_'].pop('HumanPushRecovery'); fsm.pop('HumanPushRecovery')
-        fsm['_']['BoxPolicy']={'id':7,'type':'BoxPolicy'}
-        fsm['BoxPolicy']={'transitions':{'Passive':'LT + B.on_pressed'},'policy_dir':'config/policy/box/v1','stage':choice}
-        fsm['FixStand']['transitions']={'Passive':'LT + B.on_pressed','BoxPolicy':'RT + A.on_pressed'}
-        for key in ('kp','kd'):
-            values=[0.]*29
-            for i,motor in enumerate(MOTOR_IDS): values[motor]=interface[key][i]
-            fsm['FixStand'][key]=values
-        pose=[0.]*29
-        for i,motor in enumerate(MOTOR_IDS): pose[motor]=starts[0 if choice=='sequence' else ORDER.index(choice)][i]
-        fsm['FixStand']['qs']=[[],pose]
-        (ROOT / f'deploy/robots/g1_23dof/config/box_{choice}.yaml').write_text(yaml.safe_dump(cfg,sort_keys=False))
+    write_profiles(starts, interface)
     manifest['files']={str(p.relative_to(output)):digest(p) for p in output.rglob('*') if p.is_file()}
     (output / 'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(output)
