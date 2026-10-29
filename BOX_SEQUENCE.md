@@ -5,22 +5,33 @@ The selected `policy.pt` bundles five frozen actors and references for
 actor. This coordinated sequence retains the source reference controller and
 sensor-only switching; it is not a separately trained single network.
 
-Build and prerequisites are in [BOX.md](BOX.md). On the same 23-DoF G1:
+## Build and launch
+
+Use the same prerequisites as human-push, listed in [BOX.md](BOX.md#build-once).
+From the repository root:
 
 ```bash
-../humanoid/.venv/bin/python scripts/box.py build
-../humanoid/.venv/bin/python scripts/box.py preflight --stage sequence
-../humanoid/.venv/bin/python scripts/box.py launch --stage sequence --network enp5s0
+cmake -S deploy/robots/g1_23dof -B deploy/robots/g1_23dof/build
+cmake --build deploy/robots/g1_23dof/build -j4
+cd deploy/robots/g1_23dof/build
+./g1_ctrl --config ../config/box_sequence.yaml --network enp5s0
 ```
 
-Preflight does not connect to a robot. The current build is x86-64; an aarch64
-controller computer requires a native rebuild and preflight there. No physical
-G1 deployment has been verified.
+Replace `enp5s0` with your working human-push Ethernet interface. Run one
+controller at a time. No Python wrapper or virtual environment is needed.
+The executable checks the profile automatically at startup.
+For separate stage commands, see [BOX.md](BOX.md#launch-one-policy).
 
-The selected profile is `deploy/robots/g1_23dof/config/box_sequence.yaml`.
-Start Passive → **L2 + Up** → wait for FixStand and correct physical setup →
-**R2 + A**. **L2 + B** returns to Passive. The route starts at the go-to pose;
-there are no commanded base resets or joint-history resets between stages.
+## Activate
+
+Follow the same suspended startup and debug-mode procedure as human-push.
+Start at the go-to pose, facing the source table with the box on it.
+
+1. **L2 + Up**: transition from Passive to FixStand over three seconds.
+2. **R2 + A**: start the sequence once FixStand and the physical setup are ready.
+3. **L2 + B**: return to Passive.
+
+There are no commanded base resets or joint-history resets between stages.
 
 ## Reference clock and handoffs
 
@@ -76,29 +87,8 @@ use the bundled references for exact initialization. The controller has no
 world-position correction input and does not adapt this route to new furniture
 positions or box dimensions.
 
-## CPU playback and preserved GPU evaluation
+## Validation and simulation
 
-CPU playback runs the actual C++ deployment controller against the source scene:
-
-```bash
-../humanoid/.venv/bin/python scripts/box.py play \
-  --stage sequence --seconds 125 --output logs/box_sequence_cpu
-# Add --viewer for interactive playback on a machine with a display.
-```
-
-The original batched mjlab evaluator is also preserved. It uses the original
-PyTorch bundle, continuous physics, sensor-only switches and physical success
-criteria, with plain PD and no floating-base gravity assistance:
-
-```bash
-CUDA_VISIBLE_DEVICES=0 ../humanoid/.venv/bin/python scripts/box.py evaluate \
-  --output logs/box_sequence_gpu --num-envs 1024 --seed 120001
-# For a rendered single rollout: --num-envs 1 --record
-```
-
-This command requires working CUDA. The bundled source results report **45.90%**
-full-sequence completion in the nominal 1,024-trial evaluation and **41.02%** in
-the repeat. Those are historical source results, not new measurements from this
-integration. The CPU runner does not implement all those physical scoring
-criteria. [BOX_VALIDATION.md](BOX_VALIDATION.md) distinguishes current controller
-checks from source evaluation and hardware validation.
+The C++ build and offline checks passed; real-robot box execution remains
+untested here. [BOX_VALIDATION.md](BOX_VALIDATION.md) records the results and
+optional CPU playback and GPU evaluation commands.

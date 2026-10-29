@@ -79,13 +79,11 @@ The full `deploy/robots/g1_23dof/build/g1_ctrl` compiled and linked successfully
 with GNU 15.2.0, CMake 4.2.3, bundled ONNX Runtime 1.22.0 and Unitree SDK2 commit
 `d1abf001220d3e5f59e00a0c4aaa595e00089a4a`. `g1_ctrl --help` passed. All six profiles were loaded and checked by the executable without opening DDS.
 
-A follow-up deployment audit found the initial test executable depended on
-`/tmp/box-build-deps`. That dependency has been removed: prerequisites now reside
-in `deploy/robots/g1_23dof/build/local-deps`, and the documented Python build
-wrapper rebuilds against them. No system packages were installed. `ldd` resolves
-all libraries and the rebuilt executable's runtime search paths contain no
-`/tmp` directories. The dependency cache is local and ignored by Git; a fresh
-checkout requires normal installed prerequisites.
+The test workstation used an ignored dependency cache at
+`deploy/robots/g1_23dof/build/local-deps`. All runtime libraries resolve, with no
+`/tmp` runtime search paths. This cache is not shipped in Git; on the controller
+computer, use the normal installed human-push prerequisites and the direct
+CMake commands in [BOX.md](BOX.md#build-once).
 
 The actual executable now supports `--check-box-config`. All six profiles passed
 its offline checks and inference, including the five-actor sequence. Tests also
@@ -95,8 +93,8 @@ on a real box launch. It checks software configuration only; it never opens DDS
 or issues motor commands in offline mode.
 
 Only x86-64 was compiled and executed here. The included aarch64 ONNX library
-does not constitute an aarch64 controller build. Build natively and run preflight
-and `ldd` on the target computer; Linux/glibc/libstdc++ compatibility also matters.
+does not constitute an aarch64 controller build. Build natively on the target computer. Optional dependency and profile checks
+are listed below; Linux/glibc/libstdc++ compatibility also matters.
 
 ```bash
 ../humanoid/.venv/bin/python -m pytest -q \
@@ -151,3 +149,117 @@ The direct C++ launch procedure, reusing the user's working interface and
 installed dependencies, is now documented in BOX.md. The Python/mjlab environment
 is not required for that hardware launch. This comparison confirms setup
 consistency; the user's successful human-push run is not a measured box trial.
+
+## Optional development tools
+
+These commands are for offline checks and simulation. Hardware deployment uses
+only the CMake and `g1_ctrl` commands in [BOX.md](BOX.md).
+
+From the repository root, these direct C++ diagnostics need no Python:
+
+```bash
+deploy/robots/g1_23dof/build/g1_ctrl --check-box-config deploy/robots/g1_23dof/config/box_sequence.yaml
+ldd deploy/robots/g1_23dof/build/g1_ctrl
+```
+
+The first command checks configuration and inference without opening DDS or
+issuing motor commands. The second lists shared-library dependencies; none
+should say `not found`.
+
+The optional `scripts/box.py` helpers provide these conveniences:
+
+| Helper | Purpose |
+|---|---|
+| `build` | Calls CMake; can use the test workstation's local dependency cache. |
+| `preflight` | Runs the C++ offline check for all six profiles. |
+| `launch --stage <stage> --network <interface>` | Verifies package hashes, selects a profile and executes `g1_ctrl`. |
+
+`build --core-only` builds just the offline inference library. `launch --dry-run`
+prints the command without connecting to a robot. These helpers do not change
+the hardware controller.
+
+### Python environment and checks
+
+Use the separate mjlab 1.6 environment from the balance integration. On this
+machine, `../humanoid/.venv/bin/python` supplies it. A separate installation can
+use `requirements-box.txt`. Do not install the stock mjlab 1.2 `setup.py` into
+that environment. Run these commands from this repository root:
+
+```bash
+../humanoid/.venv/bin/python scripts/box.py verify
+../humanoid/.venv/bin/python scripts/box.py validate --output logs/box_validation_new
+../humanoid/.venv/bin/python -m pytest -q tests/test_box_deploy.py
+```
+
+Validation compiles the actual C++ deployment core with g++, compares all five
+actors with their selected PyTorch weights, and compares every clock/handoff
+against the archived Python sequence controller. No robot connection is made.
+Measured results and limitations are recorded above.
+
+
+### Standalone CPU playback
+
+CPU MuJoCo playback uses the C++ deployment controller and the packaged source
+scene. It sets the robot and box to the selected stage's reference start once,
+then runs continuous physics. Add `--viewer` on a machine with a display:
+
+```bash
+../humanoid/.venv/bin/python scripts/box.py play --stage go-to --output logs/box_goto
+../humanoid/.venv/bin/python scripts/box.py play --stage take --output logs/box_take
+../humanoid/.venv/bin/python scripts/box.py play --stage carry --output logs/box_carry
+../humanoid/.venv/bin/python scripts/box.py play --stage put-down --output logs/box_putdown
+../humanoid/.venv/bin/python scripts/box.py play --stage return --output logs/box_return
+```
+
+Output directories must be new. `--seconds 2` selects a short smoke test. Results
+include `simulation.json` and `trajectory.npz`. This runner reports controller
+completion, not the source evaluator's physical box-success criteria.
+
+### Full-sequence CPU playback and GPU evaluation
+
+Run the following Python commands from the repository root, using the separate
+mjlab environment. They are simulation tools, not hardware-launch requirements.
+
+CPU playback runs the actual C++ deployment controller against the source scene:
+
+```bash
+../humanoid/.venv/bin/python scripts/box.py play \
+  --stage sequence --seconds 125 --output logs/box_sequence_cpu
+# Add --viewer for interactive playback on a machine with a display.
+```
+
+The original batched mjlab evaluator is also preserved. It uses the original
+PyTorch bundle, continuous physics, sensor-only switches and physical success
+criteria, with plain PD and no floating-base gravity assistance:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 ../humanoid/.venv/bin/python scripts/box.py evaluate \
+  --output logs/box_sequence_gpu --num-envs 1024 --seed 120001
+# For a rendered single rollout: --num-envs 1 --record
+```
+
+This command requires working CUDA. The bundled source results report **45.90%**
+full-sequence completion in the nominal 1,024-trial evaluation and **41.02%** in
+the repeat. Those are historical source results, not new measurements from this
+integration. The CPU runner does not implement all those physical scoring
+criteria. The results above distinguish current controller checks from source evaluation
+and hardware validation.
+
+## Reproduce the import
+
+The package is self-contained; execution does not need `humanoid-full`. The
+archived reference runtime and robot assets live under `unitree_box/reference`,
+with original source hashes in `unitree_box/source_manifest.json` and the robot
+asset license preserved. To regenerate from the selected source into a new
+policy directory:
+
+```bash
+../humanoid/.venv/bin/python -m unitree_box.export \
+  --source-root ../humanoid-full --output /tmp/box_reexport
+```
+
+This also refreshes the local source snapshot and six launch profiles. The
+importer pins the selected sequence hash, checks checkpoint/actor-state identity,
+source controller/configuration and reference hashes, audits all five model
+contracts, and generates C++ constants. New policies require a deliberate new
+import and rebuild; swapping a shape-compatible ONNX file is rejected.
