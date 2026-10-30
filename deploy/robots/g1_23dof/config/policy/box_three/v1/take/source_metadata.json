@@ -1,0 +1,193 @@
+{
+  "observation_contract": {
+    "id": "g1-table-history-v1",
+    "actor_dim": 376,
+    "history": 4,
+    "current_terms": {
+      "ref_joints": 46,
+      "ref_clock": 2,
+      "plan_pelvis": 12,
+      "plan_gravity": 3,
+      "plan_grip": 3,
+      "arm_pd_error": 10
+    },
+    "history_terms": {
+      "gyro": 3,
+      "gravity": 3,
+      "joint_pos": 23,
+      "joint_vel": 23,
+      "actions": 23
+    },
+    "order": "current terms, then frame-major history oldest first",
+    "position_feedback": false,
+    "critic_only": [
+      "base position",
+      "base velocity",
+      "box state",
+      "contacts"
+    ],
+    "history_initialization": "repeat first reading, zero action history",
+    "action": "unchanged original PlanJointAction; last residual preserved by controller",
+    "plan_grip_definition": "reference holding flag; reference lift clearance / 0.04 clipped to [0,1]; planned 18 N per hand when holding, divided by 18"
+  },
+  "critic_contract": {
+    "id": "legacy-plus-table-state-v1",
+    "width": 297,
+    "actor_prefix_width": 0,
+    "legacy_width": 224
+  },
+  "domain_randomization": {
+    "version": "g1-table-user-dr-v1",
+    "sampling": "episode reset; independent environments; uniform unless specified",
+    "foot_friction": [
+      0.5,
+      1.6
+    ],
+    "palm_friction": [
+      0.4,
+      1.0
+    ],
+    "palm_torsion_m": [
+      0.01,
+      0.025
+    ],
+    "table_friction": [
+      0.25,
+      0.6
+    ],
+    "box_friction": 0.25,
+    "link_mass_inertia_scale": [
+      0.9,
+      1.1
+    ],
+    "torso_extra_mass_kg": [
+      -0.5,
+      2.5
+    ],
+    "torso_com_m": [
+      0.03,
+      0.015,
+      0.02
+    ],
+    "kp_scale": [
+      0.85,
+      1.15
+    ],
+    "kd_scale": [
+      0.85,
+      1.15
+    ],
+    "torque_limit_scale": [
+      0.9,
+      1.0
+    ],
+    "arm_gravity_feedforward_scale": [
+      0.85,
+      1.05
+    ],
+    "arm_friction_nm": [
+      0.0,
+      0.3
+    ],
+    "leg_waist_friction_nm": [
+      0.0,
+      0.6
+    ],
+    "joint_damping_nms": [
+      0.0,
+      0.1
+    ],
+    "motor_delay": {
+      "steps": [
+        0,
+        3
+      ],
+      "step_ms": 5,
+      "update_steps": 4,
+      "hold_probability": 0.9
+    },
+    "box_mass_kg": [
+      0.35,
+      0.65
+    ],
+    "box_com_m": [
+      0.03,
+      0.03,
+      0.03
+    ],
+    "box_full_width_delta_m": [
+      -0.005,
+      0.005
+    ],
+    "box_placement_take": {
+      "xy_m": 0.015,
+      "yaw_deg": 2.0
+    },
+    "table_placement": {
+      "xy_m": 0.01,
+      "yaw_deg": 1.0
+    },
+    "sensor_noise": {
+      "joint_pos_rad": 0.01,
+      "joint_vel_rad_s": 1.5,
+      "gyro_rad_s": 0.2,
+      "gravity": 0.05,
+      "heading_std_deg": 0.2,
+      "arm_pd_error_rad": 0.01
+    },
+    "sensor_bias": {
+      "joint_pos_rad": 0.01,
+      "ankle_pos_rad": 0.02,
+      "gyro_rad_s": 0.02,
+      "gravity": 0.025,
+      "heading_drift_deg_s": 0.2,
+      "handoff_heading_deg": 1.0
+    },
+    "observation_delay": {
+      "steps": [
+        0,
+        1
+      ],
+      "step_ms": 20,
+      "hold_probability": 0.95
+    },
+    "push": {
+      "interval_s": [
+        1.0,
+        3.0
+      ],
+      "xy_velocity_m_s": "max(0.4 * level, 0.15)",
+      "level_initial": 0.0,
+      "level_step": 0.05,
+      "success_up": 0.7,
+      "success_down": 0.3
+    },
+    "start_mixture": {
+      "begin": 0.2,
+      "handoff": 0.3,
+      "carry_putdown_handoff": 0.6
+    },
+    "physics": {
+      "timestep": 0.005,
+      "decimation": 4,
+      "cone": "elliptic",
+      "impratio": 10.0,
+      "solver": "newton",
+      "iterations": 30,
+      "ls_iterations": 30
+    }
+  },
+  "recipe": {
+    "lr": 5e-05,
+    "std": 0.05,
+    "iterations": 1600,
+    "freeze_normalizer": true,
+    "source": "autoresearch-physical-none-r1-preload_fast-20261029",
+    "ppo": "yours",
+    "critic": "state"
+  },
+  "initial_checkpoint": "/home/rwang/humanoid-full/results/autoresearch-20261029/physical-none-prefix-precision-take/model_2.pt",
+  "env_state": {
+    "common_step_counter": 96000
+  }
+}

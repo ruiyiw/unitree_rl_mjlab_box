@@ -1,0 +1,57 @@
+{
+  "hardware_tested": false,
+  "stages": {
+    "go-to": {
+      "samples": 456,
+      "observation_max_error": 5.960464477539063e-08,
+      "actor_max_error": 1.1920928955078125e-06,
+      "target_max_error_rad": 5.13626536413625e-07,
+      "gravity_max_error_nm": 1.3972336914136463e-06,
+      "clock_and_endpoint_passed": true,
+      "initial_reference_clocks": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "history_reset_passed": true
+    },
+    "take": {
+      "samples": 861,
+      "observation_max_error": 5.960464477539063e-08,
+      "actor_max_error": 1.1920928955078125e-06,
+      "target_max_error_rad": 6.005663278907392e-07,
+      "gravity_max_error_nm": 4.086665760016928e-06,
+      "clock_and_endpoint_passed": true,
+      "initial_reference_clocks": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3
+      ],
+      "history_reset_passed": true
+    },
+    "put-down": {
+      "samples": 1066,
+      "observation_max_error": 5.960464477539063e-08,
+      "actor_max_error": 1.9073486328125e-06,
+      "target_max_error_rad": 8.555129911158588e-07,
+      "gravity_max_error_nm": 4.319673044150818e-06,
+      "clock_and_endpoint_passed": true,
+      "initial_reference_clocks": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        3
+      ],
+      "history_reset_passed": true
+    }
+  },
+  "method": "Saved training functions, frozen PyTorch actors, native MuJoCo gravity"
+}

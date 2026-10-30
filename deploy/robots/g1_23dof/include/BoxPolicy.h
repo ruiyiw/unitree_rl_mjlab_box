@@ -61,10 +61,11 @@ inline bool settled(const Observation& obs, int stage) {
     return true;
 }
 
-class Actor {
+template<size_t Width>
+class ModelActor {
 public:
-    Actor(const std::string& path, int stage):runtime_(ORT_LOGGING_LEVEL_WARNING,"g1_box") {
-        const auto bytes=verified_file(path,kActorHashes.at(stage));
+    ModelActor(const std::string& path, uint64_t expected_hash):runtime_(ORT_LOGGING_LEVEL_WARNING,"g1_box") {
+        const auto bytes=verified_file(path,expected_hash);
         options_.SetIntraOpNumThreads(1); options_.SetInterOpNumThreads(1);
         options_.SetGraphOptimizationLevel(ORT_ENABLE_EXTENDED);
         session_=std::make_unique<Ort::Session>(runtime_,bytes.data(),bytes.size(),options_);
@@ -72,19 +73,19 @@ public:
             throw std::runtime_error("Expected one box actor input/output");
         const auto it=session_->GetInputTypeInfo(0), ot=session_->GetOutputTypeInfo(0);
         const auto in=it.GetTensorTypeAndShapeInfo(), out=ot.GetTensorTypeAndShapeInfo();
-        if (in.GetShape()!=std::vector<int64_t>{1,75} || out.GetShape()!=std::vector<int64_t>{1,23} ||
+        if (in.GetShape()!=std::vector<int64_t>{1,Width} || out.GetShape()!=std::vector<int64_t>{1,23} ||
             in.GetElementType()!=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT || out.GetElementType()!=ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT)
-            throw std::runtime_error("Expected box float32 [1,75] -> [1,23]");
+            throw std::runtime_error("Unexpected box actor dimensions or tensor type");
         Ort::AllocatorWithDefaultOptions alloc;
         if (std::string(session_->GetInputNameAllocated(0,alloc).get())!="observations" ||
             std::string(session_->GetOutputNameAllocated(0,alloc).get())!="actions")
             throw std::runtime_error("Unexpected box tensor names");
     }
-    Action infer(const Observation& obs) {
+    Action infer(const std::array<float,Width>& obs) {
         for (float v:obs) if (!std::isfinite(v)) throw std::runtime_error("Non-finite box observation");
         auto info=Ort::MemoryInfo::CreateCpu(OrtArenaAllocator,OrtMemTypeDefault);
-        const std::array<int64_t,2> shape{1,75};
-        auto input=Ort::Value::CreateTensor<float>(info,const_cast<float*>(obs.data()),75,shape.data(),2);
+        const std::array<int64_t,2> shape{1,Width};
+        auto input=Ort::Value::CreateTensor<float>(info,const_cast<float*>(obs.data()),Width,shape.data(),2);
         const char* ins[]{"observations"}; const char* outs[]{"actions"};
         auto result=session_->Run(Ort::RunOptions{nullptr},ins,&input,1,outs,1);
         const float* data=result[0].GetTensorData<float>();
@@ -99,6 +100,11 @@ private:
     Ort::Env runtime_;
     Ort::SessionOptions options_;
     std::unique_ptr<Ort::Session> session_;
+};
+
+class Actor : public ModelActor<75> {
+public:
+    Actor(const std::string& path,int stage):ModelActor(path,kActorHashes.at(stage)) {}
 };
 
 struct Step {

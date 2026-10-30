@@ -1,0 +1,138 @@
+{
+  "status": "Four policies: shared arms-down navigation, take, carry, put-down including turn toward home.",
+  "source_top_m": 0.9,
+  "destination_top_m": 0.9,
+  "carry_box_center_height_m": 1.1025,
+  "carry_box_forward_offset_m": 0.27,
+  "safe_pickup_stance": [
+    -1.8369701987210297e-17,
+    -0.6125,
+    1.5707963267948966
+  ],
+  "pickup_reach_stance": [
+    -1.8369701987210297e-17,
+    -0.4625,
+    1.5707963267948966
+  ],
+  "start_stance": [
+    -1.8369701987210297e-17,
+    -2.1365,
+    1.5707963267948966
+  ],
+  "carry_end_stance": [
+    1.504186336855973,
+    -0.4625,
+    0.0
+  ],
+  "destination_front": [
+    1.774186336855973,
+    -0.4625,
+    3.141592653589793
+  ],
+  "place_reach_stance": [
+    1.504186336855973,
+    -0.4625,
+    0.0
+  ],
+  "execution_order": [
+    "go-to",
+    "take",
+    "carry",
+    "put-down",
+    "return"
+  ],
+  "return_goal": [
+    -1.8369701987210297e-17,
+    -2.1365,
+    -2.240044552290738
+  ],
+  "route": "Start south of left table facing +y; walk straight to pickup without turning; pick up near the south edge and turn right 90 degrees; carry straight along +x to the west edge of the right table; put down, release, step back 18 cm for clearance, lower hands upright, turn right toward the starting point, and walk diagonally home.",
+  "heading_transitions": {
+    "go-to": "Walk 1.524 m straight along +y to the pickup stop at the left table; no initial turn",
+    "take": "Pick up and turn right 90 deg from +y to +x; no prescribed backstep",
+    "carry": "Walk straight along +x toward the right table",
+    "put-down": "Place, release, step back 18 cm, lower arms upright, then turn right 128.345 deg toward home",
+    "return": "Walk straight 2.1344 m toward initial position with arms down; no turn"
+  },
+  "turn_end_stance": [
+    -1.8369701987210297e-17,
+    -0.4625,
+    0.0
+  ],
+  "return_waypoints": [
+    [
+      1.324186336855973,
+      -0.4625
+    ],
+    [
+      -1.8369701987210297e-17,
+      -2.1365
+    ]
+  ],
+  "return_distance_m": 2.134419231246767,
+  "table_size_m": [
+    0.6,
+    1.125
+  ],
+  "box_dimensions_m": [
+    0.28,
+    0.45,
+    0.325
+  ],
+  "box_mass_kg": 0.5,
+  "table_center_distance_m": 2.1336,
+  "source_front": [
+    -1.8369701987210297e-17,
+    -0.2625,
+    -1.5707963267948966
+  ],
+  "approach_distance_m": 1.524,
+  "carry_distance_m": 1.504186336855973,
+  "initial_walk_distance_m": 1.524,
+  "layout_version": "direct-left-pickup-right-dropoff-v2",
+  "source_table_pose": [
+    0.3,
+    0.3,
+    0.0
+  ],
+  "destination_table_pose": [
+    2.374186336855973,
+    -0.2,
+    0.0
+  ],
+  "start_distance_basis": "pickup_stopping_position",
+  "start_to_source_edge_m": 1.874,
+  "return_turn_degrees": 128.34509876753134,
+  "table_y_offset_m": -0.5,
+  "horizontal_table_gap_m": 1.474186336855973,
+  "table_footprint_xy_m": [
+    0.6,
+    1.125
+  ],
+  "policy_assignment": {
+    "go-to": "navigation",
+    "take": "take",
+    "carry": "carry",
+    "put-down": "put-down",
+    "return": "navigation"
+  },
+  "navigation_start_return": [
+    1.324186336855973,
+    -0.4625,
+    -2.240044552290738
+  ],
+  "put_down_order": [
+    "place",
+    "release",
+    "clearance-step",
+    "lower-arms-upright",
+    "turn-home",
+    "stand"
+  ],
+  "putdown_clearance_m": 0.18,
+  "putdown_clearance_stance": [
+    1.324186336855973,
+    -0.4625,
+    0.0
+  ]
+}

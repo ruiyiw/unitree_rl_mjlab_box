@@ -6,6 +6,8 @@
 #include "State_HumanPushRecovery.h"
 #include "State_BoxPolicy.h"
 #include "BoxPreflight.h"
+#include "State_TableBoxPolicy.h"
+#include "TableBoxPreflight.h"
 
 std::unique_ptr<LowCmd_t> FSMState::lowcmd = nullptr;
 std::shared_ptr<LowState_t> FSMState::lowstate = nullptr;
@@ -35,7 +37,9 @@ int main(int argc, char** argv)
         try {
             param::bin_path=param::get_bin_path();
             param::load_config_file();
-            box_policy::preflight(YAML::LoadFile(argv[2]),param::proj_dir);
+            const auto config=YAML::LoadFile(argv[2]);
+            if (table_box::is_profile(config)) table_box::preflight(config,param::proj_dir);
+            else box_policy::preflight(config,param::proj_dir);
             return 0;
         } catch (const std::exception& e) {
             std::cerr<<e.what()<<"\n";
@@ -52,7 +56,10 @@ int main(int argc, char** argv)
     bool box_profile=false;
     for (const auto& state:param::config["FSM"]["_"])
         if (state.second["type"] && state.second["type"].as<std::string>()=="BoxPolicy") box_profile=true;
-    if (box_profile) {
+    if (table_box::is_profile(param::config)) {
+        try { table_box::preflight(param::config,param::proj_dir); }
+        catch (const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
+    } else if (box_profile) {
         try { box_policy::preflight(param::config,param::proj_dir); }
         catch (const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
     }

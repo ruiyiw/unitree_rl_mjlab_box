@@ -1,0 +1,429 @@
+{
+  "format": "g1-three-table-history-v1",
+  "hardware_validated": false,
+  "observation_contract": {
+    "id": "g1-table-history-v1",
+    "actor_dim": 376,
+    "history": 4,
+    "current_terms": {
+      "ref_joints": 46,
+      "ref_clock": 2,
+      "plan_pelvis": 12,
+      "plan_gravity": 3,
+      "plan_grip": 3,
+      "arm_pd_error": 10
+    },
+    "history_terms": {
+      "gyro": 3,
+      "gravity": 3,
+      "joint_pos": 23,
+      "joint_vel": 23,
+      "actions": 23
+    },
+    "order": "current terms, then frame-major history oldest first",
+    "position_feedback": false,
+    "critic_only": [
+      "base position",
+      "base velocity",
+      "box state",
+      "contacts"
+    ],
+    "history_initialization": "repeat first reading, zero action history",
+    "action": "unchanged original PlanJointAction; last residual preserved by controller",
+    "plan_grip_definition": "reference holding flag; reference lift clearance / 0.04 clipped to [0,1]; planned 18 N per hand when holding, divided by 18"
+  },
+  "actuation": "actuator_only",
+  "source_root": "/home/rwang/humanoid-full/.claude/worktrees/switch-matt-branch-290a36",
+  "actors": {
+    "go-to": {
+      "checkpoint_source": "/home/rwang/humanoid-full/results/critic297-20261030/runs/go-to-scratch-matt/model_3999.pt",
+      "checkpoint_sha256": "363da7e10cafe132e8e2a118738c57ba28d770402bfcf644aa1a5dc52a768987",
+      "reference_source": "/home/rwang/humanoid-full/.claude/worktrees/switch-matt-branch-290a36/policies/five_runs/go-to/banks/plan.pt",
+      "reference_sha256": "89f9b98d0d1e142c3163f7afe67710c2f88468a271b20c420ab7e60a46cf341e",
+      "frames": 391
+    },
+    "take": {
+      "checkpoint_source": "/home/rwang/humanoid-full/results/critic297-20261030/runs/take-warm-yours/model_3999.pt",
+      "checkpoint_sha256": "b9289259632bfc631c01a4c55238eeef7a4b007b6d5993067468adb844f8d989",
+      "reference_source": "/home/rwang/humanoid-full/.claude/worktrees/switch-matt-branch-290a36/policies/five_runs/take/banks/plan.pt",
+      "reference_sha256": "cb21ab5104b7d5027fd5032de451025819ec3f4291cd2e78530c823c0aa9cb76",
+      "frames": 796
+    },
+    "put-down": {
+      "checkpoint_source": "/home/rwang/humanoid-full/results/critic297-20261030/runs/put-down-scratch-matt/model_1600.pt",
+      "checkpoint_sha256": "51acfeb52e5fe730f44e7e55185d62e4ddb0cfaa64521959d34ce50c194388ad",
+      "reference_source": "/home/rwang/humanoid-full/.claude/worktrees/switch-matt-branch-290a36/policies/five_runs/put-down/banks/plan.pt",
+      "reference_sha256": "a27fc1682a6246b4a68cf1f6b0e4a72f8cad11f98f5759fd2e1dadd88f5ae749",
+      "frames": 1001
+    }
+  },
+  "files": {
+    "take/reference.bin": "f8ae2719b9299f7e6c15ca8a62f55800748f35652af52827033f84e29dc0cc45",
+    "take/checkpoint.pt": "b9289259632bfc631c01a4c55238eeef7a4b007b6d5993067468adb844f8d989",
+    "take/source_metadata.json": "1c533881b2e557507e591c94f7cf4e61703aaec9557d63eaaac97458f4121131",
+    "take/policy.onnx": "f9674afe1a899360626593d76a5fb8e8366eed0746179aa5dccf3ce172a101f5",
+    "take/reference.npz": "ed248ccd82a0ab32b045833c7b0671a73abc472b932070aa2bd7f73ed9f97809",
+    "put-down/reference.bin": "949ca97096bbbf427b71a5c5ef97a8aa12f48da0a9d35b22ad8f2d0a78939f90",
+    "put-down/checkpoint.pt": "51acfeb52e5fe730f44e7e55185d62e4ddb0cfaa64521959d34ce50c194388ad",
+    "put-down/source_metadata.json": "a011c4f65963ab73a3be914717a3aa813a8d1fdfb8109c54f522041078ce66d6",
+    "put-down/policy.onnx": "c6217cb181f05c7d709baf8f7dca0c9fcf193f77525a973fe7553e8546b643e7",
+    "put-down/reference.npz": "178628149f40744572fdbe1416880a3ff8fbe776005e153a150bc4c23a00a6e3",
+    "go-to/reference.bin": "ed6857e318221f4d546f5fa43cc965f6cefd2c4fb721b6d4303232da32abf35f",
+    "go-to/checkpoint.pt": "363da7e10cafe132e8e2a118738c57ba28d770402bfcf644aa1a5dc52a768987",
+    "go-to/source_metadata.json": "b4a888c0dde687674dc032f21c03fba1400df32e7b0bed68957e2cf5f4c0a051",
+    "go-to/policy.onnx": "5ce4ac8cb48f689a42a95bb2458c8298e120ca5e814317740c3e2d0ab448a279",
+    "go-to/reference.npz": "c00e083a1554bb3c4892e9cfc0d30f4c8fccaaba5fc1226c967fd370dd424d82",
+    "params/contract.json": "4de2695800ef727a82e54581a4afe2fc1c4ffc1ac3050d8ae2d6a40680c087f8",
+    "params/layout.json": "c00eb6e503388c22bdbc45a41279b802bb3654c59377c85c03d046d6000b1552",
+    "params/gravity.xml": "c3dfbd047cb759e0fb0cd0ce311755853926d1359eeb7e4585ec360579e88a40",
+    "params/gravity.json": "49dc6f7e9996dfce428d62192914ed9e94aa1357ae892204f31aa14e75637a4a",
+    "params/PolicyConfig.h": "edfb03e6f61e63e57368558441e9390c9eff35459188b27e81d878810c1cd6bf"
+  },
+  "interface": {
+    "actor_columns": [
+      "base_ang_vel/0",
+      "base_ang_vel/1",
+      "base_ang_vel/2",
+      "projected_gravity/0",
+      "projected_gravity/1",
+      "projected_gravity/2",
+      "joint_pos/left_hip_pitch_joint",
+      "joint_pos/left_hip_roll_joint",
+      "joint_pos/left_hip_yaw_joint",
+      "joint_pos/left_knee_joint",
+      "joint_pos/left_ankle_pitch_joint",
+      "joint_pos/left_ankle_roll_joint",
+      "joint_pos/right_hip_pitch_joint",
+      "joint_pos/right_hip_roll_joint",
+      "joint_pos/right_hip_yaw_joint",
+      "joint_pos/right_knee_joint",
+      "joint_pos/right_ankle_pitch_joint",
+      "joint_pos/right_ankle_roll_joint",
+      "joint_pos/waist_yaw_joint",
+      "joint_pos/left_shoulder_pitch_joint",
+      "joint_pos/left_shoulder_roll_joint",
+      "joint_pos/left_shoulder_yaw_joint",
+      "joint_pos/left_elbow_joint",
+      "joint_pos/left_wrist_roll_joint",
+      "joint_pos/right_shoulder_pitch_joint",
+      "joint_pos/right_shoulder_roll_joint",
+      "joint_pos/right_shoulder_yaw_joint",
+      "joint_pos/right_elbow_joint",
+      "joint_pos/right_wrist_roll_joint",
+      "joint_vel/left_hip_pitch_joint",
+      "joint_vel/left_hip_roll_joint",
+      "joint_vel/left_hip_yaw_joint",
+      "joint_vel/left_knee_joint",
+      "joint_vel/left_ankle_pitch_joint",
+      "joint_vel/left_ankle_roll_joint",
+      "joint_vel/right_hip_pitch_joint",
+      "joint_vel/right_hip_roll_joint",
+      "joint_vel/right_hip_yaw_joint",
+      "joint_vel/right_knee_joint",
+      "joint_vel/right_ankle_pitch_joint",
+      "joint_vel/right_ankle_roll_joint",
+      "joint_vel/waist_yaw_joint",
+      "joint_vel/left_shoulder_pitch_joint",
+      "joint_vel/left_shoulder_roll_joint",
+      "joint_vel/left_shoulder_yaw_joint",
+      "joint_vel/left_elbow_joint",
+      "joint_vel/left_wrist_roll_joint",
+      "joint_vel/right_shoulder_pitch_joint",
+      "joint_vel/right_shoulder_roll_joint",
+      "joint_vel/right_shoulder_yaw_joint",
+      "joint_vel/right_elbow_joint",
+      "joint_vel/right_wrist_roll_joint",
+      "actions/left_hip_pitch_joint",
+      "actions/left_hip_roll_joint",
+      "actions/left_hip_yaw_joint",
+      "actions/left_knee_joint",
+      "actions/left_ankle_pitch_joint",
+      "actions/left_ankle_roll_joint",
+      "actions/right_hip_pitch_joint",
+      "actions/right_hip_roll_joint",
+      "actions/right_hip_yaw_joint",
+      "actions/right_knee_joint",
+      "actions/right_ankle_pitch_joint",
+      "actions/right_ankle_roll_joint",
+      "actions/waist_yaw_joint",
+      "actions/left_shoulder_pitch_joint",
+      "actions/left_shoulder_roll_joint",
+      "actions/left_shoulder_yaw_joint",
+      "actions/left_elbow_joint",
+      "actions/left_wrist_roll_joint",
+      "actions/right_shoulder_pitch_joint",
+      "actions/right_shoulder_roll_joint",
+      "actions/right_shoulder_yaw_joint",
+      "actions/right_elbow_joint",
+      "actions/right_wrist_roll_joint"
+    ],
+    "joint_order": [
+      "left_hip_pitch_joint",
+      "left_hip_roll_joint",
+      "left_hip_yaw_joint",
+      "left_knee_joint",
+      "left_ankle_pitch_joint",
+      "left_ankle_roll_joint",
+      "right_hip_pitch_joint",
+      "right_hip_roll_joint",
+      "right_hip_yaw_joint",
+      "right_knee_joint",
+      "right_ankle_pitch_joint",
+      "right_ankle_roll_joint",
+      "waist_yaw_joint",
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint"
+    ],
+    "action_order": [
+      "left_hip_pitch_joint",
+      "left_hip_roll_joint",
+      "left_hip_yaw_joint",
+      "left_knee_joint",
+      "left_ankle_pitch_joint",
+      "left_ankle_roll_joint",
+      "right_hip_pitch_joint",
+      "right_hip_roll_joint",
+      "right_hip_yaw_joint",
+      "right_knee_joint",
+      "right_ankle_pitch_joint",
+      "right_ankle_roll_joint",
+      "waist_yaw_joint",
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint"
+    ],
+    "action_scale": [
+      0.5475464629911068,
+      0.35066146637882434,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.43857731392336724,
+      0.43857731392336724,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.43857731392336724,
+      0.43857731392336724,
+      0.5475464629911068,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.43857731392336724,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.43857731392336724
+    ],
+    "default_joint_positions": [
+      -0.312,
+      0.0,
+      0.0,
+      0.669,
+      -0.363,
+      0.0,
+      -0.312,
+      0.0,
+      0.0,
+      0.669,
+      -0.363,
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.0,
+      0.6,
+      0.0,
+      0.2,
+      -0.2,
+      0.0,
+      0.6,
+      0.0
+    ],
+    "kp": [
+      40.17923863450712,
+      99.09842777666111,
+      40.17923863450712,
+      99.09842777666111,
+      28.50124619574858,
+      28.50124619574858,
+      40.17923863450712,
+      99.09842777666111,
+      40.17923863450712,
+      99.09842777666111,
+      28.50124619574858,
+      28.50124619574858,
+      40.17923863450712,
+      40.0,
+      40.0,
+      40.0,
+      40.0,
+      14.25062309787429,
+      40.0,
+      40.0,
+      40.0,
+      40.0,
+      14.25062309787429
+    ],
+    "kd": [
+      2.557889775413375,
+      6.308801853496639,
+      2.557889775413375,
+      6.308801853496639,
+      1.814445686584846,
+      1.814445686584846,
+      2.557889775413375,
+      6.308801853496639,
+      2.557889775413375,
+      6.308801853496639,
+      1.814445686584846,
+      1.814445686584846,
+      2.557889775413375,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      0.907222843292423,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      0.907222843292423
+    ],
+    "force_limits": [
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ]
+    ],
+    "physics_dt": 0.005,
+    "decimation": 4,
+    "policy_dt": 0.02,
+    "dimensions": {
+      "nq": 30,
+      "nv": 29,
+      "nu": 23
+    }
+  },
+  "source_files": {
+    "five_handoff.py": "ab848eb942db477768824ede69975f0421da1adb2a941e7a6c324fc57526318f",
+    "table_dr_train.py": "676293b8cf7697d36b9edc4c6028080d4b6d80dea71a69cd36a4da52f45c1049",
+    "table_domain_randomization.py": "b93c8f73ac9406b643a30057bd6cecd22960a9ff3f31149d5c8f89222f52a2e5",
+    "five_actuation.py": "395a74a325055fb771a5294038ebd222f75da55924e64ac64bf175e245158a29",
+    "table_observations.py": "6c0da6561ea1f552f5fa9edb0052e4afe58ee1ac4471477ae07bf0af0040e1da",
+    "five_research.py": "e1bac3a61f53da4c6f068479d726e5fcc45e57d688fc9b5399149f8b49ad18f9",
+    "motion.py": "c349ab27084f73d34c9997c17626171238a5b2c2d62d74739a77a1615c5b96d4",
+    "five_stage.json": "c00eb6e503388c22bdbc45a41279b802bb3654c59377c85c03d046d6000b1552",
+    "scene.py": "9c17d63f9b07677b5c12a5a9b07f8b304b61d1bb9b14f1a0967ae8a5166af488",
+    "task.py": "48ca5dfb1461ae1262d0d4b31013309c7913e9d4209eac7a40cf94efeae07861",
+    "five_putdown_research.py": "b48bebba52b47e2c58227908e2d3b7c00bbb9a7133036920fa4139e71c8459bf",
+    "five_train.py": "de9eff00bf2d17c2790b044baffba4183199077ccfb7e0ca780e304aa4c602eb",
+    "five_task.py": "c7907e6f351a57e7d9325fbb80c20378ca2014e5b909998995a2a05d237249ff",
+    "manager_based_rl_env.py": "e05034969baaa6ca38d7587190eef95d468fd413f182edd2c8d387c2950701f1"
+  }
+}

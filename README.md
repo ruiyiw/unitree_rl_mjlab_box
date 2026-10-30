@@ -254,3 +254,9 @@ packaged with separate C++ launch profiles for the same 23-DoF G1. See
 [BOX.md](BOX.md) for the five policies, build/launch and human-push comparison,
 [BOX_SEQUENCE.md](BOX_SEQUENCE.md) for sequence switching and evaluation, and
 [BOX_VALIDATION.md](BOX_VALIDATION.md) for validation status.
+
+### Three new box policies with velocity control
+
+See [BOX_THREE.md](BOX_THREE.md) for the selected 376-input go-to, take and
+put-down actors, the `box_three.yaml` profile, and manual switching from the
+existing velocity policy on the same 23-DoF G1.
