@@ -23,6 +23,10 @@ Keep the robot project's `config` directory, including `config/policy/box/v1`,
 alongside `build`. **No Python wrapper or virtual environment is needed for
 hardware deployment.**
 
+Any launch below can add `--record ../recordings/box_001` after
+`mkdir -p ../recordings`. Use a new session name each time. See
+[deployment recording](DEPLOYMENT_RECORDING.md) for offline replay.
+
 ## Launch one policy
 
 Run **one** of the following commands from `deploy/robots/g1_23dof/build`.

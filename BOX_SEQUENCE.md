@@ -22,6 +22,10 @@ controller at a time. No Python wrapper or virtual environment is needed.
 The executable checks the profile automatically at startup.
 For separate stage commands, see [BOX.md](BOX.md#launch-one-policy).
 
+To record states and commands, add `--record ../recordings/box_sequence_001`
+after `mkdir -p ../recordings`; choose a new session name each time. See
+[deployment recording](DEPLOYMENT_RECORDING.md) for offline replay.
+
 ## Activate
 
 Follow the same suspended startup and debug-mode procedure as human-push.

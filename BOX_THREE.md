@@ -30,6 +30,11 @@ Replace `enp5s0` with your robot interface. Run one controller at a time. Keep
 `config` alongside `build`. Python and the source training checkout are not
 needed for this launch.
 
+To record the deployment, append `--record ../recordings/box_three_001` after
+creating the parent directory with `mkdir -p ../recordings`. Use a new session
+name each time. See [deployment recording](DEPLOYMENT_RECORDING.md) for captured
+states, commands, shutdown and offline replay.
+
 ## Start with velocity control
 
 Follow the same suspended startup and debug-mode procedure as human-push.

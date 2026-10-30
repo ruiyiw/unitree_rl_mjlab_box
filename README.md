@@ -260,3 +260,7 @@ packaged with separate C++ launch profiles for the same 23-DoF G1. See
 See [BOX_THREE.md](BOX_THREE.md) for the selected 376-input go-to, take and
 put-down actors, the `box_three.yaml` profile, and manual switching from the
 existing velocity policy on the same 23-DoF G1.
+
+Add `--record <new-directory>` to `g1_ctrl` to save measured states, commands
+and FSM transitions. See [DEPLOYMENT_RECORDING.md](DEPLOYMENT_RECORDING.md) for
+recording and offline inspection, export and replay.

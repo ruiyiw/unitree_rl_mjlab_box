@@ -7,6 +7,7 @@
 #include "BaseState.h"
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
+#include <functional>
 
 class CtrlFSM
 {
@@ -49,6 +50,7 @@ public:
     {
         // Start From State_Passive
         currentState = states[0];
+        if (on_transition) on_transition(-1,currentState->getState());
         currentState->enter();
 
         fsm_thread_ = std::make_shared<unitree::common::RecurrentThread>(
@@ -70,10 +72,24 @@ public:
         states.push_back(std::move(state));
     }
     
-    ~CtrlFSM()
+    // Set before start(). The observer must not perform blocking I/O.
+    std::function<void(int,int)> on_transition;
+
+    void stop()
     {
-        states.clear();
+        // SDK Wait() sets the recurrent worker's quit flag and waits for it.
+        // Its destructor alone does not stop the worker. State exit must happen
+        // afterwards (RLBase::exit joins its own inference thread).
+        if (fsm_thread_) fsm_thread_->Wait();
+        fsm_thread_.reset();
+        if (currentState) {
+            currentState->exit();
+            if (on_transition) on_transition(currentState->getState(),-1);
+            currentState.reset();
+        }
     }
+
+    ~CtrlFSM() { stop(); }
 
     std::vector<std::shared_ptr<BaseState>> states;
 private:
@@ -104,6 +120,7 @@ private:
                 {
                     spdlog::info("FSM: Change state from {} to {}", currentState->getStateString(), state->getStateString());
                     currentState->exit();
+                    if (on_transition) on_transition(currentState->getState(),state->getState());
                     currentState = state;
                     currentState->enter();
                     break;

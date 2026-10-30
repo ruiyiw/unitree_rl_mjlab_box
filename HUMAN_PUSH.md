@@ -2,6 +2,10 @@
 
 Task: `Mjlab-Human-Push-Recovery-G1-23DoF`.
 
+The C++ controller supports `--record <new-directory>` to capture measured
+states, commands and FSM transitions. See [deployment recording](DEPLOYMENT_RECORDING.md)
+for the launch flag and offline replay commands.
+
 The selected frozen checkpoint is bundled in
 `deploy/robots/g1_23dof/config/policy/human_push/v1/checkpoints/best_policy.pt`.
 It is a byte-for-byte copy of

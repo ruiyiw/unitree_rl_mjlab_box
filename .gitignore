@@ -2,6 +2,7 @@
 .idea
 outputs
 logs
+recordings/
 wandb
 MUJOCO_LOG.TXT
 deploy/robots/go2/build
