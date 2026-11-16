@@ -1,0 +1,945 @@
+{
+  "hardware_tested": false,
+  "physics": "native CPU MuJoCo, nominal robot, plain PD, the C++ walk controller in the loop; not the batched GPU evaluation",
+  "profile": {
+    "blend_s": 0.5,
+    "hold_s": 1.0
+  },
+  "runs": 50,
+  "completed": 50,
+  "error_m": {
+    "up_to_10_m_max": 0.0565,
+    "at_20_m": [
+      0.1023,
+      0.1054,
+      0.1063,
+      0.107,
+      0.1077,
+      0.1101
+    ]
+  },
+  "results": [
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.2,
+          "planned_m": 0.2,
+          "walked_m": 0.1996,
+          "sideways_m": -0.0357,
+          "error_m": 0.0357,
+          "estimate_minus_truth_m": -0.0018,
+          "heading_change_deg": 0.7704,
+          "settled_s_after_entry": 5.06,
+          "plan_s": 2.9
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.2,
+          "planned_m": 0.2,
+          "walked_m": 0.2056,
+          "sideways_m": -0.0342,
+          "error_m": 0.0347,
+          "estimate_minus_truth_m": 0.0003,
+          "heading_change_deg": 1.9406,
+          "settled_s_after_entry": 5.08,
+          "plan_s": 2.9
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.2,
+          "planned_m": 0.2,
+          "walked_m": 0.2026,
+          "sideways_m": -0.0351,
+          "error_m": 0.0352,
+          "estimate_minus_truth_m": 0.0003,
+          "heading_change_deg": 2.1914,
+          "settled_s_after_entry": 5.08,
+          "plan_s": 2.9
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.3,
+          "planned_m": 0.3,
+          "walked_m": 0.2925,
+          "sideways_m": -0.0187,
+          "error_m": 0.0201,
+          "estimate_minus_truth_m": 0.0014,
+          "heading_change_deg": 0.252,
+          "settled_s_after_entry": 5.56,
+          "plan_s": 3.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.3,
+          "planned_m": 0.3,
+          "walked_m": 0.3023,
+          "sideways_m": -0.0158,
+          "error_m": 0.0159,
+          "estimate_minus_truth_m": 0.001,
+          "heading_change_deg": 0.4162,
+          "settled_s_after_entry": 5.56,
+          "plan_s": 3.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.3,
+          "planned_m": 0.3,
+          "walked_m": 0.2982,
+          "sideways_m": -0.016,
+          "error_m": 0.0161,
+          "estimate_minus_truth_m": 0.0013,
+          "heading_change_deg": 0.7558,
+          "settled_s_after_entry": 5.58,
+          "plan_s": 3.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.5,
+          "planned_m": 0.5,
+          "walked_m": 0.5252,
+          "sideways_m": -0.0359,
+          "error_m": 0.0439,
+          "estimate_minus_truth_m": 0.0035,
+          "heading_change_deg": 2.5866,
+          "settled_s_after_entry": 6.08,
+          "plan_s": 3.9
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.5,
+          "planned_m": 0.5,
+          "walked_m": 0.5246,
+          "sideways_m": -0.0337,
+          "error_m": 0.0417,
+          "estimate_minus_truth_m": 0.0035,
+          "heading_change_deg": 2.3971,
+          "settled_s_after_entry": 6.08,
+          "plan_s": 3.9
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.5,
+          "planned_m": 0.5,
+          "walked_m": 0.5242,
+          "sideways_m": -0.0343,
+          "error_m": 0.042,
+          "estimate_minus_truth_m": 0.0039,
+          "heading_change_deg": 2.7765,
+          "settled_s_after_entry": 6.08,
+          "plan_s": 3.9
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 1.0,
+          "planned_m": 1.0,
+          "walked_m": 1.0466,
+          "sideways_m": -0.0321,
+          "error_m": 0.0565,
+          "estimate_minus_truth_m": 0.0053,
+          "heading_change_deg": 0.8726,
+          "settled_s_after_entry": 7.06,
+          "plan_s": 4.9
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 1.0,
+          "planned_m": 1.0,
+          "walked_m": 1.0335,
+          "sideways_m": -0.0377,
+          "error_m": 0.0504,
+          "estimate_minus_truth_m": 0.0072,
+          "heading_change_deg": 0.4583,
+          "settled_s_after_entry": 7.06,
+          "plan_s": 4.9
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 1.0,
+          "planned_m": 1.0,
+          "walked_m": 1.0391,
+          "sideways_m": -0.0361,
+          "error_m": 0.0532,
+          "estimate_minus_truth_m": 0.0066,
+          "heading_change_deg": 0.6327,
+          "settled_s_after_entry": 7.06,
+          "plan_s": 4.9
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 2.5,
+          "planned_m": 2.5,
+          "walked_m": 2.522,
+          "sideways_m": -0.0179,
+          "error_m": 0.0283,
+          "estimate_minus_truth_m": 0.0167,
+          "heading_change_deg": 0.1272,
+          "settled_s_after_entry": 10.58,
+          "plan_s": 8.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 2.5,
+          "planned_m": 2.5,
+          "walked_m": 2.5237,
+          "sideways_m": -0.0215,
+          "error_m": 0.032,
+          "estimate_minus_truth_m": 0.0162,
+          "heading_change_deg": 0.0553,
+          "settled_s_after_entry": 10.58,
+          "plan_s": 8.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 2.5,
+          "planned_m": 2.5,
+          "walked_m": 2.5215,
+          "sideways_m": -0.0216,
+          "error_m": 0.0305,
+          "estimate_minus_truth_m": 0.0175,
+          "heading_change_deg": 0.0068,
+          "settled_s_after_entry": 10.58,
+          "plan_s": 8.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 5.0,
+          "planned_m": 5.0,
+          "walked_m": 5.0038,
+          "sideways_m": -0.0204,
+          "error_m": 0.0207,
+          "estimate_minus_truth_m": 0.034,
+          "heading_change_deg": 0.399,
+          "settled_s_after_entry": 16.56,
+          "plan_s": 14.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 5.0,
+          "planned_m": 5.0,
+          "walked_m": 5.0017,
+          "sideways_m": -0.0213,
+          "error_m": 0.0214,
+          "estimate_minus_truth_m": 0.0354,
+          "heading_change_deg": 0.2745,
+          "settled_s_after_entry": 16.58,
+          "plan_s": 14.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 5.0,
+          "planned_m": 5.0,
+          "walked_m": 5.0058,
+          "sideways_m": -0.0221,
+          "error_m": 0.0228,
+          "estimate_minus_truth_m": 0.0359,
+          "heading_change_deg": 0.3832,
+          "settled_s_after_entry": 16.58,
+          "plan_s": 14.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 10.0,
+          "planned_m": 10.0,
+          "walked_m": 9.973,
+          "sideways_m": -0.0152,
+          "error_m": 0.031,
+          "estimate_minus_truth_m": 0.0686,
+          "heading_change_deg": 0.7114,
+          "settled_s_after_entry": 28.58,
+          "plan_s": 26.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 10.0,
+          "planned_m": 10.0,
+          "walked_m": 9.9683,
+          "sideways_m": -0.0177,
+          "error_m": 0.0363,
+          "estimate_minus_truth_m": 0.0705,
+          "heading_change_deg": 0.2964,
+          "settled_s_after_entry": 28.58,
+          "plan_s": 26.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 10.0,
+          "planned_m": 10.0,
+          "walked_m": 9.9698,
+          "sideways_m": -0.0172,
+          "error_m": 0.0347,
+          "estimate_minus_truth_m": 0.071,
+          "heading_change_deg": 0.1759,
+          "settled_s_after_entry": 28.58,
+          "plan_s": 26.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 20.0,
+          "planned_m": 20.0,
+          "walked_m": 19.8984,
+          "sideways_m": -0.012,
+          "error_m": 0.1023,
+          "estimate_minus_truth_m": 0.1396,
+          "heading_change_deg": 0.2632,
+          "settled_s_after_entry": 52.58,
+          "plan_s": 50.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 20.0,
+          "planned_m": 20.0,
+          "walked_m": 19.8931,
+          "sideways_m": -0.0137,
+          "error_m": 0.1077,
+          "estimate_minus_truth_m": 0.141,
+          "heading_change_deg": 0.3276,
+          "settled_s_after_entry": 52.58,
+          "plan_s": 50.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 20.0,
+          "planned_m": 20.0,
+          "walked_m": 19.8916,
+          "sideways_m": -0.0193,
+          "error_m": 0.1101,
+          "estimate_minus_truth_m": 0.1438,
+          "heading_change_deg": 0.3609,
+          "settled_s_after_entry": 52.58,
+          "plan_s": 50.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.2,
+          "planned_m": 0.2,
+          "walked_m": 0.1824,
+          "sideways_m": 0.0359,
+          "error_m": 0.04,
+          "estimate_minus_truth_m": 0.0113,
+          "heading_change_deg": -4.3979,
+          "settled_s_after_entry": 5.32,
+          "plan_s": 2.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.2,
+          "planned_m": 0.2,
+          "walked_m": 0.1765,
+          "sideways_m": 0.0402,
+          "error_m": 0.0466,
+          "estimate_minus_truth_m": 0.0046,
+          "heading_change_deg": -3.9605,
+          "settled_s_after_entry": 5.28,
+          "plan_s": 2.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.2,
+          "planned_m": 0.2,
+          "walked_m": 0.1861,
+          "sideways_m": 0.0344,
+          "error_m": 0.0371,
+          "estimate_minus_truth_m": 0.0053,
+          "heading_change_deg": -3.7439,
+          "settled_s_after_entry": 5.28,
+          "plan_s": 2.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.3,
+          "planned_m": 0.3,
+          "walked_m": 0.3246,
+          "sideways_m": 0.0097,
+          "error_m": 0.0264,
+          "estimate_minus_truth_m": 0.0094,
+          "heading_change_deg": -4.117,
+          "settled_s_after_entry": 5.52,
+          "plan_s": 3.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.3,
+          "planned_m": 0.3,
+          "walked_m": 0.321,
+          "sideways_m": 0.0135,
+          "error_m": 0.025,
+          "estimate_minus_truth_m": 0.0058,
+          "heading_change_deg": -3.6013,
+          "settled_s_after_entry": 5.52,
+          "plan_s": 3.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.3,
+          "planned_m": 0.3,
+          "walked_m": 0.3256,
+          "sideways_m": 0.0176,
+          "error_m": 0.031,
+          "estimate_minus_truth_m": 0.0073,
+          "heading_change_deg": -3.834,
+          "settled_s_after_entry": 5.52,
+          "plan_s": 3.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.5,
+          "planned_m": 0.5,
+          "walked_m": 0.5247,
+          "sideways_m": 0.0246,
+          "error_m": 0.0348,
+          "estimate_minus_truth_m": 0.0029,
+          "heading_change_deg": -3.2683,
+          "settled_s_after_entry": 6.02,
+          "plan_s": 3.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.5,
+          "planned_m": 0.5,
+          "walked_m": 0.5214,
+          "sideways_m": 0.0285,
+          "error_m": 0.0357,
+          "estimate_minus_truth_m": 0.0026,
+          "heading_change_deg": -3.3853,
+          "settled_s_after_entry": 6.26,
+          "plan_s": 3.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 0.5,
+          "planned_m": 0.5,
+          "walked_m": 0.5196,
+          "sideways_m": 0.0284,
+          "error_m": 0.0345,
+          "estimate_minus_truth_m": 0.0006,
+          "heading_change_deg": -3.2478,
+          "settled_s_after_entry": 6.26,
+          "plan_s": 3.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 1.0,
+          "planned_m": 1.0,
+          "walked_m": 1.015,
+          "sideways_m": 0.0347,
+          "error_m": 0.0378,
+          "estimate_minus_truth_m": 0.0067,
+          "heading_change_deg": -2.8922,
+          "settled_s_after_entry": 7.02,
+          "plan_s": 4.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 1.0,
+          "planned_m": 1.0,
+          "walked_m": 1.0254,
+          "sideways_m": 0.0298,
+          "error_m": 0.0392,
+          "estimate_minus_truth_m": 0.0011,
+          "heading_change_deg": -2.6876,
+          "settled_s_after_entry": 7.0,
+          "plan_s": 4.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 1.0,
+          "planned_m": 1.0,
+          "walked_m": 1.0329,
+          "sideways_m": 0.0302,
+          "error_m": 0.0447,
+          "estimate_minus_truth_m": 0.004,
+          "heading_change_deg": -3.2309,
+          "settled_s_after_entry": 7.02,
+          "plan_s": 4.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 2.5,
+          "planned_m": 2.5,
+          "walked_m": 2.5122,
+          "sideways_m": 0.0429,
+          "error_m": 0.0446,
+          "estimate_minus_truth_m": 0.0163,
+          "heading_change_deg": -3.0626,
+          "settled_s_after_entry": 10.5,
+          "plan_s": 8.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 2.5,
+          "planned_m": 2.5,
+          "walked_m": 2.5249,
+          "sideways_m": 0.0432,
+          "error_m": 0.0499,
+          "estimate_minus_truth_m": 0.0117,
+          "heading_change_deg": -3.6303,
+          "settled_s_after_entry": 10.52,
+          "plan_s": 8.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 2.5,
+          "planned_m": 2.5,
+          "walked_m": 2.5152,
+          "sideways_m": 0.0501,
+          "error_m": 0.0524,
+          "estimate_minus_truth_m": 0.0208,
+          "heading_change_deg": -3.6194,
+          "settled_s_after_entry": 10.5,
+          "plan_s": 8.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 5.0,
+          "planned_m": 5.0,
+          "walked_m": 5.0064,
+          "sideways_m": 0.0407,
+          "error_m": 0.0412,
+          "estimate_minus_truth_m": 0.0276,
+          "heading_change_deg": -3.3866,
+          "settled_s_after_entry": 16.5,
+          "plan_s": 14.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 5.0,
+          "planned_m": 5.0,
+          "walked_m": 5.0031,
+          "sideways_m": 0.048,
+          "error_m": 0.0481,
+          "estimate_minus_truth_m": 0.0283,
+          "heading_change_deg": -3.525,
+          "settled_s_after_entry": 16.5,
+          "plan_s": 14.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 5.0,
+          "planned_m": 5.0,
+          "walked_m": 4.9967,
+          "sideways_m": 0.0442,
+          "error_m": 0.0443,
+          "estimate_minus_truth_m": 0.0316,
+          "heading_change_deg": -3.07,
+          "settled_s_after_entry": 16.52,
+          "plan_s": 14.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 10.0,
+          "planned_m": 10.0,
+          "walked_m": 9.9713,
+          "sideways_m": 0.0453,
+          "error_m": 0.0536,
+          "estimate_minus_truth_m": 0.0616,
+          "heading_change_deg": -3.606,
+          "settled_s_after_entry": 28.5,
+          "plan_s": 26.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 10.0,
+          "planned_m": 10.0,
+          "walked_m": 9.9739,
+          "sideways_m": 0.0449,
+          "error_m": 0.0519,
+          "estimate_minus_truth_m": 0.0585,
+          "heading_change_deg": -3.3433,
+          "settled_s_after_entry": 28.5,
+          "plan_s": 26.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 10.0,
+          "planned_m": 10.0,
+          "walked_m": 9.9671,
+          "sideways_m": 0.0428,
+          "error_m": 0.054,
+          "estimate_minus_truth_m": 0.0635,
+          "heading_change_deg": -3.0699,
+          "settled_s_after_entry": 28.5,
+          "plan_s": 26.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the starting pose",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 20.0,
+          "planned_m": 20.0,
+          "walked_m": 19.9013,
+          "sideways_m": 0.0371,
+          "error_m": 0.1054,
+          "estimate_minus_truth_m": 0.1271,
+          "heading_change_deg": -3.1773,
+          "settled_s_after_entry": 52.5,
+          "plan_s": 50.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy, standing",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 20.0,
+          "planned_m": 20.0,
+          "walked_m": 19.8996,
+          "sideways_m": 0.0371,
+          "error_m": 0.107,
+          "estimate_minus_truth_m": 0.1259,
+          "heading_change_deg": -2.9887,
+          "settled_s_after_entry": 52.52,
+          "plan_s": 50.4
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy after 4 s of forward 0.5 and turn 0.3 on the sticks",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 20.0,
+          "planned_m": 20.0,
+          "walked_m": 19.9007,
+          "sideways_m": 0.0378,
+          "error_m": 0.1063,
+          "estimate_minus_truth_m": 0.1267,
+          "heading_change_deg": -3.0528,
+          "settled_s_after_entry": 52.52,
+          "plan_s": 50.4
+        }
+      ]
+    },
+    {
+      "policy": "goal-conditioned",
+      "entry": "from the Velocity policy, then walking 1 m again",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 2.0,
+          "planned_m": 2.0,
+          "walked_m": 2.0262,
+          "sideways_m": -0.023,
+          "error_m": 0.0348,
+          "estimate_minus_truth_m": 0.0149,
+          "heading_change_deg": 0.2769,
+          "settled_s_after_entry": 9.58,
+          "plan_s": 7.4
+        },
+        {
+          "requested_m": 1.0,
+          "planned_m": 1.0,
+          "walked_m": 1.0449,
+          "sideways_m": -0.0278,
+          "error_m": 0.0528,
+          "estimate_minus_truth_m": 0.0048,
+          "heading_change_deg": 1.1027,
+          "settled_s_after_entry": 6.08,
+          "plan_s": 4.9
+        }
+      ]
+    },
+    {
+      "policy": "adapter",
+      "entry": "from the Velocity policy, then walking 1 m again",
+      "stop_reason": "completed",
+      "walks": [
+        {
+          "requested_m": 2.0,
+          "planned_m": 2.0,
+          "walked_m": 2.0159,
+          "sideways_m": 0.0413,
+          "error_m": 0.0443,
+          "estimate_minus_truth_m": 0.0111,
+          "heading_change_deg": -3.068,
+          "settled_s_after_entry": 9.5,
+          "plan_s": 7.4
+        },
+        {
+          "requested_m": 1.0,
+          "planned_m": 1.0,
+          "walked_m": 1.0322,
+          "sideways_m": 0.0244,
+          "error_m": 0.0404,
+          "estimate_minus_truth_m": 0.004,
+          "heading_change_deg": -3.656,
+          "settled_s_after_entry": 6.02,
+          "plan_s": 4.9
+        }
+      ]
+    }
+  ]
+}

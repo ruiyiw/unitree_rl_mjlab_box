@@ -1,0 +1,286 @@
+{
+  "run": "adapter20_k",
+  "checkpoint_source": "/home/rwang/factory/parametrization/walk/runs/adapter20_k/selected.pt",
+  "checkpoint_sha256": "c23a445e870265a5cef359e971618f4769dd5b73ae9c38e4d92c1e2a8e447709",
+  "trained_with_estimator": "kalman",
+  "selection": {
+    "iteration": 1200,
+    "stable_arrival": 0.8692,
+    "nominal": 0.9987,
+    "dr": 0.7396,
+    "worst_distance": 0.125,
+    "failed": 0.0097,
+    "final_err_m": 0.0709
+  },
+  "training": {
+    "kind": "adapter",
+    "run": "adapter20_k",
+    "bank": "train20",
+    "iterations": 2000,
+    "envs": 4096,
+    "seed": 1,
+    "base": "walk_runs/base/selected.pt",
+    "adapter_bound": 1.0,
+    "init": null,
+    "resumed_at": null,
+    "randomize": "full",
+    "privileged_actor": false,
+    "init_std": null,
+    "entropy": 0.002,
+    "lr": null,
+    "teacher": null,
+    "guidance": null,
+    "history": 1,
+    "estimator": "kalman",
+    "sole_contacts": false,
+    "actor_terms": [
+      "gyro",
+      "gravity",
+      "joint_pos",
+      "joint_vel",
+      "actions",
+      "ref_joints",
+      "ref_phase",
+      "goal"
+    ],
+    "actor_dim": 109,
+    "observed_actor_dim": 109,
+    "actor_hidden": [
+      64,
+      64
+    ],
+    "trainable_actor_params": 12695,
+    "critic_hidden": [
+      512,
+      256,
+      128
+    ],
+    "control_hz": 50,
+    "physics_hz": 200,
+    "action": "joint target = plan qcmd[clock + 1] + action_scale * action",
+    "domain_randomization": {
+      "foot_friction": [
+        0.4,
+        1.4
+      ],
+      "link_mass_inertia_scale": [
+        0.9,
+        1.1
+      ],
+      "torso_extra_mass_kg": [
+        -0.5,
+        2.5
+      ],
+      "torso_com_m": [
+        0.03,
+        0.015,
+        0.02
+      ],
+      "kp_scale": [
+        0.85,
+        1.15
+      ],
+      "kd_scale": [
+        0.85,
+        1.15
+      ],
+      "torque_limit_scale": [
+        0.9,
+        1.0
+      ],
+      "joint_friction_nm": {
+        "legs_waist": [
+          0.0,
+          0.6
+        ],
+        "arms": [
+          0.0,
+          0.3
+        ]
+      },
+      "joint_damping_nms": [
+        0.0,
+        0.1
+      ],
+      "command_delay_ms": [
+        0,
+        15
+      ],
+      "encoder_bias_rad": 0.01,
+      "sensor_noise": {
+        "gyro_rad_s": 0.2,
+        "gravity": 0.05,
+        "joint_pos_rad": 0.01,
+        "joint_vel_rad_s": 1.5
+      },
+      "sensor_bias": {
+        "gyro_rad_s": 0.02,
+        "gravity": 0.025
+      },
+      "observation_delay_ms": [
+        0,
+        20
+      ],
+      "odometry": {
+        "heading_drift_deg_s": 0.1,
+        "heading_bias_deg": 1.0,
+        "heading_noise_deg": 0.05,
+        "tilt_bias_rad": 0.02,
+        "start_noise_m": 0.02
+      },
+      "push_m_s": {
+        "every_s": [
+          1.0,
+          3.0
+        ],
+        "level0": 0.1,
+        "level1": 0.4
+      },
+      "accelerometer_m_s2": {
+        "noise": 0.3,
+        "bias": 0.1,
+        "used_by": "the Kalman estimator only"
+      }
+    },
+    "started": "2026-11-12 06:08:58",
+    "train_wall_s": 6667.0,
+    "final_level": 0.0,
+    "env_steps": 196608000
+  },
+  "base_run": "base",
+  "base_checkpoint_sha256": "27633f4da67c8c5e7e145c05fb299e987cf0c3ab2a14be6a99890f2072e1332f",
+  "adapter_bound": 1.0,
+  "base_training": {
+    "kind": "base",
+    "run": "base",
+    "bank": "fixed_2.00",
+    "iterations": 2000,
+    "envs": 4096,
+    "seed": 1,
+    "base": null,
+    "adapter_bound": null,
+    "init": null,
+    "resumed_at": null,
+    "randomize": "full",
+    "privileged_actor": false,
+    "init_std": null,
+    "entropy": null,
+    "lr": 0.0003,
+    "teacher": "walk_runs/teacher_base/model_1999.pt",
+    "guidance": {
+      "w0": 0.1,
+      "hold": 200,
+      "end": 1000,
+      "sigma": 0.05,
+      "floor": 0.0
+    },
+    "actor_terms": [
+      "gyro",
+      "gravity",
+      "joint_pos",
+      "joint_vel",
+      "actions",
+      "ref_joints",
+      "ref_phase",
+      "goal"
+    ],
+    "actor_dim": 109,
+    "observed_actor_dim": 109,
+    "actor_hidden": [
+      256,
+      256
+    ],
+    "trainable_actor_params": 99863,
+    "critic_hidden": [
+      512,
+      256,
+      128
+    ],
+    "control_hz": 50,
+    "physics_hz": 200,
+    "action": "joint target = plan qcmd[clock + 1] + action_scale * action",
+    "domain_randomization": {
+      "foot_friction": [
+        0.4,
+        1.4
+      ],
+      "link_mass_inertia_scale": [
+        0.9,
+        1.1
+      ],
+      "torso_extra_mass_kg": [
+        -0.5,
+        2.5
+      ],
+      "torso_com_m": [
+        0.03,
+        0.015,
+        0.02
+      ],
+      "kp_scale": [
+        0.85,
+        1.15
+      ],
+      "kd_scale": [
+        0.85,
+        1.15
+      ],
+      "torque_limit_scale": [
+        0.9,
+        1.0
+      ],
+      "joint_friction_nm": {
+        "legs_waist": [
+          0.0,
+          0.6
+        ],
+        "arms": [
+          0.0,
+          0.3
+        ]
+      },
+      "joint_damping_nms": [
+        0.0,
+        0.1
+      ],
+      "command_delay_ms": [
+        0,
+        15
+      ],
+      "encoder_bias_rad": 0.01,
+      "sensor_noise": {
+        "gyro_rad_s": 0.2,
+        "gravity": 0.05,
+        "joint_pos_rad": 0.01,
+        "joint_vel_rad_s": 1.5
+      },
+      "sensor_bias": {
+        "gyro_rad_s": 0.02,
+        "gravity": 0.025
+      },
+      "observation_delay_ms": [
+        0,
+        20
+      ],
+      "odometry": {
+        "heading_drift_deg_s": 0.1,
+        "heading_bias_deg": 1.0,
+        "heading_noise_deg": 0.05,
+        "tilt_bias_rad": 0.02,
+        "start_noise_m": 0.02
+      },
+      "push_m_s": {
+        "every_s": [
+          1.0,
+          3.0
+        ],
+        "level0": 0.1,
+        "level1": 0.4
+      }
+    },
+    "started": "2026-11-10 15:54:41",
+    "train_wall_s": 3344.7,
+    "final_level": 0.39999999999999997,
+    "env_steps": 196608000
+  }
+}

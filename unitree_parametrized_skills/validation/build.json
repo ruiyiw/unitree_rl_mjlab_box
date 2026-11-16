@@ -1,0 +1,19 @@
+{
+  "architecture": "x86_64",
+  "compiler": "GNU 15.2.0",
+  "cmake": "4.2.3",
+  "unitree_sdk2_commit": "aaf69cb56c9d5ed63d8b284008ec3a8ab999bec1",
+  "binary_sha256": "eb516aa231d213d8f468e34161850e2fe80ada67b575d0201e05d634dd07b489",
+  "full_controller_build": true,
+  "dependency_location": "deploy/robots/g1_23dof/build/local-deps (isolated local cache; no system packages installed)",
+  "cpp_offline_preflight_passed": true,
+  "other_profiles_still_pass_preflight": {
+    "box_three": true,
+    "box_sequence": true,
+    "box_go-to": true,
+    "box_take": true
+  },
+  "dds_transport_tested": "loopback on lo against a simulated robot (loopback.json)",
+  "hardware_tested": false,
+  "aarch64_build_tested": false
+}

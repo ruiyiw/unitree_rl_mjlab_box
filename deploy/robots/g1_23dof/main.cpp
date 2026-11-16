@@ -8,6 +8,8 @@
 #include "BoxPreflight.h"
 #include "State_TableBoxPolicy.h"
 #include "TableBoxPreflight.h"
+#include "State_ParametrizedWalk.h"
+#include "ParametrizedWalkOperator.h"
 #include "DeploymentRecordMessages.h"
 #include <csignal>
 #include <set>
@@ -96,7 +98,8 @@ int main(int argc, char** argv)
             param::bin_path=param::get_bin_path();
             param::load_config_file();
             const auto config=YAML::LoadFile(argv[2]);
-            if (table_box::is_profile(config)) table_box::preflight(config,param::proj_dir);
+            if (parametrized_walk::is_profile(config)) parametrized_walk::preflight(config,param::proj_dir);
+            else if (table_box::is_profile(config)) table_box::preflight(config,param::proj_dir);
             else box_policy::preflight(config,param::proj_dir);
             return 0;
         } catch (const std::exception& e) {
@@ -107,7 +110,8 @@ int main(int argc, char** argv)
     // Load parameters
     param::po::options_description recording_options("Deployment recording");
     recording_options.add_options()
-        ("record",param::po::value<std::string>(),"record measured states, commands and FSM transitions to a NEW directory");
+        ("record",param::po::value<std::string>(),"record measured states, commands and FSM transitions to a NEW directory")
+        ("distance",param::po::value<float>(),"parametrized walk: metres the next walk goes (also changeable while running)");
     auto vm = param::helper(argc, argv,&recording_options);
 
     std::cout << " --- Unitree Robotics --- \n";
@@ -117,7 +121,16 @@ int main(int argc, char** argv)
     bool box_profile=false;
     for (const auto& state:param::config["FSM"]["_"])
         if (state.second["type"] && state.second["type"].as<std::string>()=="BoxPolicy") box_profile=true;
-    if (table_box::is_profile(param::config)) {
+    const bool walk_profile=parametrized_walk::is_profile(param::config);
+    if (walk_profile) {
+        try {
+            parametrized_walk::preflight(param::config,param::proj_dir);
+            const float launch=vm.count("distance")?vm["distance"].as<float>():0.f;
+            parametrized_walk::configure_distance(param::config,param::proj_dir,vm.count("distance")?&launch:nullptr);
+        } catch (const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
+    } else if (vm.count("distance")) {
+        std::cerr<<"--distance needs a parametrized-walk profile\n"; return 1;
+    } else if (table_box::is_profile(param::config)) {
         try { table_box::preflight(param::config,param::proj_dir); }
         catch (const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
     } else if (box_profile) {
@@ -175,6 +188,7 @@ int main(int argc, char** argv)
     // Initialize FSM
     auto fsm = std::make_unique<CtrlFSM>(param::config["FSM"]);
     if (recorder) fsm->on_transition=[recorder](int from,int to) { recorder->transition(from,to); };
+    if (walk_profile) fsm->on_tick=parametrized_walk::distance_buttons(param::config);
     fsm->start();
 
     // The profile's buttons (LT, RT, LB, RB are the remote's L2, R2, L1, R1).
@@ -182,6 +196,13 @@ int main(int argc, char** argv)
         const auto name=state.first.as<std::string>();
         for (const auto& t:param::config["FSM"][name]["transitions"])
             std::cout << "  " << name << " -> " << t.first.as<std::string>() << ": [" << t.second.as<std::string>() << "]\n";
+        if (param::config["FSM"][name]["again"])
+            std::cout << "  " << name << " -> walk again when standing still: [" << param::config["FSM"][name]["again"].as<std::string>() << "]\n";
+    }
+    if (walk_profile) {
+        for (const auto& button:param::config["WalkDistance"]["buttons"])
+            std::cout << "  walk distance " << std::showpos << button.second.as<float>() << std::noshowpos << " m: [" << button.first.as<std::string>() << "]\n";
+        parametrized_walk::read_terminal();
     }
 
     uint64_t reported_drops=0;

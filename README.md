@@ -261,6 +261,13 @@ See [BOX_THREE.md](BOX_THREE.md) for the selected 376-input go-to, take and
 put-down actors, the `box_three.yaml` profile, and manual switching from the
 existing velocity policy on the same 23-DoF G1.
 
+### Walking a commanded distance with velocity control
+
+See [PARAMETRIZED_WALK.md](PARAMETRIZED_WALK.md) for the two 109-input walk(N)
+policies (goal-conditioned and adapter), the `parametrized_walk.yaml` profile,
+how the operator sets the distance at launch, from the terminal or the gamepad
+without rebuilding, and switching from the existing velocity policy.
+
 Add `--record <new-directory>` to `g1_ctrl` to save measured states, commands
 and FSM transitions. See [DEPLOYMENT_RECORDING.md](DEPLOYMENT_RECORDING.md) for
 recording and offline inspection, export and replay.

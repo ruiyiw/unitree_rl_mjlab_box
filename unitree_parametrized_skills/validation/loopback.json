@@ -1,0 +1,80 @@
+{
+  "hardware_tested": false,
+  "dds": "CycloneDDS over lo, domain 0",
+  "failure": null,
+  "events": [
+    {
+      "velocity_standing_height_m": 0.7842974797281911
+    },
+    {
+      "walk": "goal-conditioned from Velocity",
+      "expected_m": 2.4,
+      "announced_m": 2.4,
+      "settled": true,
+      "walked_m": 2.422413474307609,
+      "sideways_m": -0.026685533464515243,
+      "error_m": 0.034849412144591634,
+      "pelvis_height_m": 0.7409266409695444
+    },
+    {
+      "walk": "goal-conditioned again",
+      "expected_m": 1.0,
+      "announced_m": 1.0,
+      "settled": true,
+      "walked_m": 1.0454413688173,
+      "sideways_m": -0.022500525558776935,
+      "error_m": 0.050706919157163036,
+      "pelvis_height_m": 0.739154703229587
+    },
+    {
+      "walk": "adapter from the goal-conditioned policy",
+      "expected_m": 1.0,
+      "announced_m": 1.0,
+      "settled": true,
+      "walked_m": 1.0490160836537883,
+      "sideways_m": -0.012142138025260592,
+      "error_m": 0.05049760363205021,
+      "pelvis_height_m": 0.7601593411928995
+    },
+    {
+      "short_walk_refused": true,
+      "back_in_velocity": true,
+      "standing_height_m": 0.7839920083980974
+    }
+  ],
+  "transitions": [
+    "Change state from Passive to FixStand",
+    "Change state from FixStand to Velocity",
+    "Change state from Velocity to WalkGoal",
+    "Change state from WalkGoal to WalkAdapter",
+    "Change state from WalkAdapter to Velocity",
+    "Change state from Velocity to WalkAdapter",
+    "Change state from WalkAdapter to Velocity",
+    "Change state from Velocity to Passive"
+  ],
+  "distance_messages": [
+    "Walk distance: 2.0 m (profile default). It applies to the next walk.",
+    "Walk distance: 1.5 m (terminal). It applies to the next walk.",
+    "Walk distance: 2.5 m (gamepad). It applies to the next walk.",
+    "Walk distance: 2.4 m (gamepad). It applies to the next walk.",
+    "35 m is outside the planned range (0.1 to 20 m); keeping 2.4 m.",
+    "Not a distance: 'hello'. Type metres, for example 3.5",
+    "Walk distance: 1.0 m (terminal). It applies to the next walk.",
+    "Walk distance: 0.1 m (terminal). It applies to the next walk."
+  ],
+  "walk_messages": [
+    "ParametrizedWalk: goal-conditioned policy, walking 2.4 m (8.4 s plan)",
+    "ParametrizedWalk: plan ended; the robot's own estimate is 2.44 m of 2.4 m. [RB + X] returns to Velocity.",
+    "ParametrizedWalk: standing still; estimate 2.44 m along, -0.02 m to the left (not a measurement). Holding.",
+    "ParametrizedWalk: goal-conditioned policy again, walking 1.0 m (4.9 s plan)",
+    "ParametrizedWalk: plan ended; the robot's own estimate is 1.05 m of 1.0 m. [RB + X] returns to Velocity.",
+    "ParametrizedWalk: standing still; estimate 1.05 m along, -0.02 m to the left (not a measurement). Holding.",
+    "ParametrizedWalk: adapter policy, walking 1.0 m (4.9 s plan)",
+    "ParametrizedWalk: plan ended; the robot's own estimate is 1.04 m of 1.0 m. [RB + X] returns to Velocity.",
+    "ParametrizedWalk: standing still; estimate 1.05 m along, +0.02 m to the left (not a measurement). Holding.",
+    "ParametrizedWalk: 0.1 m refused; the adapter policy's shortest walk is 0.3 m. Back to Velocity."
+  ],
+  "errors": [
+    "[2026-11-16 20:24:16.113] [error] ParametrizedWalk: 0.1 m refused; the adapter policy's shortest walk is 0.3 m. Back to Velocity."
+  ]
+}

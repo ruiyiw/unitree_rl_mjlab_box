@@ -74,6 +74,8 @@ public:
     
     // Set before start(). The observer must not perform blocking I/O.
     std::function<void(int,int)> on_transition;
+    // Set before start(). Called every tick after the state's run(), with fresh joystick state.
+    std::function<void()> on_tick;
 
     void stop()
     {
@@ -100,6 +102,7 @@ private:
         currentState->pre_run();
         currentState->run();
         currentState->post_run();
+        if (on_tick) on_tick();
         
         // Check if need to change state
         int nextStateMode = 0;
