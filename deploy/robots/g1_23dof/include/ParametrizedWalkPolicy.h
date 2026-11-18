@@ -8,15 +8,22 @@
 //
 //   target = plan qcmd[min(clock + 1, last)] + scale * actor(observation)
 //
+// The actor reads the last kHistory readings of the five sensor terms (each term's readings
+// together, oldest first, as the training env stacks them) and the plan and goal terms once.
+//
 // This header has no DDS, YAML or logging dependency, so the offline tests run the same code.
 #include "BoxPolicy.h"
-#include "../config/policy/parametrized_walk/v1/params/PolicyConfig.h"
+#include "../config/policy/parametrized_walk/v2/params/PolicyConfig.h"
 #include <map>
 #include <mutex>
 
 namespace parametrized_walk {
 using Action = std::array<float,23>;
-using Observation = std::array<float,109>;
+using Observation = std::array<float,109>;          // one frame: 75 sensor numbers, then 34 plan and goal numbers
+using SensorFrame = std::array<float,75>;
+using ActorInput = std::array<float,kActorInputs>; // kHistory sensor frames by term, then the 34
+// first index and width of gyro, gravity, joint positions, joint velocities, previous actions
+inline constexpr std::array<std::array<int,2>,5> kSensorTerms{{{0,3},{3,3},{6,23},{29,23},{52,23}}};
 using Vec2 = std::array<float,2>;
 using Vec3 = std::array<float,3>;
 using Mat3 = std::array<float,9>; // row-major
@@ -269,6 +276,10 @@ public:
             stood_=(clock_==last && settled(obs))?stood_+kStepDt:0.f;
             if(stood_>=1.f) done_=true; // latched, as the box controllers do
         }
+        SensorFrame frame{};
+        std::copy(obs.begin(),obs.begin()+75,frame.begin());
+        if(first_) history_.fill(frame); // as the training env: the first reading fills the history
+        else { for(int h=0;h+1<kHistory;++h) history_[h]=history_[h+1]; history_[kHistory-1]=frame; }
         first_=false;
         const auto& now=frames_[clock_]; const auto& next=frames_[std::min(clock_+1,last)]; const auto& goal=frames_[last];
         const auto& position=estimator_.position();
@@ -282,7 +293,11 @@ public:
         obs[103]=std::clamp(now.x-position[0],-.5f,.5f); obs[104]=std::clamp(now.y-position[1],-.5f,.5f);
         obs[105]=std::clamp(goal.x-position[0],-.5f,1.f); obs[106]=std::clamp(goal.y-position[1],-.5f,.5f);
         obs[107]=std::sin(heading); obs[108]=std::cos(heading);
-        const auto action=actor_.infer(obs);
+        ActorInput input{};
+        size_t at=0;
+        for(const auto& term:kSensorTerms) for(int h=0;h<kHistory;++h) for(int i=0;i<term[1];++i) input[at++]=history_[h][term[0]+i];
+        std::copy(obs.begin()+75,obs.end(),input.begin()+at);
+        const auto action=actor_.infer(input);
         Action target{};
         for(size_t i=0;i<23;++i) {
             target[i]=next.qcmd[i]+kScale[i]*action[i];
@@ -301,7 +316,8 @@ private:
         for(size_t i=0;i<23;++i) if(std::abs(obs[29+i])>=.5f) return false;
         return true;
     }
-    box_policy::ModelActor<109> actor_;
+    box_policy::ModelActor<kActorInputs> actor_;
+    std::array<SensorFrame,kHistory> history_{};
     std::shared_ptr<const Library> library_;
     const Plan* plan_=nullptr;
     const Frame* frames_=nullptr;

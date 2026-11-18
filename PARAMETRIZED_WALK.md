@@ -6,16 +6,52 @@ of two walk policies with the gamepad.
 
 | Policy | Trained as | Selected checkpoint | Inputs → outputs |
 |---|---|---|---|
-| Goal-conditioned | One policy across 0–20 m (approach 2), trained on leg odometry; deployed with the Kalman position filter swapped in | `goal20/selected.pt` (update 1800) | 109 → 23 |
-| Adapter | Frozen 2 m base walker plus a bounded correction (approach 3), retrained across 0–20 m with the Kalman filter | `adapter20_k/selected.pt` (update 1200) on `base/selected.pt` | 109 → 23 |
+| Goal-conditioned | One policy across 0–20 m (approach 2), trained with the Kalman position filter and four sensor frames; first randomization profile | `goal20_hk2/selected.pt` (update 1600) | 334 → 23 |
+| Adapter | Frozen 2 m base walker plus a bounded correction (approach 3); both retrained with the robust randomization profile, the Kalman filter and four sensor frames | `adapter20_r/selected.pt` (update 1400) on `base_r_seed2/selected.pt` (update 1900) | 334 → 23 |
 
 Checkpoints came from `factory/parametrization/walk/runs`. The self-contained
-deployment package is `deploy/robots/g1_23dof/config/policy/parametrized_walk/v1`.
-Nothing was retrained for deployment.
+deployment package is `deploy/robots/g1_23dof/config/policy/parametrized_walk/v2`.
 
-**Nothing here has run on a robot.** The C++ controller was checked against the
-training environment and in simulation only; see [Checks](#checks) and
-[What is not verified](#what-is-not-verified).
+**The v2 package has not run on a robot.** The C++ controller was checked against
+the training environment and in simulation only; see [Checks](#checks) and
+[What is not verified](#what-is-not-verified). The first package, `v1` (`goal20`
+and `adapter20_k` on `base`, one sensor frame), did run on a G1 on 2026-11-17:
+both policies fell on a 1 m walk. [Why v2](#why-v2) says what was changed and
+what was measured.
+
+## Why v2
+
+On the robot both v1 policies got through the hold and two steps, then rocked
+further sideways each step and fell to the left at about 3.5–4 s. The same robot
+walks with the box go-to policy, so the comparison below uses that policy as the
+reference. Every number is from native MuJoCo with the compiled controller,
+starting in the Velocity policy, on a 1 m walk (go-to: its own 1.5 m walk).
+"This robot's offsets" are the ankle encoder offsets implied by its standing
+posture: 1.15° and 1.75° pitch, −0.5° and −1.9° roll (left, right).
+
+| Test | Go-to | v1 goal-conditioned | v1 adapter | v2 goal-conditioned | v2 adapter |
+|---|---|---|---|---|---|
+| Multiple of this robot's ankle offsets at which it first falls | above 3× | 2× | 1.5× | 2× | 3× |
+| Falls with the offsets plus physics variation inside the training ranges (40 draws) | 0 | 0 | 10 | 1 | 1 |
+| Falls after a 0.3 m/s sideways push with the offsets (6 pushes) | 0 | 2 | 4 | 2 | 0 |
+| Falls after a 0.4 m/s sideways push with the offsets (6 pushes) | 0 | 4 | 6 | 2 | 2 |
+| Falls with the offsets plus this robot's accelerometer bias (10 runs) | not used | 0 | 10 | 0 | 0 |
+
+- **The adapter is the one that improved.** Its base walker and correction were
+  retrained with wider ankle and IMU offsets, accelerometer bias and noise, and
+  pushes of 0.3–0.5 m/s from the start of training (`--profile robust` in
+  `factory/parametrization/walk`). v1's pushes grew with a success rate that
+  stayed low, so those policies trained on pushes of about 0.1–0.16 m/s.
+- **The goal-conditioned policy was not improved by retraining.** Eight
+  retrained checkpoints with the robust profile (stronger or gentler pushes, stronger
+  teacher guidance, twice the training, starting from the robust base walker)
+  all did worse in these tests than a checkpoint that already existed,
+  `goal20_hk2`. v2 ships that one. It has four sensor frames and was trained on
+  the filter it is deployed with, but with the first randomization profile.
+- **What these tests do not show.** Simulated falls from offsets alone are
+  forward and early; the robot's falls were sideways and later, like the
+  simulated response to a 0.2–0.3 m/s push to the left. What supplies that
+  disturbance on the robot was not identified.
 
 ## Build and launch on the same 23-DoF G1
 
@@ -106,10 +142,14 @@ shorten a walk in progress other than **L2 + B** (Passive).
   again", starts a new frame: errors of one walk are not corrected by the next.
 - **Targets:** `target = plan[min(clock + 1, last)] + scale × actor(observation)`,
   plain PD, no feedforward torque. The actor's output is not clipped.
-- **Observation (109):** gyro 3, projected gravity 3, joint positions 23, joint
+- **Observation (109 per frame):** gyro 3, projected gravity 3, joint positions 23, joint
   speeds 23, previous correction 23, the plan's next joint targets 23, stride
   phase and remaining plan 5, and 6 numbers that place the plan and the goal
   relative to where the robot believes it is.
+- **Actor input (334):** the last four readings of the first five terms (each
+  term's readings together, oldest first), then the plan and goal numbers once.
+  At a walk's start the first reading fills all four. The number of frames is a
+  constant of the package (`kHistory` in `PolicyConfig.h`).
 - **Position estimate:** no position sensor is read. The pelvis position comes
   from leg kinematics (a planted foot does not move) fused with the IMU
   accelerometer in a Kalman filter; heading comes from the IMU. Both policies
@@ -130,7 +170,7 @@ shorten a walk in progress other than **L2 + B** (Passive).
 | Motor mapping, joint order, PD gains, action scales | 23-DoF G1 | Identical (checked at export) |
 | Passive / FixStand / Velocity / emergency exit | Velocity integration | Identical; FixStand ends on the walks' start pose |
 | Reference | One fixed plan per stage | One of 200 plans, chosen by the operator's distance at entry |
-| Actor input | 376 values, four sensor frames | 109 values, one frame |
+| Actor input | 376 values, four sensor frames | 334 values, four sensor frames |
 | Extra sensor | None | IMU accelerometer (position filter) |
 | Arm feedforward torque | Arm gravity compensation | None: these policies were trained on plain PD |
 | Entry clock | Stage-specific repeats | First frame held 1.0 s after entry from Velocity |
@@ -138,6 +178,9 @@ shorten a walk in progress other than **L2 + B** (Passive).
 | Stage that never settles | Faults to Passive after 12 s | Keeps holding; Velocity stays available |
 
 ## How accurate it is
+
+The numbers in this section were measured on the v1 policies and were not
+repeated for v2.
 
 Measured in the training simulation (randomized physics and sensors, exact IMU
 heading, 48 trials per distance), final distance from the goal, median:
@@ -176,22 +219,26 @@ What was verified, all in software ([reports](unitree_parametrized_skills/valida
 - **C++ against training, step by step.** Sensors recorded in the mjlab training
   environment for both policies at 0.3, 2.5 and 20 m (7,726 steps) were replayed
   through the C++ controller. The reference clock matched at every step, the
-  observation within `6e-5` (leaving out the previous-action entries), the
-  position estimate within `0.06 mm`, the actor's correction within `2.6e-3` and
-  the joint targets within `1.1e-3 rad`. On identical inputs the ONNX actors
-  match the PyTorch checkpoints within `2e-6`.
-- **Native MuJoCo with the C++ controller in the loop.** 50 runs: both policies,
+  observation within `8.3e-5` (leaving out the previous-action entries), the
+  position estimate within `0.083 mm`, the actor's correction within `7.7e-3` and
+  the joint targets within `3.4e-3 rad` (v2; the adapter turns the estimate's
+  last digits into larger corrections than v1's did, so the test's limits are
+  `1e-2` and `5e-3 rad`). On identical inputs the ONNX actors match the PyTorch
+  checkpoints within `2e-6`.
+- **Offsets, physics variation and pushes** in native MuJoCo with the C++
+  controller: the table in [Why v2](#why-v2).
+- **Native MuJoCo with the C++ controller in the loop (v1, not repeated for v2).** 50 runs: both policies,
   0.2–20 m, started directly, from the Velocity policy standing, and from the
   Velocity policy after walking and turning. No falls. Error 2–6 cm up to 10 m
   and 10–11 cm at 20 m.
-- **The real `g1_ctrl` over DDS against a simulated robot**, operated by script:
+- **The real `g1_ctrl` over DDS against a simulated robot (v1, not repeated for v2)**, operated by script:
   FixStand, Velocity, a typed distance, gamepad steps, a 2.4 m goal-conditioned
   walk (3.5 cm error), walking 1.0 m again (5.1 cm), a hand-over to the adapter
   for 1.0 m (5.0 cm), back to Velocity, and a refused 0.1 m adapter walk.
 - **Regression tests:** the 39 tests of `tests/test_parametrized_walk_deploy.py`
   pass, including 13 rejected profiles and rejected changed artifacts. The
-  repository's other 69 tests still pass, and the box profiles still pass their
-  preflight with this build.
+  repository's other 69 tests still pass, and the walk and box profiles pass their
+  preflight with the v2 build.
 
 For optional reproduction from the repository root, with the training checkout
 beside this repository (`../factory`, and `../humanoid` for its planner):
@@ -209,8 +256,14 @@ SDK it was built with.
 
 ## What is not verified
 
-- **No hardware run.** Balance, foot slip, joint friction and delays on the real
-  robot are covered only by the training randomization.
+- **No hardware run of v2.** Balance, foot slip, joint friction and delays on the real
+  robot are covered only by the training randomization and the tests in
+  [Why v2](#why-v2). v1 fell on the robot.
+- **The goal-conditioned policy's margin.** It tolerates no more ankle offset
+  than v1 did. Try the adapter first.
+- **`shortest_m`.** The profile keeps v1's 0.2 m and 0.3 m. In the training
+  environment the v2 adapter lost its posture in under 2% of randomized trials
+  at 0.1–0.3 m, so its limit is now conservative.
 - **The IMU accelerometer.** The filter assumes `imu_state.accelerometer` is the
   specific force in the pelvis frame in m/s² (about +9.81 on z at rest), from the
   same IMU as the quaternion. Check this on the robot before a first walk. The
@@ -227,7 +280,7 @@ change the grid, re-export into a new package directory and rebuild, since the
 build fingerprints `plans.bin`:
 
 ```bash
-mv deploy/robots/g1_23dof/config/policy/parametrized_walk/v1 /tmp/parametrized_walk_v1_old
+mv deploy/robots/g1_23dof/config/policy/parametrized_walk/v2 /tmp/parametrized_walk_v2_old
 ../factory/.venv/bin/python -m unitree_parametrized_skills.export --extra 3.14 7.25
 cmake --build deploy/robots/g1_23dof/build -j4
 ```
@@ -244,7 +297,7 @@ with an exact heading, arrival within 10 cm fell to 38% (goal-conditioned) and 5
 | Path | Contents |
 |---|---|
 | `deploy/robots/g1_23dof/config/parametrized_walk.yaml` | The launch profile |
-| `…/config/policy/parametrized_walk/v1` | ONNX actors, original checkpoints, `plans.bin`, generated constants, manifest with SHA256 |
+| `…/config/policy/parametrized_walk/v2` | ONNX actors, original checkpoints, `plans.bin`, generated constants, manifest with SHA256 |
 | `deploy/robots/g1_23dof/include/ParametrizedWalkPolicy.h` | Plan library, position filter, controller, distance selection (no DDS) |
 | `…/include/State_ParametrizedWalk.h` | The FSM state |
 | `…/include/ParametrizedWalkPreflight.h`, `ParametrizedWalkOperator.h` | Offline profile check; terminal and gamepad distance input |

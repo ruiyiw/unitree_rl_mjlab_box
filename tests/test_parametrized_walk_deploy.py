@@ -36,11 +36,12 @@ def test_package_identity_and_profile():
     manifest = verify()
     assert manifest['estimator'] == 'kalman' and not manifest['hardware_validated']
     assert list(manifest['actors']) == list(POLICIES) == ['goal-conditioned', 'adapter']
-    assert manifest['actors']['goal-conditioned']['run'] == 'goal20'            # trained on leg odometry, filter swapped in
-    assert manifest['actors']['goal-conditioned']['trained_with_estimator'] == 'legs'
-    assert manifest['actors']['adapter']['run'] == 'adapter20_k'                # retrained with the filter
-    assert manifest['actors']['adapter']['trained_with_estimator'] == 'kalman'
-    assert manifest['actors']['adapter']['adapter_bound'] == 1.0
+    assert manifest['format'] == 'g1-parametrized-walk-v2' and manifest['history'] == 4
+    goal, adapter = manifest['actors']['goal-conditioned'], manifest['actors']['adapter']
+    assert (goal['run'], goal['profile'], goal['history']) == ('goal20_hk2', 'v1', 4)          # not retrained (PARAMETRIZED_WALK.md)
+    assert (adapter['run'], adapter['base_run'], adapter['profile']) == ('adapter20_r', 'base_r_seed2', 'robust')
+    assert goal['trained_with_estimator'] == adapter['trained_with_estimator'] == 'kalman'
+    assert adapter['adapter_bound'] == 1.0
     assert manifest['interface']['dimensions'] == {'nq': 30, 'nv': 29, 'nu': 23}
     box = json.loads((ROOT / 'deploy/robots/g1_23dof/config/policy/box/v1/params/contract.json').read_text())
     for key in ('joint_order', 'action_scale', 'default_joint_positions', 'kp', 'kd'):
@@ -74,7 +75,7 @@ def test_controller_matches_training_rollout(core_library, plans, rollout):
     """Sensors recorded in the mjlab training env, replayed through the C++ controller."""
     f = dict(np.load(FIXTURES / f'{rollout}.npz'))
     with Core(core_library, rollout.split('_')[0]) as core:
-        worst, state = replay(core, f)
+        worst, state = replay(core, f, json.loads((PACKAGE / 'manifest.json').read_text()).get('history', 1))
     for key, limit in TOLERANCE.items():
         assert worst[key] <= limit, (key, worst[key])
     assert tuple(state) == (int(f['plan_frames']) - 1, 1, 1)      # ended, and settled while standing at the goal
@@ -226,7 +227,7 @@ def test_actual_executable_profile(tmp_path, corruption):
     result = subprocess.run([str(BINARY), '--check-box-config', str(path)], capture_output=True, text=True, timeout=60)
     if corruption is None:
         assert result.returncode == 0, result.stderr
-        assert result.stdout.count('109 inputs, 23 outputs') == 2
+        assert result.stdout.count('inputs (4 sensor frames), 23 outputs') == 2
         assert '200 distances' in result.stdout and 'no DDS connection or motor commands' in result.stdout
     else:
         assert result.returncode != 0

@@ -14,18 +14,20 @@ from pathlib import Path
 
 import numpy as np
 
-from . import OBSERVATION, PACKAGE, POLICIES
+from . import PACKAGE, POLICIES, actor_inputs, newest_frame
 from .runtime import Core, build_core, library, telemetry, verify
 
 # float32 arithmetic in two implementations: agreement, not identity.  The observation is
 # compared without its previous-action entries, which are each side's own correction and are
 # covered by `action`.  The actors amplify the estimate's last digits (the goal inputs are
 # normalized by a few centimetres), hence the looser limit on the correction.
-TOLERANCE = {'observation': 2e-4, 'estimate_m': 2e-4, 'action': 5e-3, 'target_rad': 2e-3}
+# v2's adapter is steeper still: one position input moved by the 8e-5 m the two estimates differ by
+# changes its correction by 2e-3, and four inputs carry the estimate; the largest difference seen is 7.7e-3.
+TOLERANCE = {'observation': 2e-4, 'estimate_m': 2e-4, 'action': 1e-2, 'target_rad': 5e-3}
 PREVIOUS = slice(52, 75)
 
 
-def replay(core, fixture):
+def replay(core, fixture, history=1):
     """The C++ controller on a recorded rollout's sensors; the largest differences from training."""
     f = fixture
     planned = core.start(float(f['distance_m']))
@@ -35,7 +37,7 @@ def replay(core, fixture):
         sensors = telemetry(f['quaternion'][t], f['gyro'][t], f['accelerometer'][t], f['joint_pos'][t], f['joint_vel'][t])
         obs, action, target, state, estimate = core.step(sensors)
         assert state[0] == int(f['clock'][t, 0]), f'clock {state[0]} != {int(f["clock"][t, 0])} at step {t}'
-        difference = np.abs(obs - f['observation'][t])
+        difference = np.abs(obs - newest_frame(f['observation'][t], history))
         difference[PREVIOUS] = 0
         worst['observation'] = max(worst['observation'], float(difference.max()))
         worst['estimate_m'] = max(worst['estimate_m'], float(np.abs(estimate[:2] - f['estimate'][t]).max()))
@@ -44,7 +46,7 @@ def replay(core, fixture):
     return worst, state
 
 
-def onnx_actor(lib, path):
+def onnx_actor(lib, path, width):
     """The packaged ONNX actor through the same ONNX Runtime the controller links."""
     import ctypes
     lib = ctypes.CDLL(str(lib))
@@ -57,7 +59,7 @@ def onnx_actor(lib, path):
     def run(observations):
         out = np.empty((len(observations), 23), np.float32)
         for row, o in zip(out, np.ascontiguousarray(observations, dtype=np.float32)):
-            assert not lib.onnx_run(handle, o, OBSERVATION, row, 23)
+            assert not lib.onnx_run(handle, o, width, row, 23)
         return out
     return run
 
@@ -70,7 +72,7 @@ def check_actors(report):
 
     def actor(path, hidden):
         state = torch.load(path, map_location='cpu', weights_only=False)['actor_state_dict']
-        dummy = TensorDict({'actor': torch.zeros(1, OBSERVATION)}, batch_size=[1])
+        dummy = TensorDict({'actor': torch.zeros(1, actor_inputs(manifest.get('history', 1)))}, batch_size=[1])
         model = MLPModel(dummy, {'actor': ['actor']}, 'actor', 23, hidden_dims=hidden, activation='elu',
                          obs_normalization=True, distribution_cfg={'class_name': 'GaussianDistribution',
                                                                    'init_std': .3, 'std_type': 'scalar'}).eval()
@@ -101,6 +103,7 @@ def validate(fixtures, output):
                         'the C++ controller; its outputs compared with training\'s at every step'}
     torch.set_num_threads(1)
     reference = check_actors(report)
+    history = manifest.get('history', 1)
     for name in POLICIES:
         with Core(lib, name) as core:
             assert core.distances() == [round(d, 3) for d in manifest['library']['distances_m']]
@@ -111,12 +114,12 @@ def validate(fixtures, output):
                 assert len(frames) == int(f['plan_frames'])
                 clock = f['clock'][:, 0].astype(int)
                 ref_joints = frames[np.minimum(clock + 1, len(frames) - 1), :23] - np.array(manifest['interface']['default_joint_positions'], np.float32)
-                assert np.abs(ref_joints - f['observation'][:, 75:98]).max() < 1e-6, 'library plan differs from the training plan'
-                worst, state = replay(core, f)
+                assert np.abs(ref_joints - newest_frame(f['observation'], history)[:, 75:98]).max() < 1e-6, 'library plan differs from the training plan'
+                worst, state = replay(core, f, history)
                 with torch.inference_mode():
                     expected = reference[name](torch.tensor(f['observation'])).numpy()
                 worst['pytorch_actor_vs_recorded'] = float(np.abs(expected - f['action']).max())
-                worst['onnx_vs_pytorch_actor'] = float(np.abs(onnx_actor(lib, PACKAGE / name / 'policy.onnx')(f['observation']) - expected).max())
+                worst['onnx_vs_pytorch_actor'] = float(np.abs(onnx_actor(lib, PACKAGE / name / 'policy.onnx', actor_inputs(history))(f['observation']) - expected).max())
                 for key, limit in TOLERANCE.items():
                     assert worst[key] <= limit, f'{path.name}: {key} differs by {worst[key]:.2e} (limit {limit:.0e})'
                 assert worst['pytorch_actor_vs_recorded'] < 1e-4 and worst['onnx_vs_pytorch_actor'] < 1e-4

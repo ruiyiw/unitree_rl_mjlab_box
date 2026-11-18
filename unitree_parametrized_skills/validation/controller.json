@@ -3,71 +3,71 @@
   "tolerance": {
     "observation": 0.0002,
     "estimate_m": 0.0002,
-    "action": 0.005,
-    "target_rad": 0.002
+    "action": 0.01,
+    "target_rad": 0.005
   },
   "rollouts": {
     "goal-conditioned_0.3m": {
       "steps": 421,
       "plan_frames": 171,
       "ended_early_in_training": false,
-      "walked_m": 0.3114788234233856,
-      "estimate_error_at_end_m": 0.0027028555050492287,
+      "walked_m": 0.31659135222435,
+      "estimate_error_at_end_m": 0.0010252237552776933,
       "settled_flag": true,
       "max_difference": {
-        "observation": 2.3278407752513885e-05,
-        "estimate_m": 2.3278407752513885e-05,
-        "action": 0.0016322433948516846,
-        "target_rad": 0.0007158666849136353,
-        "pytorch_actor_vs_recorded": 1.0728836059570312e-06,
-        "onnx_vs_pytorch_actor": 1.1920928955078125e-06
+        "observation": 2.1688640117645264e-05,
+        "estimate_m": 2.1688523702323437e-05,
+        "action": 0.0006414651870727539,
+        "target_rad": 0.00028133392333984375,
+        "pytorch_actor_vs_recorded": 9.5367431640625e-07,
+        "onnx_vs_pytorch_actor": 9.5367431640625e-07
       }
     },
     "goal-conditioned_2.5m": {
       "steps": 671,
       "plan_frames": 421,
       "ended_early_in_training": false,
-      "walked_m": 2.5274972915649414,
-      "estimate_error_at_end_m": 0.01620706170797348,
+      "walked_m": 2.514835834503174,
+      "estimate_error_at_end_m": 0.017017291858792305,
       "settled_flag": true,
       "max_difference": {
-        "observation": 1.963600516319275e-05,
-        "estimate_m": 1.963600516319275e-05,
-        "action": 0.0009255409240722656,
-        "target_rad": 0.00040590763092041016,
-        "pytorch_actor_vs_recorded": 1.0728836059570312e-06,
-        "onnx_vs_pytorch_actor": 9.5367431640625e-07
+        "observation": 2.8848648071289062e-05,
+        "estimate_m": 2.8848648071289062e-05,
+        "action": 0.0009914040565490723,
+        "target_rad": 0.00043480098247528076,
+        "pytorch_actor_vs_recorded": 1.3113021850585938e-06,
+        "onnx_vs_pytorch_actor": 1.1920928955078125e-06
       }
     },
     "goal-conditioned_20m": {
       "steps": 2771,
       "plan_frames": 2521,
       "ended_early_in_training": false,
-      "walked_m": 19.899072647094727,
-      "estimate_error_at_end_m": 0.14237411320209503,
+      "walked_m": 19.882898330688477,
+      "estimate_error_at_end_m": 0.15468084812164307,
       "settled_flag": true,
       "max_difference": {
-        "observation": 4.1961669921875e-05,
-        "estimate_m": 4.1961669921875e-05,
-        "action": 0.0015061497688293457,
-        "target_rad": 0.0006605684757232666,
-        "pytorch_actor_vs_recorded": 1.430511474609375e-06,
-        "onnx_vs_pytorch_actor": 1.5497207641601562e-06
+        "observation": 5.53131103515625e-05,
+        "estimate_m": 5.53131103515625e-05,
+        "action": 0.0017514228820800781,
+        "target_rad": 0.0007681399583816528,
+        "pytorch_actor_vs_recorded": 1.1920928955078125e-06,
+        "onnx_vs_pytorch_actor": 1.1920928955078125e-06
       }
     },
     "adapter_0.3m": {
       "steps": 421,
       "plan_frames": 171,
       "ended_early_in_training": false,
-      "walked_m": 0.32557550072669983,
-      "estimate_error_at_end_m": 0.012083194218575954,
+      "walked_m": 0.3059667944908142,
+      "estimate_error_at_end_m": 0.005143946968019009,
       "settled_flag": true,
       "max_difference": {
-        "observation": 2.549099735915661e-05,
-        "estimate_m": 2.549099735915661e-05,
-        "action": 0.0009624958038330078,
-        "target_rad": 0.0004221200942993164,
-        "pytorch_actor_vs_recorded": 1.0728836059570312e-06,
+        "observation": 3.2403506338596344e-05,
+        "estimate_m": 3.2403040677309036e-05,
+        "action": 0.0026093125343322754,
+        "target_rad": 0.0011443793773651123,
+        "pytorch_actor_vs_recorded": 8.344650268554688e-07,
         "onnx_vs_pytorch_actor": 9.5367431640625e-07
       }
     },
@@ -75,32 +75,32 @@
       "steps": 671,
       "plan_frames": 421,
       "ended_early_in_training": false,
-      "walked_m": 2.5110971927642822,
-      "estimate_error_at_end_m": 0.018229389563202858,
+      "walked_m": 2.4939239025115967,
+      "estimate_error_at_end_m": 0.002315177582204342,
       "settled_flag": true,
       "max_difference": {
-        "observation": 2.5070039555430412e-05,
-        "estimate_m": 2.507015597075224e-05,
-        "action": 0.0010143518447875977,
-        "target_rad": 0.0004448890686035156,
-        "pytorch_actor_vs_recorded": 9.5367431640625e-07,
-        "onnx_vs_pytorch_actor": 1.3113021850585938e-06
+        "observation": 8.142180740833282e-05,
+        "estimate_m": 8.142180740833282e-05,
+        "action": 0.007694929838180542,
+        "target_rad": 0.003374814987182617,
+        "pytorch_actor_vs_recorded": 1.3113021850585938e-06,
+        "onnx_vs_pytorch_actor": 1.0728836059570312e-06
       }
     },
     "adapter_20m": {
       "steps": 2771,
       "plan_frames": 2521,
       "ended_early_in_training": false,
-      "walked_m": 19.91127586364746,
-      "estimate_error_at_end_m": 0.12294402718544006,
+      "walked_m": 19.99489974975586,
+      "estimate_error_at_end_m": 0.035763997584581375,
       "settled_flag": true,
       "max_difference": {
-        "observation": 5.91278076171875e-05,
-        "estimate_m": 5.91278076171875e-05,
-        "action": 0.0025684237480163574,
-        "target_rad": 0.0011264532804489136,
-        "pytorch_actor_vs_recorded": 1.3113021850585938e-06,
-        "onnx_vs_pytorch_actor": 1.3113021850585938e-06
+        "observation": 8.296966552734375e-05,
+        "estimate_m": 8.296966552734375e-05,
+        "action": 0.004623889923095703,
+        "target_rad": 0.002027943730354309,
+        "pytorch_actor_vs_recorded": 1.430511474609375e-06,
+        "onnx_vs_pytorch_actor": 1.430511474609375e-06
       }
     }
   },

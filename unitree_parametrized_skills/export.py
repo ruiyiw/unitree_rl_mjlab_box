@@ -16,7 +16,7 @@ import struct
 import sys
 from pathlib import Path
 
-from . import FRAME, MOTOR_IDS, OBSERVATION, PACKAGE, POLICIES, PROFILE, REFERENCE, ROOT
+from . import FRAME, MOTOR_IDS, OBSERVATION, PACKAGE, POLICIES, PROFILE, REFERENCE, ROOT, actor_inputs
 
 MAGIC = b'G1WALKN1'
 SOURCES = ('env.py', 'odometry.py', 'plans.py', 'models.py', 'evaluate.py', 'README.md')
@@ -72,13 +72,13 @@ def contract(cfg):
     }
 
 
-def inference_module(models, policy, base, bound):
-    """observations (1, 109) -> the correction on the joints (1, 23), normalization included.
+def inference_module(models, policy, base, bound, width=OBSERVATION):
+    """observations (1, width) -> the correction on the joints (1, 23), normalization included.
     With a base walker: base(obs) + clamp(adapter(obs), -bound, bound), as AdapterJointAction."""
     import torch
 
     def parts(path, hidden):
-        actor = models.frozen_actor(str(path), OBSERVATION, 23, 'cpu', hidden).model
+        actor = models.frozen_actor(str(path), width, 23, 'cpu', hidden).model
         return actor, actor.obs_normalizer, actor.mlp
 
     class Goal(torch.nn.Module):
@@ -152,7 +152,7 @@ def kinematics(odometry, model, joints):
     return feet
 
 
-def header(interface, start, feet, estimator, hashes, library_hash, count, frames, bound):
+def header(interface, start, feet, estimator, hashes, library_hash, count, frames, bound, history=1):
     def array(name, values, kind='float'):
         def value(x):
             return f'{float(x):.10e}f' if kind == 'float' else str(x) + ('ULL' if kind == 'uint64_t' else '')
@@ -169,6 +169,8 @@ def header(interface, start, feet, estimator, hashes, library_hash, count, frame
     h += f'inline constexpr uint64_t kLibraryHash = {library_hash}ULL;\n'
     h += f'inline constexpr int kPlans = {count};\ninline constexpr int kLibraryFrames = {frames};\n'
     h += f'inline constexpr float kAdapterBound = {bound:.10e}f; // already inside the adapter actor\n'
+    h += (f'inline constexpr int kHistory = {history}; // sensor frames the actors read\n'
+          f'inline constexpr int kActorInputs = {actor_inputs(history)};\n')
     h += array('kMotorIds', MOTOR_IDS, 'int')
     for name, key in (('kDefault', 'default_joint_positions'), ('kScale', 'action_scale'), ('kKp', 'kp'), ('kKd', 'kd')):
         h += array(name, interface[key])
@@ -241,39 +243,43 @@ def export(factory, output, step, longest, extra, workers, default_m):
             raise ValueError(f'The walk robot differs from the box robot in {key}')
     assert tuple(env.ACTOR_TERMS) == ('gyro', 'gravity', 'joint_pos', 'joint_vel', 'actions', 'ref_joints',
                                       'ref_phase', 'goal') and env.ACTOR_DIM == OBSERVATION
+    assert tuple(env.SENSOR_TERMS) == ('gyro', 'gravity', 'joint_pos', 'joint_vel', 'actions')
 
     output.mkdir(parents=True, exist_ok=False)
     params = output / 'params'
     params.mkdir()
-    manifest = {'format': 'g1-parametrized-walk-v1', 'hardware_validated': False, 'estimator': 'kalman',
+    manifest = {'format': 'g1-parametrized-walk-v2', 'hardware_validated': False, 'estimator': 'kalman',
                 'source_root': str(factory), 'actors': {}, 'interface': interface}
-    hashes, bound = [], 0.
+    hashes, bound, history = [], 0., None
     for name, (run, base_run) in POLICIES.items():
         folder = output / name
         folder.mkdir()
         meta = json.loads((runs / run / 'run.json').read_text())
         variant = paths.run_variant(str(runs / run / 'selected.pt'))
-        assert variant['history'] == 1 and not variant['sole_contacts'] and meta['actor_dim'] == OBSERVATION
+        history = history or variant['history']          # one history for the package: the controller is compiled for it
+        assert variant['history'] == history and not variant['sole_contacts'] and meta['actor_dim'] == actor_inputs(history)
         shutil.copy2(runs / run / 'selected.pt', folder / 'checkpoint.pt')
         info = {'run': run, 'checkpoint_source': str(runs / run / 'selected.pt'),
                 'checkpoint_sha256': digest(folder / 'checkpoint.pt'), 'trained_with_estimator': variant['estimator'],
+                'history': history, 'profile': variant.get('profile', 'v1'),
                 'selection': json.loads((runs / run / 'selection.json').read_text())['selected'], 'training': meta}
         base = None
         if base_run:
-            assert meta['kind'] == 'adapter' and paths.run_variant(str(runs / base_run / 'selected.pt'))['history'] == 1
+            assert meta['kind'] == 'adapter' and paths.run_variant(str(runs / base_run / 'selected.pt'))['history'] == history
             base, bound = folder / 'base_checkpoint.pt', float(meta['adapter_bound'])
             shutil.copy2(runs / base_run / 'selected.pt', base)
             info.update(base_run=base_run, base_checkpoint_sha256=digest(base), adapter_bound=bound,
                         base_training=json.loads((runs / base_run / 'run.json').read_text()))
-        module = inference_module(models, folder / 'checkpoint.pt', base, bound)
+        module = inference_module(models, folder / 'checkpoint.pt', base, bound, actor_inputs(history))
         with torch.inference_mode():
-            torch.onnx.export(module, torch.zeros(1, OBSERVATION), str(folder / 'policy.onnx'),
+            torch.onnx.export(module, torch.zeros(1, actor_inputs(history)), str(folder / 'policy.onnx'),
                               input_names=['observations'], output_names=['actions'], opset_version=18, dynamo=False)
         (folder / 'source_metadata.json').write_text(json.dumps(info, indent=2) + '\n')
         hashes.append(fnv(folder / 'policy.onnx'))
         manifest['actors'][name] = {k: info[k] for k in info if k not in ('training', 'base_training')}
         manifest['actors'][name]['onnx_sha256'] = digest(folder / 'policy.onnx')
 
+    manifest['history'] = history
     planned, plan_joints, statuses = plan_library(plans, paths, distances, workers)
     perm = [plan_joints.index(n) for n in interface['joint_order']]
     start = planned[0]['qpos'][0, 7:][perm]
@@ -296,7 +302,7 @@ def export(factory, output, step, longest, extra, workers, default_m):
     (params / 'contract.json').write_text(json.dumps(interface, indent=2) + '\n')
     (params / 'estimator.json').write_text(json.dumps({'constants': estimator, 'feet': feet}, indent=2) + '\n')
     (params / 'PolicyConfig.h').write_text(header(interface, start.tolist(), feet, estimator, hashes,
-                                                  fnv(output / 'plans.bin'), len(planned), frames, bound))
+                                                  fnv(output / 'plans.bin'), len(planned), frames, bound, history))
     if output == PACKAGE.resolve():
         write_profile(interface, start.tolist(), default_m)
         REFERENCE.mkdir(exist_ok=True)      # the training source the C++ port follows, for the record

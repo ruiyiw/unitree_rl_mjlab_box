@@ -52,7 +52,7 @@ from mjlab.managers.reward_manager import RewardTermCfg
 from mjlab.managers.scene_entity_config import SceneEntityCfg
 from mjlab.managers.termination_manager import TerminationTermCfg
 from mjlab.scene import SceneCfg
-from mjlab.sensor import ContactMatch, ContactSensorCfg
+from mjlab.sensor import CameraSensorCfg, ContactMatch, ContactSensorCfg
 from mjlab.sim import MujocoCfg, SimulationCfg
 from mjlab.tasks.velocity import mdp as vel_mdp
 from mjlab.terrains import TerrainEntityCfg
@@ -61,6 +61,7 @@ from mjlab.utils.lab_api.math import (quat_apply, quat_apply_inverse, quat_error
 from mjlab.utils.lab_api.math import yaw_quat as yaw_of_quat
 from mjlab.utils.noise import NoiseModelWithAdditiveBiasCfg
 from mjlab.utils.noise import UniformNoiseCfg as Unoise
+from mjlab.utils.spec_config import CameraCfg
 from mjlab.viewer import ViewerConfig
 
 from . import paths, plans
@@ -70,6 +71,28 @@ paths.use_humanoid()
 import scene as sc  # noqa: E402   humanoid: the robot's collisions, arm gains, action scale
 
 ANCHOR = "torso_link"
+
+# the head camera: the G1's RealSense D435i, at the pose of `d435_joint` in Unitree's URDF
+# (unitree_ros, g1_description/g1_23dof_rev_1_0.urdf; torso_link is the same frame there and in
+# the MJCF).  The policies do not read it.
+CAMERA = "d435"
+CAMERA_BODY = "torso_link"
+CAMERA_POS = (0.0576235, 0.01753, 0.42987)       # m, in torso_link
+CAMERA_PITCH = 0.8307767239493009                # rad about +y: the lens 47.6 degrees below the horizon
+CAMERA_FOVY = 42.0                               # degrees: the D435's colour stream, 69 x 42 at 16:9
+CAMERA_SIZE = (640, 360)                         # px, a 16:9 image (the colour stream's shape)
+
+
+def camera_quat() -> tuple[float, float, float, float]:
+    """The camera's orientation in torso_link (w, x, y, z).  The URDF's d435_link has +x along
+    the lens and +z up; a MuJoCo camera looks along its -z with +y up."""
+    h = 0.5 * CAMERA_PITCH
+    c, s = 0.5 * math.cos(h), 0.5 * math.sin(h)  # (cos h, 0, sin h, 0) * (0.5, 0.5, -0.5, -0.5)
+    return (c + s, c - s, s - c, -c - s)
+
+
+def camera_cfg() -> CameraCfg:
+    return CameraCfg(name=CAMERA, body=CAMERA_BODY, fovy=CAMERA_FOVY, pos=CAMERA_POS, quat=camera_quat())
 EE_BODIES = ("left_ankle_roll_link", "right_ankle_roll_link", "left_wrist_roll_rubber_hand",
              "right_wrist_roll_rubber_hand")
 ACTOR_TERMS = ("gyro", "gravity", "joint_pos", "joint_vel", "actions", "ref_joints", "ref_phase", "goal")
@@ -123,6 +146,18 @@ TILT_BIAS = 0.02                   # rad, roll and pitch of the IMU's attitude e
 ODO_START_NOISE = 0.02             # m, the estimate at a random-frame start
 ACC_NOISE = 0.3                    # m/s^2, the accelerometer per 20 ms sample (Kalman estimator only)
 ACC_BIAS = 0.1                     # m/s^2 per axis, per episode
+# Randomization profiles (env_cfg(profile=...)).  "v1" is what the first policies were trained
+# with.  "robust" widens what the first hardware trials showed to be too narrow: that robot's
+# ankle encoders and IMU are 1-2 deg off, its accelerometer 0.14 m/s^2, and v1's pushes stayed
+# near 0.1 m/s because they grew with a success rate that stayed low (README, "Robust profile").
+# push: m/s per horizontal axis at curriculum level 0 and 1.
+PROFILES = {
+    "v1": {"encoder_bias": 0.01, "ankle_encoder_bias": 0.01, "gravity_bias": 0.025, "tilt_bias": TILT_BIAS,
+           "acc_noise": ACC_NOISE, "acc_bias": ACC_BIAS, "push": PUSH_V},
+    "robust": {"encoder_bias": 0.015, "ankle_encoder_bias": 0.04, "gravity_bias": 0.045, "tilt_bias": 0.045,
+               "acc_noise": 1.0, "acc_bias": 0.25, "push": (0.3, 0.5)},
+}
+PROFILES["robust_p"] = {**PROFILES["robust"], "push": (0.15, 0.5)}     # robust with a gentler push floor
 GRAVITY = 9.81
 ESTIMATORS = {"legs": LegOdometry, "kalman": KalmanOdometry}
 
@@ -349,8 +384,8 @@ class WalkCommand(CommandTerm):
         h = s if cfg.heading_errors else 0.0
         self.yaw_drift[env_ids] = h * _u(n, -YAW_DRIFT, YAW_DRIFT, dev)
         self.yaw_bias[env_ids] = h * _u(n, -YAW_BIAS, YAW_BIAS, dev)
-        self.tilt_bias[env_ids] = s * (2 * torch.rand(n, 2, device=dev) - 1) * TILT_BIAS
-        self.acc_bias[env_ids] = s * (2 * torch.rand(n, 3, device=dev) - 1) * ACC_BIAS
+        self.tilt_bias[env_ids] = s * (2 * torch.rand(n, 2, device=dev) - 1) * cfg.tilt_bias
+        self.acc_bias[env_ids] = s * (2 * torch.rand(n, 3, device=dev) - 1) * cfg.acc_bias
         for b in (self.elapsed, self.after_end, self.stood, self.held, self.overshoot):
             b[env_ids] = 0.0
         self.success[env_ids] = False
@@ -383,7 +418,7 @@ class WalkCommand(CommandTerm):
         a = a + torch.tensor([0.0, 0.0, GRAVITY], device=v.device)
         f = quat_apply_inverse(r.root_link_quat_w, a)
         if self.cfg.sensor_errors:
-            f = f + self.acc_bias + ACC_NOISE * (2 * torch.rand_like(f) - 1)
+            f = f + self.acc_bias + self.cfg.acc_noise * (2 * torch.rand_like(f) - 1)
         return (R_imu @ f[..., None]).squeeze(-1)[:, :2]
 
     def _update_command(self, env_ids):
@@ -467,6 +502,9 @@ class WalkCommandCfg(CommandTermCfg):
     sole_contacts: bool = False      # the estimator's contact points: the sole's ends (else the foot site)
     short_weight: float = 1.0        # training draws plans shorter than 0.5 m this many times as often
     odometry_scale: float = 1.0      # the estimator's calibrated scale (calibrate.py)
+    tilt_bias: float = TILT_BIAS     # rad, the IMU attitude's roll and pitch bias in the estimator (PROFILES)
+    acc_bias: float = ACC_BIAS       # m/s^2, the accelerometer's bias per axis
+    acc_noise: float = ACC_NOISE     # m/s^2, the accelerometer's noise per sample
     resampling_time_range: tuple[float, float] = (1e9, 1e9)
 
     def build(self, env) -> WalkCommand:
@@ -778,7 +816,7 @@ FOOT_GEOMS = tuple(f"{s}_foot{i}_collision" for s in ("left", "right") for i in 
 ARM_JOINTS = (".*_shoulder_.*", ".*_elbow_.*", ".*_wrist_.*")
 LEG_WAIST_JOINTS = (".*_hip_.*", ".*_knee_.*", ".*_ankle_.*", "waist_.*")
 
-# what is randomized, for the record (README and checkpoints)
+# what is randomized, for the record (README and checkpoints): profile v1; dr_spec() for the others
 DR_SPEC = {
     "foot_friction": [0.4, 1.4], "link_mass_inertia_scale": [0.9, 1.1],
     "torso_extra_mass_kg": [-0.5, 2.5], "torso_com_m": [0.03, 0.015, 0.02],
@@ -793,6 +831,17 @@ DR_SPEC = {
     "push_m_s": {"every_s": [1.0, 3.0], "level0": PUSH_V[0], "level1": PUSH_V[1]},
     "accelerometer_m_s2": {"noise": ACC_NOISE, "bias": ACC_BIAS, "used_by": "the Kalman estimator only"},
 }
+
+
+def dr_spec(profile: str = "v1") -> dict:
+    """DR_SPEC with a profile's ranges."""
+    p, d = PROFILES[profile], copy.deepcopy(DR_SPEC)
+    d.update({"profile": profile, "encoder_bias_rad": p["encoder_bias"], "ankle_encoder_bias_rad": p["ankle_encoder_bias"]})
+    d["sensor_bias"]["gravity"] = p["gravity_bias"]
+    d["odometry"]["tilt_bias_rad"] = p["tilt_bias"]
+    d["push_m_s"].update({"level0": p["push"][0], "level1": p["push"][1]})
+    d["accelerometer_m_s2"].update({"noise": p["acc_noise"], "bias": p["acc_bias"]})
+    return d
 
 
 def light_events(push: bool) -> dict:
@@ -810,10 +859,11 @@ def light_events(push: bool) -> dict:
     return ev
 
 
-def dr_events(push: bool) -> dict:
+def dr_events(push: bool, profile: str = "v1") -> dict:
     """Physical randomization: masses once per env at startup (they need the model's
     constants recomputed), the rest every episode."""
     E, S = EventTermCfg, SceneEntityCfg
+    p = PROFILES[profile]
     ev = {
         "link_inertia": E(mode="startup", func=dr.pseudo_inertia,
                           params={"asset_cfg": S("robot"), "alpha_range": (-0.05, 0.05)}),
@@ -837,10 +887,15 @@ def dr_events(push: bool) -> dict:
         "joint_damping": E(mode="reset", func=dr.dof_damping,
                            params={"asset_cfg": S("robot"), "ranges": (0.0, 0.1)}),
         "encoder_bias": E(mode="reset", func=dr.encoder_bias,
-                          params={"asset_cfg": S("robot"), "bias_range": (-0.01, 0.01)}),
+                          params={"asset_cfg": S("robot"), "bias_range": (-p["encoder_bias"], p["encoder_bias"])}),
     }
+    if p["ankle_encoder_bias"] != p["encoder_bias"]:      # after the event above: the ankles' wider range
+        ev["ankle_encoder_bias"] = E(mode="reset", func=dr.encoder_bias,
+                                     params={"asset_cfg": S("robot", joint_names=(".*_ankle_.*",)),
+                                             "bias_range": (-p["ankle_encoder_bias"], p["ankle_encoder_bias"])})
     if push:
-        ev["push"] = E(mode="interval", func=ev_push, interval_range_s=(1.0, 3.0))
+        ev["push"] = E(mode="interval", func=ev_push, interval_range_s=(1.0, 3.0),
+                       params={"lo": p["push"][0], "hi": p["push"][1]})
     return ev
 
 
@@ -861,7 +916,7 @@ def _sensor_noise(noisy: bool, light: bool = False):
     return make
 
 
-def actor_obs(noisy: bool, light: bool = False, history: int = 1) -> dict:
+def actor_obs(noisy: bool, light: bool = False, history: int = 1, gravity_bias: float = 0.025) -> dict:
     """What the real robot has (module docstring).  The order is ACTOR_TERMS.  With history > 1
     each sensor term (SENSOR_TERMS) is its last `history` readings, oldest first; after a reset
     the first reading fills them."""
@@ -869,7 +924,7 @@ def actor_obs(noisy: bool, light: bool = False, history: int = 1) -> dict:
     h = {"history_length": history} if history > 1 else {}
     return {
         "gyro": O(func=vel_mdp.builtin_sensor, params={"sensor_name": "robot/imu_ang_vel"}, **n(0.2, 0.02), **h),
-        "gravity": O(func=vel_mdp.projected_gravity, **n(0.05, 0.025), **h),
+        "gravity": O(func=vel_mdp.projected_gravity, **n(0.05, gravity_bias), **h),
         "joint_pos": O(func=vel_mdp.joint_pos_rel, params={"biased": True}, **n(0.01), **h),
         "joint_vel": O(func=vel_mdp.joint_vel_rel, **n(1.5), **h),
         "actions": O(func=obs_last_action, **h),
@@ -915,7 +970,8 @@ def env_cfg(bank: str, num_envs: int = 4096, mode: str = "train", adapter_base: 
             adapter_bound: float = 0.5, episode_s: float | None = None, randomize: str = "full",
             privileged_actor: bool = False, teacher_group: bool = False, history: int = 1,
             estimator: str = "legs", sole_contacts: bool = False, base_history: int = 1,
-            short_weight: float = 1.0, odometry_scale: float = 1.0) -> ManagerBasedRlEnvCfg:
+            short_weight: float = 1.0, odometry_scale: float = 1.0,
+            camera: tuple[int, int] | None = None, profile: str = "v1") -> ManagerBasedRlEnvCfg:
     """The env on a plan bank.
 
     mode  "train"    randomized physics and sensors, pushes, random-frame starts, the curriculum;
@@ -936,8 +992,13 @@ def env_cfg(bank: str, num_envs: int = 4096, mode: str = "train", adapter_base: 
     randomize: "full" (dr_events, sensor bias and delay, command delay, odometry errors) or
           "light" (light_events and sensor noise only), in "train" and "dr".
     privileged_actor: the actor reads the critic's observation (a teacher; never deployed).
-    teacher_group: also serve that observation as the group "teacher" (guided.py)."""
+    teacher_group: also serve that observation as the group "teacher" (guided.py).
+    profile: the randomization ranges (PROFILES), in "train" and "dr" with randomize "full".
+    camera: (width, height) to render the head camera in every env each step, as the sensor
+          "head_camera" (env.scene["head_camera"].data.rgb and .depth).  The camera itself
+          (CAMERA) is always in the robot's model; without this nothing is rendered."""
     assert mode in ("train", "nominal", "dr", "dr_h") and randomize in ("full", "light")
+    P = PROFILES[profile]
     train, noisy = mode == "train", mode != "nominal"
     light = randomize == "light"
     feet_ground = ContactSensorCfg(
@@ -946,6 +1007,11 @@ def env_cfg(bank: str, num_envs: int = 4096, mode: str = "train", adapter_base: 
         secondary=ContactMatch(mode="body", pattern="terrain"),
         fields=("found",), reduce="netforce", num_slots=1)
     robot = copy.deepcopy(sc.robot_cfg())       # (its actuator configs are shared module objects)
+    robot.cameras = (*robot.cameras, camera_cfg())
+    sensors = [feet_ground]
+    if camera:
+        sensors.append(CameraSensorCfg(name="head_camera", camera_name=f"robot/{CAMERA}", width=camera[0],
+                                       height=camera[1], data_types=("rgb", "depth")))
     for a in robot.articulation.actuators:      # command latency: 0-3 physics steps of 5 ms
         a.delay_min_lag, a.delay_max_lag = 0, 3 if noisy and not light else 0
         a.delay_hold_prob, a.delay_update_period = 0.9, 4
@@ -966,22 +1032,23 @@ def env_cfg(bank: str, num_envs: int = 4096, mode: str = "train", adapter_base: 
     if episode_s is None:
         b = torch.load(bank, map_location="cpu", weights_only=False)
         episode_s = float(math.ceil((int(b["len"].max()) - 1) / b["fps"] + HOLD_S + 1.0))
-    observations = {"actor": ObservationGroupCfg(critic_obs() if privileged_actor else actor_obs(noisy, light, history),
+    observations = {"actor": ObservationGroupCfg(critic_obs() if privileged_actor else actor_obs(noisy, light, history, P["gravity_bias"]),
                                                  enable_corruption=noisy and not privileged_actor),
                     "critic": ObservationGroupCfg(critic_obs(), enable_corruption=False)}
     if teacher_group:
         observations["teacher"] = ObservationGroupCfg(critic_obs(), enable_corruption=False)
     return ManagerBasedRlEnvCfg(
         scene=SceneCfg(terrain=TerrainEntityCfg(terrain_type="plane"), entities={"robot": robot},
-                       sensors=(feet_ground,), num_envs=num_envs, env_spacing=8.0),
+                       sensors=tuple(sensors), num_envs=num_envs, env_spacing=8.0),
         observations=observations,
         actions={"joint_pos": action},
         commands={"task": WalkCommandCfg(bank=bank, curriculum=train, rsi_noise=train,
                                          begin_fraction=None if train else 1.0, fixed_plans=not train,
                                          sensor_errors=noisy and not light, heading_errors=mode != "dr_h",
                                          estimator=estimator, sole_contacts=sole_contacts,
-                                         short_weight=short_weight, odometry_scale=odometry_scale)},
-        events=(light_events if light else dr_events)(push=train) if noisy else {},
+                                         short_weight=short_weight, odometry_scale=odometry_scale,
+                                         tilt_bias=P["tilt_bias"], acc_bias=P["acc_bias"], acc_noise=P["acc_noise"])},
+        events=(light_events(push=train) if light else dr_events(push=train, profile=profile)) if noisy else {},
         rewards=rewards(adapter=bool(adapter_base)),
         terminations=terminations,
         viewer=ViewerConfig(origin_type=ViewerConfig.OriginType.ASSET_BODY, entity_name="robot",

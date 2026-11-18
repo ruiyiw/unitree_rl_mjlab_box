@@ -11,7 +11,8 @@ Everything here is simulation. Nothing has run on hardware.
 ## Results
 
 Full tables: [parametrization/walk/docs/RESULTS.md](docs/RESULTS.md) (128 trials per distance and
-tier). Videos: `parametrization/walk/runs/videos/{goal,adapter,base}.mp4`.
+tier). Videos: `parametrization/walk/runs/videos/{goal,adapter,base}.mp4`, and `goal_camera.mp4` with the
+head camera's view.
 
 Stable-arrival rate (%), randomized physics and sensors:
 
@@ -300,6 +301,21 @@ Applied in training and in the randomized evaluation tier (pushes in training on
 The ranges are judgement, not measurements of a particular robot. They are recorded in each
 run's `run.json`.
 
+### Head camera
+
+The robot's model carries the G1's head camera, a RealSense D435i, as the MuJoCo camera
+`robot/d435` (`env.py`: `CAMERA`): on `torso_link` at (0.0576, 0.0175, 0.4299) m, the lens
+47.6° below the horizon. That is the pose of `d435_joint` in Unitree's
+[URDF](https://github.com/unitreerobotics/unitree_ros/blob/master/robots/g1_description/g1_23dof_rev_1_0.urdf#L522-L526).
+The vertical field of view is 42°, which at 16:9 gives the 69° × 42° of the D435's colour
+stream. Standing, the lens is 1.23 m above the floor and sees the floor from about 0.5 m to
+2.5 m ahead.
+
+The policies do not read the camera, and by default nothing is rendered, so training and
+evaluation are unchanged. `env_cfg(..., camera=(640, 360))` renders it in every env each step
+as the sensor `head_camera`: `env.scene["head_camera"].data.rgb` (uint8) and `.depth` (m).
+`render.py --camera` puts its view beside the side view of a rollout.
+
 ## Training
 
 Direct PPO on the 109-number observation did not learn the task (about 15% training
@@ -364,6 +380,7 @@ python -m parametrization.walk.calibrate goal20_hk     # the estimate's distance
 GPU=0 parametrization/walk/pipeline.sh variations goal_h,goal_k   # measure those → parametrization/walk/docs/VARIATIONS.md
 python -m parametrization.walk.check                   # observation contract, kinematics, odometry, plan playback
 python -m parametrization.walk.render --policy parametrization/walk/runs/goal/selected.pt --n 0.2 2.5 --out goal.mp4
+python -m parametrization.walk.render --policy parametrization/walk/runs/goal/selected.pt --n 2.5 --camera --out goal_camera.mp4   # with the head camera's view
 ```
 
 Requirements: the `.venv` here (mjlab 1.6, rsl-rl 5.4, torch), and the sibling repository

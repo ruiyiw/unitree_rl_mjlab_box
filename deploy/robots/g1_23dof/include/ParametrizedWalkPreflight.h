@@ -132,7 +132,7 @@ inline void preflight(const YAML::Node& config,const std::filesystem::path& proj
             require(a.clock==0 && b.clock==0 && !b.ended,"the plan's first frame is not held on entry");
             for(float v:b.target) require(std::isfinite(v),"non-finite joint target");
         }
-        std::cout<<"Parametrized-walk preflight passed: "<<kNames[policy]<<" policy; 109 inputs, 23 outputs.\n";
+        std::cout<<"Parametrized-walk preflight passed: "<<kNames[policy]<<" policy; "<<kActorInputs<<" inputs ("<<kHistory<<" sensor frames), 23 outputs.\n";
     }
     std::cout<<"Walk library: "<<library->size()<<" distances, "<<library->shortest()<<" to "<<library->longest()
              <<" m. Velocity and both walk policies passed; no DDS connection or motor commands.\n";

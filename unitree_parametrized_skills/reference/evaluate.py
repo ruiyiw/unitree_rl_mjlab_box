@@ -38,12 +38,13 @@ SETTLE = 5.0                       # s after the plan's end before the final mea
 
 def evaluate(policy=None, bank="eval", tier="nominal", repeats=64, adapter_base=None, zero=False, seed=7,
              record=None, privileged=False, settle=SETTLE, estimator=None, sole_contacts=None, odometry_scale=1.0,
-             raw=None):
+             raw=None, profile=None):
     """Returns {"per_distance": [...], "overall": {...}}.  record: env indices whose qpos to keep.
     The observation variant (history, estimator) is the one the policy was trained with (its
     run.json); estimator / sole_contacts override it, to try a policy on another estimator.
     odometry_scale: the estimator's calibrated distance scale (calibrate.py).
-    raw: a path; every episode's numbers are saved there (.npz), for pooling across distances."""
+    raw: a path; every episode's numbers are saved there (.npz), for pooling across distances.
+    profile: the randomization ranges of the "dr" tiers (env.PROFILES); default: the policy's own."""
     torch.manual_seed(seed)
     bank_path = plans.bank_path(bank)
     b = torch.load(bank_path, map_location="cpu", weights_only=False)
@@ -59,7 +60,8 @@ def evaluate(policy=None, bank="eval", tier="nominal", repeats=64, adapter_base=
                      episode_s=seconds, privileged_actor=privileged, history=v["history"],
                      estimator=estimator or v["estimator"],
                      sole_contacts=v["sole_contacts"] if sole_contacts is None else sole_contacts,
-                     base_history=paths.run_variant(adapter_base)["history"], odometry_scale=odometry_scale)
+                     base_history=paths.run_variant(adapter_base)["history"], odometry_scale=odometry_scale,
+                     profile=profile or v["profile"])
     cfg.seed = seed
     env = ManagerBasedRlEnv(cfg=cfg, device="cuda:0")
     c = we.cmd(env)

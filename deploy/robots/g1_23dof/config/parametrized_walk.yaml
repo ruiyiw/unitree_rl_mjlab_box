@@ -186,7 +186,7 @@ FSM:
       Passive: LT + B.on_pressed
       Velocity: RB + X.on_pressed
       WalkAdapter: RB + A.on_pressed
-    policy_dir: config/policy/parametrized_walk/v1
+    policy_dir: config/policy/parametrized_walk/v2
     policy: goal-conditioned
     blend_s: 0.5
     hold_s: 1.0
@@ -198,7 +198,7 @@ FSM:
       Passive: LT + B.on_pressed
       Velocity: RB + X.on_pressed
       WalkGoal: RB + Y.on_pressed
-    policy_dir: config/policy/parametrized_walk/v1
+    policy_dir: config/policy/parametrized_walk/v2
     policy: adapter
     blend_s: 0.5
     hold_s: 1.0

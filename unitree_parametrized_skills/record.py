@@ -30,6 +30,7 @@ def record(factory, output, distances=DISTANCES, after_s=AFTER_S, seed=7):
     plans.make_bank(distances, str(bank), workers=len(distances))
     manifest = json.loads((PACKAGE / 'manifest.json').read_text())
     runs = Path(paths.RUNS)
+    history = manifest.get('history', 1)
 
     # the accelerometer's reading in the pelvis frame, as WalkCommand._accel forms it
     original = env_module.WalkCommand._accel
@@ -45,11 +46,13 @@ def record(factory, output, distances=DISTANCES, after_s=AFTER_S, seed=7):
 
     for name, (run, base_run) in POLICIES.items():
         info = manifest['actors'][name]
+        run, base_run = info['run'], info.get('base_run')      # the runs the package was exported from
         base = str(runs / base_run / 'selected.pt') if base_run else None
         b = torch.load(bank, map_location='cpu', weights_only=False)
         seconds = (int(b['len'].max()) - 1) / b['fps'] + after_s + 2.0
         cfg = env_module.env_cfg(str(bank), num_envs=len(distances), mode='nominal', adapter_base=base,
-                                 adapter_bound=info.get('adapter_bound', 0.5), episode_s=seconds, estimator='kalman')
+                                 adapter_bound=info.get('adapter_bound', 0.5), episode_s=seconds, estimator='kalman',
+                                 history=history, base_history=history if base else 1)
         cfg.seed = seed
         torch.manual_seed(seed)
         env = ManagerBasedRlEnv(cfg=cfg, device='cuda:0')
@@ -67,7 +70,7 @@ def record(factory, output, distances=DISTANCES, after_s=AFTER_S, seed=7):
         steps = torch.zeros(env.num_envs, dtype=torch.long)
         for _ in range(int(b['len'].max()) + round(after_s / env.step_dt)):
             o = obs['actor']
-            now = {'quaternion': robot.root_link_quat_w, 'gyro': o[:, :3], 'accelerometer': c.specific_force,
+            now = {'quaternion': robot.root_link_quat_w, 'gyro': o[:, 3 * (history - 1):3 * history], 'accelerometer': c.specific_force,
                    'joint_pos': robot.joint_pos_biased, 'joint_vel': robot.joint_vel, 'observation': o,
                    'clock': c.clock[:, None].float(), 'estimate': c.odo.pos, 'heading': c.yaw_est[:, None],
                    'pelvis': c.pos_true, 'yaw': c.yaw_true[:, None]}
