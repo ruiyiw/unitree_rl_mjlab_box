@@ -268,6 +268,13 @@ policies (goal-conditioned and adapter), the `parametrized_walk.yaml` profile,
 how the operator sets the distance at launch, from the terminal or the gamepad
 without rebuilding, and switching from the existing velocity policy.
 
+### A person's walk with velocity control
+
+See [HUMAN_WALK.md](HUMAN_WALK.md) for the 145-input policy that tracks a
+motion-capture walk of 2.2 m, the `human_walk.yaml` profile, how its position
+and velocity inputs are estimated on the robot, and what was and was not
+verified. It has not run on a robot.
+
 Add `--record <new-directory>` to `g1_ctrl` to save measured states, commands
 and FSM transitions. See [DEPLOYMENT_RECORDING.md](DEPLOYMENT_RECORDING.md) for
 recording and offline inspection, export and replay.

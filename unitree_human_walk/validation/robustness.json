@@ -1,0 +1,444 @@
+{
+  "method": "unitree_human_walk.simulate, from Velocity, arm weight on the robot, Velocity again after the walk as the profile sets it, then 10 s watched; one run per row",
+  "hardware_tested": false,
+  "nominal": {
+    "result": "completed",
+    "error_m": 0.116,
+    "largest_pelvis_tilt_deg": 6.5,
+    "error_at_the_hand_back_m": 0.024,
+    "drift_on_velocity_m": 0.103
+  },
+  "ankle_offsets": {
+    "0.5x": {
+      "result": "completed",
+      "error_m": 0.105,
+      "largest_pelvis_tilt_deg": 7.3,
+      "error_at_the_hand_back_m": 0.077,
+      "drift_on_velocity_m": 0.068
+    },
+    "1x": {
+      "result": "completed",
+      "error_m": 0.118,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.115,
+      "drift_on_velocity_m": 0.072
+    },
+    "1.5x": {
+      "result": "completed",
+      "error_m": 0.355,
+      "largest_pelvis_tilt_deg": 9.5,
+      "error_at_the_hand_back_m": 0.144,
+      "drift_on_velocity_m": 0.212
+    },
+    "2x": {
+      "result": "completed",
+      "error_m": 0.492,
+      "largest_pelvis_tilt_deg": 11.2,
+      "error_at_the_hand_back_m": 0.231,
+      "drift_on_velocity_m": 0.264
+    },
+    "3x": {
+      "result": "completed",
+      "error_m": 0.391,
+      "largest_pelvis_tilt_deg": 11.6,
+      "error_at_the_hand_back_m": 0.313,
+      "drift_on_velocity_m": 0.347
+    }
+  },
+  "pushes": {
+    "0.2 m/s to the left at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.044,
+      "largest_pelvis_tilt_deg": 7.4,
+      "error_at_the_hand_back_m": 0.047,
+      "drift_on_velocity_m": 0.061
+    },
+    "0.2 m/s to the left at 3 s": {
+      "result": "completed",
+      "error_m": 0.053,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": 0.023,
+      "drift_on_velocity_m": 0.074
+    },
+    "0.2 m/s to the left at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.071,
+      "largest_pelvis_tilt_deg": 7.4,
+      "error_at_the_hand_back_m": 0.035,
+      "drift_on_velocity_m": 0.064
+    },
+    "0.2 m/s to the right at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.042,
+      "largest_pelvis_tilt_deg": 6.3,
+      "error_at_the_hand_back_m": 0.036,
+      "drift_on_velocity_m": 0.066
+    },
+    "0.2 m/s to the right at 3 s": {
+      "result": "completed",
+      "error_m": 0.087,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": 0.03,
+      "drift_on_velocity_m": 0.071
+    },
+    "0.2 m/s to the right at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.039,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": 0.056,
+      "drift_on_velocity_m": 0.084
+    },
+    "0.3 m/s to the left at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.035,
+      "largest_pelvis_tilt_deg": 7.8,
+      "error_at_the_hand_back_m": 0.081,
+      "drift_on_velocity_m": 0.064
+    },
+    "0.3 m/s to the left at 3 s": {
+      "result": "completed",
+      "error_m": 0.073,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": 0.026,
+      "drift_on_velocity_m": 0.093
+    },
+    "0.3 m/s to the left at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.12,
+      "largest_pelvis_tilt_deg": 7.9,
+      "error_at_the_hand_back_m": 0.051,
+      "drift_on_velocity_m": 0.073
+    },
+    "0.3 m/s to the right at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.051,
+      "largest_pelvis_tilt_deg": 7.0,
+      "error_at_the_hand_back_m": 0.018,
+      "drift_on_velocity_m": 0.066
+    },
+    "0.3 m/s to the right at 3 s": {
+      "result": "completed",
+      "error_m": 0.099,
+      "largest_pelvis_tilt_deg": 7.4,
+      "error_at_the_hand_back_m": 0.047,
+      "drift_on_velocity_m": 0.098
+    },
+    "0.3 m/s to the right at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.027,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": 0.051,
+      "drift_on_velocity_m": 0.062
+    },
+    "0.4 m/s to the left at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.015,
+      "largest_pelvis_tilt_deg": 8.1,
+      "error_at_the_hand_back_m": 0.059,
+      "drift_on_velocity_m": 0.06
+    },
+    "0.4 m/s to the left at 3 s": {
+      "result": "completed",
+      "error_m": 0.125,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": 0.04,
+      "drift_on_velocity_m": 0.108
+    },
+    "0.4 m/s to the left at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.096,
+      "largest_pelvis_tilt_deg": 8.3,
+      "error_at_the_hand_back_m": 0.046,
+      "drift_on_velocity_m": 0.077
+    },
+    "0.4 m/s to the right at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.071,
+      "largest_pelvis_tilt_deg": 8.7,
+      "error_at_the_hand_back_m": 0.042,
+      "drift_on_velocity_m": 0.075
+    },
+    "0.4 m/s to the right at 3 s": {
+      "result": "completed",
+      "error_m": 0.036,
+      "largest_pelvis_tilt_deg": 8.9,
+      "error_at_the_hand_back_m": 0.054,
+      "drift_on_velocity_m": 0.051
+    },
+    "0.4 m/s to the right at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.082,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": 0.04,
+      "drift_on_velocity_m": 0.108
+    }
+  },
+  "pushes_with_offsets": {
+    "0.2 m/s to the left at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.154,
+      "largest_pelvis_tilt_deg": 10.3,
+      "error_at_the_hand_back_m": 0.119,
+      "drift_on_velocity_m": 0.036
+    },
+    "0.2 m/s to the left at 3 s": {
+      "result": "completed",
+      "error_m": 0.115,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.108,
+      "drift_on_velocity_m": 0.079
+    },
+    "0.2 m/s to the left at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.119,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.114,
+      "drift_on_velocity_m": 0.074
+    },
+    "0.2 m/s to the right at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.136,
+      "largest_pelvis_tilt_deg": 8.7,
+      "error_at_the_hand_back_m": 0.104,
+      "drift_on_velocity_m": 0.079
+    },
+    "0.2 m/s to the right at 3 s": {
+      "result": "completed",
+      "error_m": 0.121,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.113,
+      "drift_on_velocity_m": 0.038
+    },
+    "0.2 m/s to the right at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.243,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.094,
+      "drift_on_velocity_m": 0.15
+    },
+    "0.3 m/s to the left at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.11,
+      "largest_pelvis_tilt_deg": 11.1,
+      "error_at_the_hand_back_m": 0.138,
+      "drift_on_velocity_m": 0.065
+    },
+    "0.3 m/s to the left at 3 s": {
+      "result": "completed",
+      "error_m": 0.125,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.095,
+      "drift_on_velocity_m": 0.076
+    },
+    "0.3 m/s to the left at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.19,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.122,
+      "drift_on_velocity_m": 0.094
+    },
+    "0.3 m/s to the right at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.137,
+      "largest_pelvis_tilt_deg": 8.7,
+      "error_at_the_hand_back_m": 0.093,
+      "drift_on_velocity_m": 0.084
+    },
+    "0.3 m/s to the right at 3 s": {
+      "result": "completed",
+      "error_m": 0.133,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.111,
+      "drift_on_velocity_m": 0.071
+    },
+    "0.3 m/s to the right at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.047,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.108,
+      "drift_on_velocity_m": 0.072
+    },
+    "0.4 m/s to the left at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.128,
+      "largest_pelvis_tilt_deg": 11.3,
+      "error_at_the_hand_back_m": 0.161,
+      "drift_on_velocity_m": 0.054
+    },
+    "0.4 m/s to the left at 3 s": {
+      "result": "completed",
+      "error_m": 0.343,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.133,
+      "drift_on_velocity_m": 0.321
+    },
+    "0.4 m/s to the left at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.053,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.116,
+      "drift_on_velocity_m": 0.077
+    },
+    "0.4 m/s to the right at 1.5 s": {
+      "result": "completed",
+      "error_m": 0.109,
+      "largest_pelvis_tilt_deg": 9.1,
+      "error_at_the_hand_back_m": 0.072,
+      "drift_on_velocity_m": 0.077
+    },
+    "0.4 m/s to the right at 3 s": {
+      "result": "completed",
+      "error_m": 0.071,
+      "largest_pelvis_tilt_deg": 9.4,
+      "error_at_the_hand_back_m": 0.116,
+      "drift_on_velocity_m": 0.046
+    },
+    "0.4 m/s to the right at 4.5 s": {
+      "result": "completed",
+      "error_m": 0.094,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": 0.108,
+      "drift_on_velocity_m": 0.097
+    }
+  },
+  "foot_friction": {
+    "0.4": {
+      "result": "completed",
+      "error_m": 0.061,
+      "largest_pelvis_tilt_deg": 7.2,
+      "error_at_the_hand_back_m": 0.055,
+      "drift_on_velocity_m": 0.058
+    },
+    "0.6": {
+      "result": "completed",
+      "error_m": 0.116,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": 0.024,
+      "drift_on_velocity_m": 0.103
+    },
+    "0.8": {
+      "result": "completed",
+      "error_m": 0.03,
+      "largest_pelvis_tilt_deg": 6.8,
+      "error_at_the_hand_back_m": 0.052,
+      "drift_on_velocity_m": 0.078
+    },
+    "1": {
+      "result": "completed",
+      "error_m": 0.044,
+      "largest_pelvis_tilt_deg": 6.6,
+      "error_at_the_hand_back_m": 0.047,
+      "drift_on_velocity_m": 0.091
+    },
+    "1.2": {
+      "result": "completed",
+      "error_m": 0.044,
+      "largest_pelvis_tilt_deg": 6.4,
+      "error_at_the_hand_back_m": 0.035,
+      "drift_on_velocity_m": 0.076
+    },
+    "1.4": {
+      "result": "completed",
+      "error_m": 0.081,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": 0.041,
+      "drift_on_velocity_m": 0.122
+    }
+  },
+  "holding_at_the_end_instead": {
+    "ankle offsets 0.5x": {
+      "result": "completed",
+      "error_m": 0.069,
+      "largest_pelvis_tilt_deg": 7.3,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "ankle offsets 1x": {
+      "result": "completed",
+      "error_m": 0.094,
+      "largest_pelvis_tilt_deg": 9.3,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "ankle offsets 1.5x": {
+      "result": "completed",
+      "error_m": 0.152,
+      "largest_pelvis_tilt_deg": 9.5,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "ankle offsets 2x": {
+      "result": "fell",
+      "error_m": 0.602,
+      "largest_pelvis_tilt_deg": 47.7,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "ankle offsets 3x": {
+      "result": "fell",
+      "error_m": 0.427,
+      "largest_pelvis_tilt_deg": 45.1,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "foot friction 0.4": {
+      "result": "completed",
+      "error_m": 0.056,
+      "largest_pelvis_tilt_deg": 7.2,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "foot friction 0.6": {
+      "result": "completed",
+      "error_m": 0.017,
+      "largest_pelvis_tilt_deg": 6.5,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "foot friction 0.8": {
+      "result": "completed",
+      "error_m": 0.018,
+      "largest_pelvis_tilt_deg": 6.8,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "foot friction 1": {
+      "result": "completed",
+      "error_m": 0.006,
+      "largest_pelvis_tilt_deg": 6.6,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "foot friction 1.2": {
+      "result": "fell",
+      "error_m": 0.404,
+      "largest_pelvis_tilt_deg": 45.3,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    },
+    "foot friction 1.4": {
+      "result": "fell",
+      "error_m": 0.465,
+      "largest_pelvis_tilt_deg": 48.7,
+      "error_at_the_hand_back_m": null,
+      "drift_on_velocity_m": null
+    }
+  },
+  "summary": {
+    "first_ankle_offset_multiple_that_falls": "none up to 3x",
+    "falls_pushes_0.2_m_s_of_6": 0,
+    "falls_pushes_0.3_m_s_of_6": 0,
+    "falls_pushes_0.4_m_s_of_6": 0,
+    "falls_pushes_with_offsets_0.2_m_s_of_6": 0,
+    "falls_pushes_with_offsets_0.3_m_s_of_6": 0,
+    "falls_pushes_with_offsets_0.4_m_s_of_6": 0,
+    "falls_foot_friction_of_6": 0,
+    "falls_holding_at_the_end_instead_of_11": 4,
+    "which_fell_holding": [
+      "ankle offsets 2x",
+      "ankle offsets 3x",
+      "foot friction 1.2",
+      "foot friction 1.4"
+    ]
+  }
+}

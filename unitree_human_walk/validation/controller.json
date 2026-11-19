@@ -1,0 +1,82 @@
+{
+  "hardware_tested": false,
+  "tolerance": {
+    "observation": 0.0001,
+    "estimate_m": 0.0001,
+    "velocity_m_s": 0.001,
+    "action": 0.001,
+    "target_rad": 0.0005,
+    "torque_nm": 0.0001
+  },
+  "rollouts": {
+    "nominal": {
+      "steps": 599,
+      "plan_frames": 323,
+      "ended_early_in_training": false,
+      "pushes": false,
+      "walked_m": 2.235494613647461,
+      "estimate_error_at_end_m": 0.05472089350223541,
+      "largest_arm_torque_nm": 2.606329259384695,
+      "settled_flag": true,
+      "max_difference": {
+        "observation": 5.97536563873291e-06,
+        "estimate_m": 4.291534423828125e-06,
+        "velocity_m_s": 5.9604644775390625e-06,
+        "action": 2.6702880859375e-05,
+        "target_rad": 1.1712312698364258e-05,
+        "torque_nm": 1.4925458877712572e-06,
+        "action_reading_back_its_own_correction": 0.0002644062042236328,
+        "target_rad_reading_back_its_own_correction": 0.00011596083641052246,
+        "pytorch_actor_vs_recorded": 1.1920928955078125e-06,
+        "onnx_vs_pytorch_actor": 7.152557373046875e-07
+      },
+      "max_observation_difference_by_term": {
+        "ref_joints": 0.0,
+        "ref_anchor": 4.2816391214728355e-06,
+        "ref_preview": 4.2816391214728355e-06,
+        "ref_clock": 0.0,
+        "base_lin_vel": 5.97536563873291e-06,
+        "base_ang_vel": 0.0,
+        "projected_gravity": 5.960464477539063e-08,
+        "joint_pos": 0.0,
+        "joint_vel": 0.0,
+        "actions": 0.0
+      }
+    },
+    "pushes": {
+      "steps": 593,
+      "plan_frames": 323,
+      "ended_early_in_training": true,
+      "pushes": true,
+      "walked_m": 2.012796401977539,
+      "estimate_error_at_end_m": 0.09493492543697357,
+      "largest_arm_torque_nm": 2.6063291312238475,
+      "settled_flag": false,
+      "max_difference": {
+        "observation": 1.9609928131103516e-05,
+        "estimate_m": 7.62939453125e-06,
+        "velocity_m_s": 2.0205974578857422e-05,
+        "action": 4.738569259643555e-05,
+        "target_rad": 2.078711986541748e-05,
+        "torque_nm": 9.182543885266625e-07,
+        "action_reading_back_its_own_correction": 0.01749241352081299,
+        "target_rad_reading_back_its_own_correction": 0.007671773433685303,
+        "pytorch_actor_vs_recorded": 1.430511474609375e-06,
+        "onnx_vs_pytorch_actor": 8.344650268554688e-07
+      },
+      "max_observation_difference_by_term": {
+        "ref_joints": 0.0,
+        "ref_anchor": 7.316470146179199e-06,
+        "ref_preview": 7.309019565582275e-06,
+        "ref_clock": 0.0,
+        "base_lin_vel": 1.9609928131103516e-05,
+        "base_ang_vel": 0.0,
+        "projected_gravity": 1.1920928955078125e-07,
+        "joint_pos": 0.0,
+        "joint_vel": 0.0,
+        "actions": 0.0
+      }
+    }
+  },
+  "method": "Sensors recorded in the mjlab training env (nominal robot, estimate.py inputs) replayed through the C++ controller; its outputs compared with the recording at every step"
+}

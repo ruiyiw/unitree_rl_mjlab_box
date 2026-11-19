@@ -1,0 +1,77 @@
+{
+  "motion": "policy-walk-human",
+  "checkpoint_source": "/home/rwang/humanoid-full/policies/policy-walk-human/runs/policy/model_500.pt",
+  "iteration": 500,
+  "checkpoint_sha256": "0f9e9ad8328df547aba759e77e16bd73016becb2577b7513f3ee1886a675387d",
+  "hidden": [
+    512,
+    256,
+    128
+  ],
+  "plan": {
+    "title": "Unitree G1 (23 DoF) \u00b7 a person's walk (LAFAN1), stand to stand",
+    "source": "a person's walk (LAFAN1), retargeted",
+    "phases": [
+      [
+        "stand",
+        0.0,
+        "stand"
+      ],
+      [
+        "walk",
+        0.4,
+        "walk as the person in the clip walks, stop"
+      ],
+      [
+        "rest",
+        5.433333333333334,
+        "stand"
+      ],
+      [
+        "end",
+        6.44,
+        null
+      ]
+    ],
+    "walk": {
+      "from": [
+        0.0,
+        0.0
+      ],
+      "to": [
+        2.201532459016693,
+        -0.14060907967660288
+      ]
+    },
+    "stats": {
+      "clip": "walk3_subject1",
+      "frames": [
+        6679,
+        6821
+      ],
+      "clip_fps": 30,
+      "seconds": 6.44,
+      "walk_m": 2.206,
+      "walk_to": [
+        2.202,
+        -0.141
+      ],
+      "pelvis_speed_max_mps": 0.761,
+      "pelvis_z_m": [
+        0.725,
+        0.792
+      ],
+      "floor_shift_m": 0.0002,
+      "sole_lowest_m": -0.009,
+      "sole_below_floor_share": 0.3653,
+      "joint_limit_margin_rad_min": 0.074,
+      "joint_limit_margin_worst": "left_ankle_roll_joint",
+      "joint_speed_max_radps": 8.14,
+      "joint_speed_max_joint": "left_knee_joint",
+      "planned_in_s": 1.1
+    }
+  },
+  "trained_with_estimator": null,
+  "trained_inputs": "the simulator's torso pose and IMU velocity, with uniform noise (0.05 and 0.3 m/s)",
+  "trained_randomization": "foot friction 0.4-1.2, encoder bias 0.01 rad, pushes up to 0.4 m/s; nothing else"
+}

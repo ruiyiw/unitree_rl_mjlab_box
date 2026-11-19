@@ -1,0 +1,437 @@
+{
+  "format": "g1-human-walk-v1",
+  "hardware_validated": false,
+  "estimator": "kalman leg odometry + sole height",
+  "source_root": "/home/rwang/humanoid-full/policies",
+  "actor": {
+    "motion": "policy-walk-human",
+    "checkpoint_source": "/home/rwang/humanoid-full/policies/policy-walk-human/runs/policy/model_500.pt",
+    "iteration": 500,
+    "checkpoint_sha256": "0f9e9ad8328df547aba759e77e16bd73016becb2577b7513f3ee1886a675387d",
+    "hidden": [
+      512,
+      256,
+      128
+    ],
+    "trained_with_estimator": null,
+    "trained_inputs": "the simulator's torso pose and IMU velocity, with uniform noise (0.05 and 0.3 m/s)",
+    "trained_randomization": "foot friction 0.4-1.2, encoder bias 0.01 rad, pushes up to 0.4 m/s; nothing else",
+    "onnx_sha256": "36439cb80eecdb2364fbbe6d67b72d24dd32d2bba1aa98cf2bc44dd85b6dab6b"
+  },
+  "interface": {
+    "joint_order": [
+      "left_hip_pitch_joint",
+      "left_hip_roll_joint",
+      "left_hip_yaw_joint",
+      "left_knee_joint",
+      "left_ankle_pitch_joint",
+      "left_ankle_roll_joint",
+      "right_hip_pitch_joint",
+      "right_hip_roll_joint",
+      "right_hip_yaw_joint",
+      "right_knee_joint",
+      "right_ankle_pitch_joint",
+      "right_ankle_roll_joint",
+      "waist_yaw_joint",
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint"
+    ],
+    "action_order": [
+      "left_hip_pitch_joint",
+      "left_hip_roll_joint",
+      "left_hip_yaw_joint",
+      "left_knee_joint",
+      "left_ankle_pitch_joint",
+      "left_ankle_roll_joint",
+      "right_hip_pitch_joint",
+      "right_hip_roll_joint",
+      "right_hip_yaw_joint",
+      "right_knee_joint",
+      "right_ankle_pitch_joint",
+      "right_ankle_roll_joint",
+      "waist_yaw_joint",
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint"
+    ],
+    "action_scale": [
+      0.5475464629911068,
+      0.35066146637882434,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.43857731392336724,
+      0.43857731392336724,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.43857731392336724,
+      0.43857731392336724,
+      0.5475464629911068,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.43857731392336724,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.43857731392336724
+    ],
+    "default_joint_positions": [
+      -0.312,
+      0.0,
+      0.0,
+      0.669,
+      -0.363,
+      0.0,
+      -0.312,
+      0.0,
+      0.0,
+      0.669,
+      -0.363,
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.0,
+      0.6,
+      0.0,
+      0.2,
+      -0.2,
+      0.0,
+      0.6,
+      0.0
+    ],
+    "kp": [
+      40.17923863450712,
+      99.09842777666111,
+      40.17923863450712,
+      99.09842777666111,
+      28.50124619574858,
+      28.50124619574858,
+      40.17923863450712,
+      99.09842777666111,
+      40.17923863450712,
+      99.09842777666111,
+      28.50124619574858,
+      28.50124619574858,
+      40.17923863450712,
+      40.0,
+      40.0,
+      40.0,
+      40.0,
+      14.25062309787429,
+      40.0,
+      40.0,
+      40.0,
+      40.0,
+      14.25062309787429
+    ],
+    "kd": [
+      2.557889775413375,
+      6.308801853496639,
+      2.557889775413375,
+      6.308801853496639,
+      1.814445686584846,
+      1.814445686584846,
+      2.557889775413375,
+      6.308801853496639,
+      2.557889775413375,
+      6.308801853496639,
+      1.814445686584846,
+      1.814445686584846,
+      2.557889775413375,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      0.907222843292423,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      0.907222843292423
+    ],
+    "force_limits": [
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ]
+    ],
+    "physics_dt": 0.005,
+    "decimation": 4,
+    "policy_dt": 0.02,
+    "dimensions": {
+      "nq": 30,
+      "nv": 29,
+      "nu": 23
+    },
+    "arm_gravity_compensation": {
+      "bodies": [
+        "left_shoulder_pitch_link",
+        "left_shoulder_roll_link",
+        "left_shoulder_yaw_link",
+        "left_elbow_link",
+        "left_wrist_roll_rubber_hand",
+        "right_shoulder_pitch_link",
+        "right_shoulder_roll_link",
+        "right_shoulder_yaw_link",
+        "right_elbow_link",
+        "right_wrist_roll_rubber_hand"
+      ],
+      "in_training": "MuJoCo body gravcomp: the arm joints through their motors, and the pelvis for free",
+      "on_the_robot": "feedforward torque on the ten arm motors (table_box::gravity_torque)"
+    }
+  },
+  "reference": {
+    "frames": 323,
+    "fps": 50,
+    "seconds": 6.44,
+    "walk_m": 2.2015323638916016,
+    "title": "Unitree G1 (23 DoF) \u00b7 a person's walk (LAFAN1), stand to stand",
+    "frame": [
+      "qcmd/left_hip_pitch_joint",
+      "qcmd/left_hip_roll_joint",
+      "qcmd/left_hip_yaw_joint",
+      "qcmd/left_knee_joint",
+      "qcmd/left_ankle_pitch_joint",
+      "qcmd/left_ankle_roll_joint",
+      "qcmd/right_hip_pitch_joint",
+      "qcmd/right_hip_roll_joint",
+      "qcmd/right_hip_yaw_joint",
+      "qcmd/right_knee_joint",
+      "qcmd/right_ankle_pitch_joint",
+      "qcmd/right_ankle_roll_joint",
+      "qcmd/waist_yaw_joint",
+      "qcmd/left_shoulder_pitch_joint",
+      "qcmd/left_shoulder_roll_joint",
+      "qcmd/left_shoulder_yaw_joint",
+      "qcmd/left_elbow_joint",
+      "qcmd/left_wrist_roll_joint",
+      "qcmd/right_shoulder_pitch_joint",
+      "qcmd/right_shoulder_roll_joint",
+      "qcmd/right_shoulder_yaw_joint",
+      "qcmd/right_elbow_joint",
+      "qcmd/right_wrist_roll_joint",
+      "q/left_hip_pitch_joint",
+      "q/left_hip_roll_joint",
+      "q/left_hip_yaw_joint",
+      "q/left_knee_joint",
+      "q/left_ankle_pitch_joint",
+      "q/left_ankle_roll_joint",
+      "q/right_hip_pitch_joint",
+      "q/right_hip_roll_joint",
+      "q/right_hip_yaw_joint",
+      "q/right_knee_joint",
+      "q/right_ankle_pitch_joint",
+      "q/right_ankle_roll_joint",
+      "q/waist_yaw_joint",
+      "q/left_shoulder_pitch_joint",
+      "q/left_shoulder_roll_joint",
+      "q/left_shoulder_yaw_joint",
+      "q/left_elbow_joint",
+      "q/left_wrist_roll_joint",
+      "q/right_shoulder_pitch_joint",
+      "q/right_shoulder_roll_joint",
+      "q/right_shoulder_yaw_joint",
+      "q/right_elbow_joint",
+      "q/right_wrist_roll_joint",
+      "dq/left_hip_pitch_joint",
+      "dq/left_hip_roll_joint",
+      "dq/left_hip_yaw_joint",
+      "dq/left_knee_joint",
+      "dq/left_ankle_pitch_joint",
+      "dq/left_ankle_roll_joint",
+      "dq/right_hip_pitch_joint",
+      "dq/right_hip_roll_joint",
+      "dq/right_hip_yaw_joint",
+      "dq/right_knee_joint",
+      "dq/right_ankle_pitch_joint",
+      "dq/right_ankle_roll_joint",
+      "dq/waist_yaw_joint",
+      "dq/left_shoulder_pitch_joint",
+      "dq/left_shoulder_roll_joint",
+      "dq/left_shoulder_yaw_joint",
+      "dq/left_elbow_joint",
+      "dq/left_wrist_roll_joint",
+      "dq/right_shoulder_pitch_joint",
+      "dq/right_shoulder_roll_joint",
+      "dq/right_shoulder_yaw_joint",
+      "dq/right_elbow_joint",
+      "dq/right_wrist_roll_joint",
+      "torso_x",
+      "torso_y",
+      "torso_z",
+      "torso_qw",
+      "torso_qx",
+      "torso_qy",
+      "torso_qz",
+      "pelvis_x",
+      "pelvis_y"
+    ]
+  },
+  "observation": [
+    [
+      "ref_joints",
+      46
+    ],
+    [
+      "ref_anchor",
+      9
+    ],
+    [
+      "ref_preview",
+      10
+    ],
+    [
+      "ref_clock",
+      2
+    ],
+    [
+      "base_lin_vel",
+      3
+    ],
+    [
+      "base_ang_vel",
+      3
+    ],
+    [
+      "projected_gravity",
+      3
+    ],
+    [
+      "joint_pos",
+      23
+    ],
+    [
+      "joint_vel",
+      23
+    ],
+    [
+      "actions",
+      23
+    ]
+  ],
+  "source_files": {
+    "motion.py": "26b85272a9798cdb4a84c05590cdae4ee76794da04d748062f224a7ea66dd99b",
+    "task.py": "48ca5dfb1461ae1262d0d4b31013309c7913e9d4209eac7a40cf94efeae07861",
+    "scene.py": "f405ead865da6d89b691368bf6eaa3efa9a5c14cb857afbf1e1d3e4cd745b2d1",
+    "g1_23dof.py": "649616b2ff63f3747e45f892d42de83c3d5f4e74d7b51a12e48b757d1b928c38",
+    "plans.py": "0aa187a012d747fd76530e5c72666e55620ee62554aa8c498681aebe9edc03ed",
+    "README.md": "332131ac757ca0c3ed39d0684df5d90394e8f40b6ff3827265ca7b2a37f5a8fc"
+  },
+  "files": {
+    "checkpoint.pt": "0f9e9ad8328df547aba759e77e16bd73016becb2577b7513f3ee1886a675387d",
+    "params/PolicyConfig.h": "97e17e8c3454971a5838970cdcb666f04557d2e77e93e43c7d6c2a3b487e21ec",
+    "params/contract.json": "79a89b33ba0710780030c0a8494116cac44dcbbfa8258fdb2117d484134ee979",
+    "params/estimator.json": "44402aad8c7bebf21114bbd8874f9794f673dbef83df170e5b32c0e1998c4dbd",
+    "policy.onnx": "36439cb80eecdb2364fbbe6d67b72d24dd32d2bba1aa98cf2bc44dd85b6dab6b",
+    "reference.bin": "b5fa7854ec75dc0e613e1855b7bf56e3fd297bedef0ef79c4b8c712216746e06",
+    "source_metadata.json": "85e0b541a254a0e349e4e34852676b5aade94df76918dffdadf3b1f4966f34ab"
+  }
+}

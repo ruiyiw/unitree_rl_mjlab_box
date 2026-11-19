@@ -1,0 +1,53 @@
+{
+ "policy": "runs/policy/model_500.pt",
+ "pushes": false,
+ "episodes": 256,
+ "success": 1.0,
+ "fell": 0.0,
+ "tracking": 0.0,
+ "time_to_success_s": [
+  7.46,
+  7.46,
+  7.46
+ ],
+ "standing_at_60_s": 1.0,
+ "plan_walk_m": 2.206,
+ "walked_m_min_median_max": [
+  2.225,
+  2.251,
+  2.268
+ ],
+ "turned_rad_min_median_max": [
+  0.037,
+  0.051,
+  0.054
+ ],
+ "torso_off_plan_m_min_median_max": [
+  0.032,
+  0.056,
+  0.066
+ ],
+ "checkpoint": "runs/policy/model_500.pt",
+ "arm_weight_on_the_pelvis": true,
+ "position_and_velocity_inputs": "estimate.py (leg odometry, sole height, IMU, waist encoder)",
+ "estimate_error_ref_anchor_position_m_median_p95_max": [
+  0.0635,
+  0.0696,
+  0.0789
+ ],
+ "estimate_error_ref_anchor_rotation_median_p95_max": [
+  0.0,
+  0.0,
+  0.0335
+ ],
+ "estimate_error_ref_preview_median_p95_max": [
+  0.0635,
+  0.0696,
+  0.0789
+ ],
+ "estimate_error_imu_lin_vel_m_s_median_p95_max": [
+  0.0,
+  0.0351,
+  0.6835
+ ]
+}

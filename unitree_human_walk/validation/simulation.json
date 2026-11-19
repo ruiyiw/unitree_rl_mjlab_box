@@ -1,0 +1,120 @@
+{
+  "from_velocity_then_velocity_again (the profile)": {
+    "from_velocity": true,
+    "blend_s": 0.5,
+    "hold_s": 1.0,
+    "stop_reason": "completed",
+    "arm_weight": "carried by the robot; the controller's torque at the ten arm motors",
+    "ankle_offset_multiple": 0.0,
+    "push_m_s_deg_s": null,
+    "foot_friction": null,
+    "walk": {
+      "reference_m": [
+        2.2015323638916016,
+        -0.14060908555984497
+      ],
+      "walked_m": 2.2368755525392063,
+      "sideways_m": -0.030116531479653916,
+      "error_m": 0.11600752342388887,
+      "estimate_m": [
+        2.1857848167419434,
+        -0.18903085589408875
+      ],
+      "estimate_minus_truth_m": [
+        -0.051090735797262976,
+        -0.15891432441443482
+      ],
+      "heading_change_deg": -24.551467652934754,
+      "reference_ended_s_after_entry": 7.46,
+      "settled_s_after_entry": null,
+      "largest_pelvis_tilt_deg": 6.465309807960442,
+      "lowest_pelvis_m": 0.7171895860119522,
+      "pushed_s_after_entry": null,
+      "first_frame": 250,
+      "returned_to_velocity_s_after_the_reference": 0.5,
+      "on_velocity_afterwards": {
+        "seconds": 10.0,
+        "drift_m": 0.10268179944948894,
+        "error_at_the_hand_back_m": 0.02370306686521349
+      }
+    },
+    "physics": "native CPU MuJoCo, one nominal robot, PD joints; not the batched GPU evaluation",
+    "hardware_tested": false
+  },
+  "started_directly_holding_at_the_end": {
+    "from_velocity": false,
+    "blend_s": 0.5,
+    "hold_s": 1.0,
+    "stop_reason": "completed",
+    "arm_weight": "carried by the robot; the controller's torque at the ten arm motors",
+    "ankle_offset_multiple": 0.0,
+    "push_m_s_deg_s": null,
+    "foot_friction": null,
+    "walk": {
+      "reference_m": [
+        2.2015323638916016,
+        -0.14060908555984497
+      ],
+      "walked_m": 2.2577424036157554,
+      "sideways_m": -0.13134008099482813,
+      "error_m": 0.056969140869573026,
+      "estimate_m": [
+        2.2017834186553955,
+        -0.16488872468471527
+      ],
+      "estimate_minus_truth_m": [
+        -0.05595898496035989,
+        -0.033548643689887137
+      ],
+      "heading_change_deg": -2.4999244939548717,
+      "reference_ended_s_after_entry": 7.46,
+      "settled_s_after_entry": 8.74,
+      "largest_pelvis_tilt_deg": 10.200408485897492,
+      "lowest_pelvis_m": 0.7073296542578327,
+      "pushed_s_after_entry": null,
+      "first_frame": 0,
+      "returned_to_velocity_s_after_the_reference": null,
+      "on_velocity_afterwards": null
+    },
+    "physics": "native CPU MuJoCo, one nominal robot, PD joints; not the batched GPU evaluation",
+    "hardware_tested": false
+  },
+  "started_directly_holding_at_the_end_training_arms": {
+    "from_velocity": false,
+    "blend_s": 0.5,
+    "hold_s": 1.0,
+    "stop_reason": "completed",
+    "arm_weight": "weightless to the pelvis, as in training",
+    "ankle_offset_multiple": 0.0,
+    "push_m_s_deg_s": null,
+    "foot_friction": null,
+    "walk": {
+      "reference_m": [
+        2.2015323638916016,
+        -0.14060908555984497
+      ],
+      "walked_m": 2.227702463464225,
+      "sideways_m": -0.14458211377079527,
+      "error_m": 0.02646996533443208,
+      "estimate_m": [
+        2.183590888977051,
+        -0.16423399746418
+      ],
+      "estimate_minus_truth_m": [
+        -0.04411157448717429,
+        -0.01965188369338472
+      ],
+      "heading_change_deg": -1.0712922353345031,
+      "reference_ended_s_after_entry": 7.46,
+      "settled_s_after_entry": 8.68,
+      "largest_pelvis_tilt_deg": 7.22837035529885,
+      "lowest_pelvis_m": 0.727210188016829,
+      "pushed_s_after_entry": null,
+      "first_frame": 0,
+      "returned_to_velocity_s_after_the_reference": null,
+      "on_velocity_afterwards": null
+    },
+    "physics": "native CPU MuJoCo, one nominal robot, PD joints; not the batched GPU evaluation",
+    "hardware_tested": false
+  }
+}

@@ -10,6 +10,8 @@
 #include "TableBoxPreflight.h"
 #include "State_ParametrizedWalk.h"
 #include "ParametrizedWalkOperator.h"
+#include "State_HumanWalk.h"
+#include "HumanWalkPreflight.h"
 #include "DeploymentRecordMessages.h"
 #include <csignal>
 #include <set>
@@ -99,6 +101,7 @@ int main(int argc, char** argv)
             param::load_config_file();
             const auto config=YAML::LoadFile(argv[2]);
             if (parametrized_walk::is_profile(config)) parametrized_walk::preflight(config,param::proj_dir);
+            else if (human_walk::is_profile(config)) human_walk::preflight(config,param::proj_dir);
             else if (table_box::is_profile(config)) table_box::preflight(config,param::proj_dir);
             else box_policy::preflight(config,param::proj_dir);
             return 0;
@@ -130,6 +133,9 @@ int main(int argc, char** argv)
         } catch (const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
     } else if (vm.count("distance")) {
         std::cerr<<"--distance needs a parametrized-walk profile\n"; return 1;
+    } else if (human_walk::is_profile(param::config)) {
+        try { human_walk::preflight(param::config,param::proj_dir); }
+        catch (const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
     } else if (table_box::is_profile(param::config)) {
         try { table_box::preflight(param::config,param::proj_dir); }
         catch (const std::exception& e) { std::cerr<<e.what()<<"\n"; return 1; }
