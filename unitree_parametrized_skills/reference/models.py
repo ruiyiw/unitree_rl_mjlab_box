@@ -19,10 +19,10 @@ ADAPTER_HIDDEN = (64, 64)          # approach 3's learned correction
 CRITIC_HIDDEN = (512, 256, 128)    # training only; never deployed
 
 
-def dist_cfg(init_std: float, learn: bool = True) -> dict:
-    """Gaussian exploration with one std per joint, kept below 0.4 (or fixed at init_std)."""
+def dist_cfg(init_std: float, learn: bool = True, std_range=None) -> dict:
+    """Gaussian exploration with one std per joint, kept below 0.4 or within std_range (or fixed at init_std)."""
     return {"class_name": "GaussianDistribution", "init_std": init_std, "std_type": "scalar", "learn_std": learn,
-            "std_range": (0.01, 0.4) if learn else (init_std, init_std)}
+            "std_range": tuple(std_range or (0.01, 0.4)) if learn else (init_std, init_std)}
 
 
 class ResidualActor(MLPModel):

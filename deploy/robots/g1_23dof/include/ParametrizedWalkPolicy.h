@@ -13,7 +13,7 @@
 //
 // This header has no DDS, YAML or logging dependency, so the offline tests run the same code.
 #include "BoxPolicy.h"
-#include "../config/policy/parametrized_walk/v2/params/PolicyConfig.h"
+#include "../config/policy/parametrized_walk/v3/params/PolicyConfig.h"
 #include <map>
 #include <mutex>
 
@@ -247,6 +247,16 @@ public:
     float metres() const { return plan_?Library::metres(*plan_):0.f; }
     float seconds() const { return plan_?(plan_->length-1)*kStepDt:0.f; }
     const Action& previous() const { return previous_; }
+    // Deployment only (training has none): each step's change of each raw action is held to `limit` (raw action
+    // units per 20 ms step, per joint).  A policy that leaves its training distribution, in a fall for example,
+    // cannot command a larger change than its healthy self did.  The limited action is the one applied, and the
+    // one the actor reads as its previous action.
+    void rate_limit(const Action& limit) {
+        for(float v:limit) if(!std::isfinite(v) || v<=0) throw std::runtime_error("Invalid action rate limit");
+        rate_=limit; limited_=true;
+    }
+    void no_rate_limit() { limited_=false; }
+    bool rate_limited() const { return limited_; }
     // The estimate measured from the walk's start: metres along the route, metres to its left.
     Vec2 walked() const {
         if(!plan_) return {0,0};
@@ -297,13 +307,18 @@ public:
         size_t at=0;
         for(const auto& term:kSensorTerms) for(int h=0;h<kHistory;++h) for(int i=0;i<term[1];++i) input[at++]=history_[h][term[0]+i];
         std::copy(obs.begin()+75,obs.end(),input.begin()+at);
-        const auto action=actor_.infer(input);
+        auto action=actor_.infer(input);
+        if(limited_) for(size_t i=0;i<23;++i) {   // an action inside the limit is left bit for bit as the actor gave it
+            const float change=action[i]-previous_[i];
+            if(change>rate_[i]) action[i]=previous_[i]+rate_[i];
+            else if(change<-rate_[i]) action[i]=previous_[i]-rate_[i];
+        }
         Action target{};
         for(size_t i=0;i<23;++i) {
             target[i]=next.qcmd[i]+kScale[i]*action[i];
             if(!std::isfinite(target[i])) throw std::runtime_error("Non-finite walk target");
         }
-        previous_=action; // not clipped, as in training
+        previous_=action; // not clipped, as in training; rate-limited if a limit is set
         return {obs,action,target,clock_,clock_==last,done_,position,heading};
     }
 private:
@@ -322,7 +337,8 @@ private:
     const Plan* plan_=nullptr;
     const Frame* frames_=nullptr;
     Estimator estimator_;
-    Action previous_{};
+    Action previous_{},rate_{};
+    bool limited_=false;
     int clock_=0,holds_=0;
     float heading_origin_=0,stood_=0;
     bool first_=true,done_=false;

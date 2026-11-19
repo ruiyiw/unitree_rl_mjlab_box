@@ -14,7 +14,7 @@ from pathlib import Path
 from . import PACKAGE, POLICIES, ROOT
 from .export import training
 
-DISTANCES = (0.3, 2.5, 20.0)
+DISTANCES = (0.3, 2.5, 5.0)        # the last is the library's longest (v3: 5 m)
 AFTER_S = 5.0                    # recorded after the plan's end: standing at the goal
 
 

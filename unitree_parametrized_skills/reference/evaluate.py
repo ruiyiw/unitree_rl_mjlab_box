@@ -6,6 +6,7 @@ actions.  One constructed controller is used for all N.  Two tiers:
 
   nominal  the nominal robot, clean sensors (the odometry still comes from encoders and IMU)
   dr       training's randomized physics, sensor noise, bias and delay, heading drift; no pushes
+  sensors  the nominal robot with dr's sensor noise, bias, delay and encoder offsets
 
 Per distance: stable-arrival rate (within 10 cm and 10 degrees of the goal, slower than
 0.1 m/s, upright, both feet down, for 0.5 s, AND still so SETTLE s after the plan's end),
@@ -71,7 +72,7 @@ def evaluate(policy=None, bank="eval", tier="nominal", repeats=64, adapter_base=
     if zero:
         act = lambda o: torch.zeros(n, adim, device=dev)  # noqa: E731
     else:
-        hidden = models.ADAPTER_HIDDEN if adapter_base else models.HIDDEN
+        hidden = models.ADAPTER_HIDDEN if adapter_base else (v["actor_hidden"] or models.HIDDEN)
         act = models.frozen_actor(policy, obs["actor"].shape[-1], adim, dev, hidden)
     live = torch.ones(n, dtype=torch.bool, device=dev)
     z = lambda: torch.full((n,), float("nan"), device=dev)  # noqa: E731
@@ -165,7 +166,7 @@ def main():
     ap.add_argument("--adapter-base", default=None)
     ap.add_argument("--zero", action="store_true")
     ap.add_argument("--bank", default="eval")
-    ap.add_argument("--tier", default="nominal", choices=("nominal", "dr", "dr_h"))
+    ap.add_argument("--tier", default="nominal", choices=("nominal", "dr", "dr_h", "sensors"))
     ap.add_argument("--estimator", default=None, choices=tuple(we.ESTIMATORS), help="override the policy's estimator")
     ap.add_argument("--sole-contacts", action="store_true", default=None)
     ap.add_argument("--odometry-scale", type=float, default=1.0, help="the estimator's calibrated scale")

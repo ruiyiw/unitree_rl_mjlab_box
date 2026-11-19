@@ -124,6 +124,16 @@ inline void preflight(const YAML::Node& config,const std::filesystem::path& proj
         require(shortest>=library->shortest() && shortest<=1,"shortest_m outside the library's short end");
         check_expression(node["again"].as<std::string>());
         Controller controller(directory,policy);
+        if(node["rate_limit"] && !node["rate_limit"].IsNull()) {   // optional: no limit without it
+            const auto limit=node["rate_limit"].as<std::vector<float>>();
+            require(limit.size()==23,"rate_limit needs 23 values");
+            Action values{};
+            for(size_t i=0;i<23;++i) {
+                require(std::isfinite(limit[i]) && limit[i]>=.05f && limit[i]<=20,"rate_limit must be 0.05 to 20 raw action units per step");
+                values[i]=limit[i];
+            }
+            controller.rate_limit(values);
+        }
         Sensors sensors{}; sensors.quaternion[0]=1; sensors.accelerometer[2]=9.81f;
         for(size_t i=0;i<23;++i) sensors.position[kMotorIds[i]]=kStart[i];
         for(float metres:{library->shortest(),first,library->longest()}) {
@@ -132,7 +142,8 @@ inline void preflight(const YAML::Node& config,const std::filesystem::path& proj
             require(a.clock==0 && b.clock==0 && !b.ended,"the plan's first frame is not held on entry");
             for(float v:b.target) require(std::isfinite(v),"non-finite joint target");
         }
-        std::cout<<"Parametrized-walk preflight passed: "<<kNames[policy]<<" policy; "<<kActorInputs<<" inputs ("<<kHistory<<" sensor frames), 23 outputs.\n";
+        std::cout<<"Parametrized-walk preflight passed: "<<kNames[policy]<<" policy; "<<kActorInputs<<" inputs ("<<kHistory<<" sensor frames), 23 outputs; action-rate limit "
+                 <<(controller.rate_limited()?"set":"not set")<<".\n";
     }
     std::cout<<"Walk library: "<<library->size()<<" distances, "<<library->shortest()<<" to "<<library->longest()
              <<" m. Velocity and both walk policies passed; no DDS connection or motor commands.\n";

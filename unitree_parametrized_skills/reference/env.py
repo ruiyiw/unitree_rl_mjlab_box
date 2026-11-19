@@ -158,6 +158,18 @@ PROFILES = {
                "acc_noise": 1.0, "acc_bias": 0.25, "push": (0.3, 0.5)},
 }
 PROFILES["robust_p"] = {**PROFILES["robust"], "push": (0.15, 0.5)}     # robust with a gentler push floor
+# "goto": the ranges the humanoid repository's go-to policy was trained with (its table_domain_randomization.py):
+# ankle encoders +-0.02 rad, pushes max(0.4 * level, 0.15) m/s, foot friction 0.5-1.6.  Go-to has no position
+# estimate, so the estimator's tilt and accelerometer errors stay at v1's.
+# "real": "goto", widened wherever the recordings of two robots (docs/robustness_tests/real_offsets.py,
+# real_noise.py; eleven stands, eight walks) go beyond it: standing foot tilt up to 2.2 deg (0.038 rad), which is
+# ankle encoder offset, IMU mount tilt or both; accelerometer bias up to 0.16 m/s^2; accelerometer samples up to
+# 2.6 m/s^2 (std) off their 40 ms mean while walking.  Gyro, encoder and joint-speed noise, gyro bias and timing
+# are inside go-to's ranges on the robot.
+PROFILES["goto"] = {**PROFILES["v1"], "ankle_encoder_bias": 0.02, "push": (0.0, 0.4), "push_floor": 0.15,
+                    "foot_friction": (0.5, 1.6)}
+PROFILES["real"] = {**PROFILES["goto"], "ankle_encoder_bias": 0.04, "gravity_bias": 0.04, "tilt_bias": 0.04,
+                    "acc_noise": 4.5, "acc_bias": 0.2}
 GRAVITY = 9.81
 ESTIMATORS = {"legs": LegOdometry, "kalman": KalmanOdometry}
 
@@ -168,6 +180,7 @@ ROUTE = dict(along=(1.0, 0.06), heading=(0.5, 0.15), goal=(3.0, 0.05), still=(2.
 CROSS = (-1.0, 0.02, 0.08)         # weight, free sway (m), scale (m)
 SUCCESS_BONUS = 50.0
 REG = dict(action_rate=-0.2, joint_limit=-10.0, odometry_drift=-30.0, adapter=-0.5)
+FAILURE = -25.0                    # once, when an episode ends in a fall or lost posture (env_cfg(fall_penalty=True))
 
 
 # ------------------------------------------------------------------ small maths
@@ -769,6 +782,12 @@ def r_success(env):
     return cmd(env).success_now.float() / env.step_dt
 
 
+def r_failure(env):
+    """The humanoid repository's go-to term: once, 1 / dt on the step an episode ends for any reason
+    but a time-out (here: `fell` or `tracking`; terminations are computed before rewards)."""
+    return env.termination_manager.terminated.float() / env.step_dt
+
+
 def r_adapter(env):
     """Approach 3: the size of the learned correction."""
     return env.action_manager.get_term("joint_pos").raw_action.square().mean(-1)
@@ -798,12 +817,12 @@ def t_plan_time_out(env, hold: float):
     return cmd(env).after_end >= hold
 
 
-def ev_push(env, env_ids, lo: float = PUSH_V[0], hi: float = PUSH_V[1]):
-    """A velocity kick to the pelvis, growing with the curriculum level."""
+def ev_push(env, env_ids, lo: float = PUSH_V[0], hi: float = PUSH_V[1], floor: float = 0.0):
+    """A velocity kick to the pelvis, growing with the curriculum level (never below `floor`)."""
     if env_ids is None or len(env_ids) == 0:
         return
     c = cmd(env)
-    v = lo + (hi - lo) * c.level
+    v = max(lo + (hi - lo) * c.level, floor)
     if v <= 0:
         return
     r: Entity = env.scene["robot"]
@@ -839,7 +858,8 @@ def dr_spec(profile: str = "v1") -> dict:
     d.update({"profile": profile, "encoder_bias_rad": p["encoder_bias"], "ankle_encoder_bias_rad": p["ankle_encoder_bias"]})
     d["sensor_bias"]["gravity"] = p["gravity_bias"]
     d["odometry"]["tilt_bias_rad"] = p["tilt_bias"]
-    d["push_m_s"].update({"level0": p["push"][0], "level1": p["push"][1]})
+    d["push_m_s"].update({"level0": p["push"][0], "level1": p["push"][1], "floor": p.get("push_floor", 0.0)})
+    d["foot_friction"] = list(p.get("foot_friction", (0.4, 1.4)))
     d["accelerometer_m_s2"].update({"noise": p["acc_noise"], "bias": p["acc_bias"]})
     return d
 
@@ -859,9 +879,9 @@ def light_events(push: bool) -> dict:
     return ev
 
 
-def dr_events(push: bool, profile: str = "v1") -> dict:
+def dr_events(push: bool, profile: str = "v1", physics: bool = True) -> dict:
     """Physical randomization: masses once per env at startup (they need the model's
-    constants recomputed), the rest every episode."""
+    constants recomputed), the rest every episode.  physics=False: the encoder offsets alone."""
     E, S = EventTermCfg, SceneEntityCfg
     p = PROFILES[profile]
     ev = {
@@ -875,7 +895,7 @@ def dr_events(push: bool, profile: str = "v1") -> dict:
                                "ranges": {0: (-0.03, 0.03), 1: (-0.015, 0.015), 2: (-0.02, 0.02)}}),
         "foot_friction": E(mode="reset", func=dr.geom_friction,
                            params={"asset_cfg": S("robot", geom_names=FOOT_GEOMS), "operation": "abs",
-                                   "ranges": (0.4, 1.4), "shared_random": True}),
+                                   "ranges": p.get("foot_friction", (0.4, 1.4)), "shared_random": True}),
         "pd_gains": E(mode="reset", func=dr.pd_gains,
                       params={"asset_cfg": S("robot"), "kp_range": (0.85, 1.15), "kd_range": (0.85, 1.15)}),
         "torque_limits": E(mode="reset", func=dr.effort_limits,
@@ -893,9 +913,11 @@ def dr_events(push: bool, profile: str = "v1") -> dict:
         ev["ankle_encoder_bias"] = E(mode="reset", func=dr.encoder_bias,
                                      params={"asset_cfg": S("robot", joint_names=(".*_ankle_.*",)),
                                              "bias_range": (-p["ankle_encoder_bias"], p["ankle_encoder_bias"])})
+    if not physics:
+        ev = {k: v for k, v in ev.items() if "encoder_bias" in k}
     if push:
         ev["push"] = E(mode="interval", func=ev_push, interval_range_s=(1.0, 3.0),
-                       params={"lo": p["push"][0], "hi": p["push"][1]})
+                       params={"lo": p["push"][0], "hi": p["push"][1], "floor": p.get("push_floor", 0.0)})
     return ev
 
 
@@ -947,7 +969,7 @@ def critic_obs() -> dict:
     }
 
 
-def rewards(adapter: bool = False) -> dict:
+def rewards(adapter: bool = False, fall_penalty: bool = False) -> dict:
     R = RewardTermCfg
     fn = {"anchor_pos": r_anchor_pos, "anchor_ori": r_anchor_ori, "body_pos": r_body_pos,
           "body_ori": r_body_ori, "body_lin_vel": r_body_lin_vel, "body_ang_vel": r_body_ang_vel}
@@ -963,6 +985,8 @@ def rewards(adapter: bool = False) -> dict:
     })
     if adapter:
         out["adapter"] = R(func=r_adapter, weight=REG["adapter"])
+    if fall_penalty:
+        out["failure"] = R(func=r_failure, weight=FAILURE)
     return out
 
 
@@ -971,7 +995,8 @@ def env_cfg(bank: str, num_envs: int = 4096, mode: str = "train", adapter_base: 
             privileged_actor: bool = False, teacher_group: bool = False, history: int = 1,
             estimator: str = "legs", sole_contacts: bool = False, base_history: int = 1,
             short_weight: float = 1.0, odometry_scale: float = 1.0,
-            camera: tuple[int, int] | None = None, profile: str = "v1") -> ManagerBasedRlEnvCfg:
+            camera: tuple[int, int] | None = None, profile: str = "v1",
+            fall_penalty: bool = False) -> ManagerBasedRlEnvCfg:
     """The env on a plan bank.
 
     mode  "train"    randomized physics and sensors, pushes, random-frame starts, the curriculum;
@@ -980,6 +1005,8 @@ def env_cfg(bank: str, num_envs: int = 4096, mode: str = "train", adapter_base: 
                      env i on plan i mod C; no drift termination
           "dr"       evaluation as "nominal" but with training's randomized physics and sensors
                      (no pushes)
+          "sensors"  as "dr" with the nominal robot: sensor noise, bias, delay and encoder offsets only
+                     (no physics randomization, no command delay)
           "dr_h"     as "dr" with an exact IMU heading (no heading offset, drift or noise): what
                      is left when the heading is not the limit
     history: sensor frames the actor reads (1 or more; the critic and a teacher always read one).
@@ -994,10 +1021,11 @@ def env_cfg(bank: str, num_envs: int = 4096, mode: str = "train", adapter_base: 
     privileged_actor: the actor reads the critic's observation (a teacher; never deployed).
     teacher_group: also serve that observation as the group "teacher" (guided.py).
     profile: the randomization ranges (PROFILES), in "train" and "dr" with randomize "full".
+    fall_penalty: the reward has go-to's failure term (FAILURE, r_failure).
     camera: (width, height) to render the head camera in every env each step, as the sensor
           "head_camera" (env.scene["head_camera"].data.rgb and .depth).  The camera itself
           (CAMERA) is always in the robot's model; without this nothing is rendered."""
-    assert mode in ("train", "nominal", "dr", "dr_h") and randomize in ("full", "light")
+    assert mode in ("train", "nominal", "dr", "dr_h", "sensors") and randomize in ("full", "light")
     P = PROFILES[profile]
     train, noisy = mode == "train", mode != "nominal"
     light = randomize == "light"
@@ -1013,7 +1041,7 @@ def env_cfg(bank: str, num_envs: int = 4096, mode: str = "train", adapter_base: 
         sensors.append(CameraSensorCfg(name="head_camera", camera_name=f"robot/{CAMERA}", width=camera[0],
                                        height=camera[1], data_types=("rgb", "depth")))
     for a in robot.articulation.actuators:      # command latency: 0-3 physics steps of 5 ms
-        a.delay_min_lag, a.delay_max_lag = 0, 3 if noisy and not light else 0
+        a.delay_min_lag, a.delay_max_lag = 0, 3 if noisy and not light and mode != "sensors" else 0
         a.delay_hold_prob, a.delay_update_period = 0.9, 4
     if adapter_base:
         action = AdapterJointActionCfg(entity_name="robot", actuator_names=(".*",), scale=sc.action_scale(),
@@ -1048,8 +1076,9 @@ def env_cfg(bank: str, num_envs: int = 4096, mode: str = "train", adapter_base: 
                                          estimator=estimator, sole_contacts=sole_contacts,
                                          short_weight=short_weight, odometry_scale=odometry_scale,
                                          tilt_bias=P["tilt_bias"], acc_bias=P["acc_bias"], acc_noise=P["acc_noise"])},
-        events=(light_events(push=train) if light else dr_events(push=train, profile=profile)) if noisy else {},
-        rewards=rewards(adapter=bool(adapter_base)),
+        events=(light_events(push=train) if light else dr_events(push=train, profile=profile, physics=mode != "sensors"))
+        if noisy else {},
+        rewards=rewards(adapter=bool(adapter_base), fall_penalty=fall_penalty),
         terminations=terminations,
         viewer=ViewerConfig(origin_type=ViewerConfig.OriginType.ASSET_BODY, entity_name="robot",
                             body_name="torso_link", distance=4.0, elevation=-20.0, azimuth=120.0),

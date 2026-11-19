@@ -38,7 +38,7 @@ def test_package_identity_and_profile():
     assert list(manifest['actors']) == list(POLICIES) == ['goal-conditioned', 'adapter']
     assert manifest['format'] == 'g1-parametrized-walk-v2' and manifest['history'] == 4
     goal, adapter = manifest['actors']['goal-conditioned'], manifest['actors']['adapter']
-    assert (goal['run'], goal['profile'], goal['history']) == ('goal20_hk2', 'v1', 4)          # not retrained (PARAMETRIZED_WALK.md)
+    assert (goal['run'], goal['profile'], goal['history']) == ('abl_256_ppo_goto_s3', 'goto', 4)   # v3 (PARAMETRIZED_WALK.md)
     assert (adapter['run'], adapter['base_run'], adapter['profile']) == ('adapter20_r', 'base_r_seed2', 'robust')
     assert goal['trained_with_estimator'] == adapter['trained_with_estimator'] == 'kalman'
     assert adapter['adapter_bound'] == 1.0
@@ -53,12 +53,16 @@ def test_package_identity_and_profile():
     assert fsm['Velocity']['policy_dir'] == 'config/policy/velocity/v0'
     assert 'WalkGoal' not in fsm['FixStand']['transitions']                     # a walk starts from Velocity
     assert (fsm['WalkGoal']['shortest_m'], fsm['WalkAdapter']['shortest_m']) == (.2, .3)
+    from unitree_parametrized_skills.export import rate_limits
+    limits = rate_limits()                                                      # from action_rates.json, for these runs
+    for state, policy in (('WalkGoal', 'goal-conditioned'), ('WalkAdapter', 'adapter')):
+        assert fsm[state]['rate_limit'] == limits[policy] and len(limits[policy]) == 23 and min(limits[policy]) >= .2
     assert cfg['WalkDistance']['default_m'] == 2.
 
 
 def test_library_is_a_grid_of_walks_from_one_stand(plans):
     manifest = json.loads((PACKAGE / 'manifest.json').read_text())
-    assert sorted(plans) == [100 * i for i in range(1, 201)] == [round(d * 1000) for d in manifest['library']['distances_m']]
+    assert sorted(plans) == [100 * i for i in range(1, 51)] == [round(d * 1000) for d in manifest['library']['distances_m']]
     start = plans[100][0]
     pose = yaml.safe_load(PROFILE.read_text())['FSM']['FixStand']['qs'][1]
     np.testing.assert_allclose(np.array(pose)[list(MOTOR_IDS)], start[:23], atol=1e-6)   # FixStand ends where walks begin
@@ -87,7 +91,7 @@ def test_actors_match_pytorch_and_report(tmp_path):
     report = validate(FIXTURES, tmp_path / 'check')
     assert set(report['rollouts']) == set(ROLLOUTS) and len(ROLLOUTS) == 6
     assert all(r['max_difference']['onnx_vs_pytorch_actor'] < 1e-4 for r in report['rollouts'].values())
-    assert sum(r['steps'] for r in report['rollouts'].values()) == 7726
+    assert sum(r['steps'] for r in report['rollouts'].values()) == 4126      # 0.3, 2.5 and 5 m, both policies
 
 
 @pytest.mark.parametrize('policy', tuple(POLICIES))
@@ -154,11 +158,11 @@ def test_odometry_scale_stretches_the_estimate(core_library):
 
 def test_distance_selection(core_library):
     with Core(core_library, 'goal-conditioned') as core:
-        assert core.distances()[0] == .1 and core.distances()[-1] == 20. and len(core.distances()) == 200
-        assert core.select(3.5) == 3.5 and core.select(3.14) == 3.1 and core.select(.1) == .1 and core.select(20.04) == 20.
+        assert core.distances()[0] == .1 and core.distances()[-1] == 5. and len(core.distances()) == 50
+        assert core.select(3.5) == 3.5 and core.select(3.14) == 3.1 and core.select(.1) == .1 and core.select(5.04) == 5.
         assert core.select(3.1) == 3.1 and core.select_step(1.) == 4.1
-        assert core.select_step(-.1) == 4. and core.select_step(100.) == 20. and core.select_step(-100.) == .1
-        for bad in (0., -1., 20.2, 1e9, float('nan'), float('inf')):
+        assert core.select_step(-.1) == 4. and core.select_step(100.) == 5. and core.select_step(-100.) == .1
+        for bad in (0., -1., 5.2, 1e9, float('nan'), float('inf')):
             with pytest.raises(ValueError, match='outside the planned range'):
                 core.select(bad)
         assert core.select_step(.3) == .4                         # a refused request leaves the selection alone
@@ -199,8 +203,35 @@ def test_rejects_changed_artifacts(core_library, tmp_path, artifact):
             Core(core_library, policy, tmp_path).close()
 
 
+def test_action_rate_limit(core_library, plans):
+    """Each step's change of each raw action is held to the limit; an action inside it is untouched."""
+    sensors = standing(plans)
+    sensors[10 + np.array(MOTOR_IDS)] += np.linspace(-.2, .2, 23, dtype=np.float32)   # off the plan: a large correction
+    def actions(limit):
+        with Core(core_library, 'goal-conditioned') as core:
+            core.rate_limit(limit)
+            core.start(1.)
+            return np.array([core.step(sensors)[1] for _ in range(40)])
+    free = actions(None)
+    change = np.abs(np.diff(np.vstack([np.zeros(23), free]), axis=0))
+    assert change.max() > .3                                                    # there is something to limit
+    limit = np.linspace(.05, .15, 23).astype(np.float32)
+    held = np.abs(np.diff(np.vstack([np.zeros(23), actions(limit)]), axis=0))
+    assert (held <= limit + 1e-6).all() and (held >= limit - 1e-6).any()
+    np.testing.assert_array_equal(actions(np.full(23, 100., np.float32)), free)
+    with Core(core_library, 'goal-conditioned') as core:
+        core.rate_limit(limit)
+        core.rate_limit(None)                                                   # removed again
+        core.start(1.)
+        np.testing.assert_array_equal(core.step(sensors)[1], free[0])
+        for bad in (np.zeros(23), np.full(23, -1.), np.full(23, np.nan)):
+            with pytest.raises(RuntimeError, match='Invalid action rate limit'):
+                core.rate_limit(bad.astype(np.float32))
+
+
 CORRUPTIONS = [None, 'absent_joint', 'pose', 'gain', 'walk_from_fixstand', 'blend', 'no_hold', 'shortest', 'scale',
-               'default_distance', 'button', 'again', 'swapped_policy', 'velocity']
+               'default_distance', 'button', 'again', 'swapped_policy', 'velocity', 'rate_limit_size', 'rate_limit_zero',
+               'no_rate_limit']
 
 
 @pytest.mark.parametrize('corruption', CORRUPTIONS)
@@ -222,13 +253,20 @@ def test_actual_executable_profile(tmp_path, corruption):
     elif corruption == 'again': fsm['WalkGoal']['again'] = 'RB + Q.on_pressed'
     elif corruption == 'swapped_policy': fsm['WalkGoal']['policy'] = 'adapter'
     elif corruption == 'velocity': fsm['Velocity']['policy_dir'] = 'config/policy/parametrized_walk/v1'
+    elif corruption == 'rate_limit_size': fsm['WalkGoal']['rate_limit'] = fsm['WalkGoal']['rate_limit'][:22]
+    elif corruption == 'rate_limit_zero': fsm['WalkAdapter']['rate_limit'][4] = 0.
+    elif corruption == 'no_rate_limit': fsm['WalkGoal']['rate_limit'] = None      # allowed: the limit is optional
     path = tmp_path / 'profile.yaml'
     path.write_text(yaml.safe_dump(cfg, sort_keys=False))
     result = subprocess.run([str(BINARY), '--check-box-config', str(path)], capture_output=True, text=True, timeout=60)
-    if corruption is None:
+    if corruption == 'no_rate_limit':
+        assert result.returncode == 0, result.stderr
+        assert result.stdout.count('action-rate limit set') == 1 and result.stdout.count('action-rate limit not set') == 1
+    elif corruption is None:
         assert result.returncode == 0, result.stderr
         assert result.stdout.count('inputs (4 sensor frames), 23 outputs') == 2
-        assert '200 distances' in result.stdout and 'no DDS connection or motor commands' in result.stdout
+        assert result.stdout.count('action-rate limit set') == 2
+        assert '50 distances' in result.stdout and 'no DDS connection or motor commands' in result.stdout
     else:
         assert result.returncode != 0
 

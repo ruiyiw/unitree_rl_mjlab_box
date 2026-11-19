@@ -2,15 +2,17 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = ROOT / 'deploy/robots/g1_23dof/config/policy/parametrized_walk/v2'
+PACKAGE = ROOT / 'deploy/robots/g1_23dof/config/policy/parametrized_walk/v3'
 PROFILE = ROOT / 'deploy/robots/g1_23dof/config/parametrized_walk.yaml'
 REFERENCE = Path(__file__).parent / 'reference'
 # name: (training run of the selected checkpoint, frozen base walker's run or None)
-# v2: four sensor frames, trained with the Kalman estimate.  The adapter and its base walker are
-# retrained with the robust randomization profile.  The goal-conditioned policy is goal20_hk2
-# (the first profile): every retraining of it with the robust profile did worse in the controller
-# tests (PARAMETRIZED_WALK.md).  v1 was goal20 and adapter20_k on base (one frame); it fell on the robot.
-POLICIES = {'goal-conditioned': ('goal20_hk2', None), 'adapter': ('adapter20_r', 'base_r_seed2')}
+# v3: the goal-conditioned policy is abl_256_ppo_goto_s3 (PPO alone with the box go-to policy's settings, fall
+# penalty and randomization ranges, 8,000 updates, trained on 0-5 m plans; four sensor frames, Kalman estimate),
+# the first to match go-to in the controller tests (PARAMETRIZED_WALK.md).  The library therefore ends at 5 m
+# (export --max 5).  The adapter and its base walker are v2's, unchanged.
+# v2 was goal20_hk2 with the same adapter (0-20 m); v1 was goal20 and adapter20_k on base (one frame).  The
+# goal-conditioned and adapter policies of v1 and v2 fell on the robot.
+POLICIES = {'goal-conditioned': ('abl_256_ppo_goto_s3', None), 'adapter': ('adapter20_r', 'base_r_seed2')}
 MOTOR_IDS = tuple(range(13)) + tuple(range(15, 20)) + tuple(range(22, 27))
 OBSERVATION = 109          # one frame: gyro 3, gravity 3, joints 23, joint speeds 23, previous action 23, plan 28, goal 6
 SENSORS = 75               # of which the sensor terms, which the actor reads `history` frames of

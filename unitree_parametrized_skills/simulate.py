@@ -150,6 +150,7 @@ def play(policy, distance, output, factory=ROOT.parent / 'factory', from_velocit
         kp0, kd0 = kp, kd
     walks = []
     with Core(lib, policy) as core:
+        core.rate_limit(state.get('rate_limit'))             # the profile's action-rate limit, as State_ParametrizedWalk
         previous = None
         for n, entry in [(distance, True)] + ([(again, False)] if again else []):
             if reason != 'completed':

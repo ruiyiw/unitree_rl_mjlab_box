@@ -74,6 +74,8 @@ class Core:
         L.walk_step.argtypes = [ctypes.c_void_p, f32, f32, f32, f32, i32, f32]
         L.walk_select.argtypes, L.walk_select.restype = [ctypes.c_char_p, ctypes.c_float], ctypes.c_float
         L.walk_select_step.argtypes, L.walk_select_step.restype = [ctypes.c_float], ctypes.c_float
+        if hasattr(L, 'walk_rate_limit'):
+            L.walk_rate_limit.argtypes, L.walk_rate_limit.restype = [ctypes.c_void_p, ctypes.c_void_p], ctypes.c_int
         self.package = str(package).encode()
         index = policy if isinstance(policy, int) else tuple(POLICIES).index(policy)
         self.handle = L.walk_create(self.package, index)
@@ -93,6 +95,14 @@ class Core:
         if planned < 0:
             raise RuntimeError(self.lib.walk_error().decode())
         return round(float(planned), 3)
+
+    def rate_limit(self, limit=None):
+        """Hold each step's change of each raw action to `limit` (23 values; None: no limit).  Deployment only."""
+        if limit is not None:
+            limit = np.ascontiguousarray(limit, dtype=np.float32)
+            assert limit.shape == (23,)
+        if self.lib.walk_rate_limit(self.handle, None if limit is None else limit.ctypes.data_as(ctypes.c_void_p)):
+            raise RuntimeError(self.lib.walk_error().decode())
 
     def step(self, sensors):
         """-> observation (109), correction (23), joint targets (23), [clock, ended, done], [x, y, heading]."""

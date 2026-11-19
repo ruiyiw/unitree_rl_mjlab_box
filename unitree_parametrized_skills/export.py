@@ -187,6 +187,34 @@ def header(interface, start, feet, estimator, hashes, library_hash, count, frame
     return h + '\n}};\n}\n'
 
 
+RATES = Path(__file__).parent / 'action_rates.json'
+
+
+def rate_limits():
+    """{policy: its 23 action-rate limits, or None}.  action_rates.json holds, per policy, the largest change of each
+    raw action between steps over healthy simulated runs of the run this package ships; the limit is `factor` times
+    that, at least `floor` (raw action units per 20 ms step).  A policy not measured, or measured for another
+    run, gets no limit."""
+    measured = json.loads(RATES.read_text())['policies'] if RATES.is_file() else {}
+    out = {}
+    for name, (run, _) in POLICIES.items():
+        m = measured.get(name)
+        out[name] = ([round(float(max(m['floor'], m['factor'] * x)), 4) for x in m['healthy_max']]
+                     if m and m['run'] == run else None)
+    return out
+
+
+def write_rate_limits():
+    """Rewrite only the profile's action-rate limits (after action_rates.json changed)."""
+    import yaml
+    cfg = yaml.safe_load(PROFILE.read_text())
+    limits = rate_limits()
+    for name, policy in (('WalkGoal', 'goal-conditioned'), ('WalkAdapter', 'adapter')):
+        cfg['FSM'][name]['rate_limit'] = limits[policy]
+    PROFILE.write_text(yaml.safe_dump(cfg, sort_keys=False))
+    return limits
+
+
 def write_profile(interface, start, default_m):
     """Passive, FixStand, Velocity and the two walk policies; the box profiles' Passive/FixStand/Velocity."""
     import yaml
@@ -210,13 +238,14 @@ def write_profile(interface, start, default_m):
     fsm['FixStand']['qs'] = [[], pose]
     fsm['Velocity']['transitions'] = {**passive, 'WalkGoal': 'RB + Y.on_pressed', 'WalkAdapter': 'RB + A.on_pressed'}
     directory = str(PACKAGE.relative_to(ROOT / 'deploy/robots/g1_23dof'))
+    limits = rate_limits()
     # shortest_m: below it the policy lost its posture in more than 1 in 20 randomized training-env trials
     for name, policy, other, again, shortest in (('WalkGoal', 'goal-conditioned', 'WalkAdapter', 'RB + Y.on_pressed', .2),
                                                  ('WalkAdapter', 'adapter', 'WalkGoal', 'RB + A.on_pressed', .3)):
         to_other = 'RB + A.on_pressed' if other == 'WalkAdapter' else 'RB + Y.on_pressed'
         fsm[name] = {'transitions': {**passive, 'Velocity': 'RB + X.on_pressed', other: to_other},
                      'policy_dir': directory, 'policy': policy, 'blend_s': .5, 'hold_s': 1.,
-                     'shortest_m': shortest, 'again': again, 'odometry_scale': 1.}
+                     'shortest_m': shortest, 'again': again, 'odometry_scale': 1., 'rate_limit': limits[policy]}
     cfg['FSM'] = fsm
     cfg['WalkDistance'] = {'default_m': default_m,
                            'buttons': {'RT + up.on_pressed': 1., 'RT + down.on_pressed': -1.,
@@ -319,9 +348,15 @@ if __name__ == '__main__':
     parser.add_argument('--factory-root', type=Path, default=ROOT.parent / 'factory')
     parser.add_argument('--output', type=Path, default=PACKAGE)
     parser.add_argument('--step', type=float, default=.1, help='spacing of the library distances (m)')
-    parser.add_argument('--max', type=float, default=20., help='longest library distance (m)')
+    parser.add_argument('--max', type=float, default=5., help='longest library distance (m); v3\'s goal-conditioned policy was trained on 0-5 m')
     parser.add_argument('--extra', type=float, nargs='*', default=[], help='more distances to plan (m)')
     parser.add_argument('--default', type=float, default=2., help='the profile\'s distance at launch (m)')
     parser.add_argument('--workers', type=int, default=32)
+    parser.add_argument('--rate-limits', action='store_true',
+                        help='only rewrite the profile\'s action-rate limits from action_rates.json (no export)')
     args = parser.parse_args()
+    if args.rate_limits:
+        for name, limit in write_rate_limits().items():
+            print(name, 'no limit' if limit is None else limit)
+        sys.exit(0)
     export(args.factory_root, args.output, args.step, args.max, args.extra, args.workers, args.default)

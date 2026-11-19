@@ -1,0 +1,195 @@
+{
+  "run": "abl_256_ppo_goto_s3",
+  "checkpoint_source": "/home/rwang/factory/parametrization/walk/runs/abl_256_ppo_goto_s3/selected.pt",
+  "checkpoint_sha256": "eea528fd6be4ba6d42b161b9e2cbf2e62b5409d5ff44d04040f208015a22663e",
+  "trained_with_estimator": "kalman",
+  "history": 4,
+  "profile": "goto",
+  "selection": {
+    "iteration": 7999,
+    "checkpoint": "model_7999.pt",
+    "sha256": "eea528fd6be4ba6d42b161b9e2cbf2e62b5409d5ff44d04040f208015a22663e",
+    "evalset_failed_of_runs": {
+      "off1": [
+        0,
+        216
+      ],
+      "off1.5": [
+        0,
+        216
+      ],
+      "off2": [
+        0,
+        216
+      ],
+      "off3": [
+        12,
+        216
+      ],
+      "push": [
+        1,
+        288
+      ],
+      "phys": [
+        0,
+        216
+      ]
+    },
+    "final_err_m_median_1x": 0.0784,
+    "final_err_m_p95_1x": 0.1795
+  },
+  "training": {
+    "kind": "goal",
+    "run": "abl_256_ppo_goto_s3",
+    "bank": "train",
+    "iterations": 8000,
+    "envs": 4096,
+    "seed": 3,
+    "base": null,
+    "adapter_bound": null,
+    "init": null,
+    "resumed_at": null,
+    "randomize": "full",
+    "privileged_actor": false,
+    "init_std": null,
+    "entropy": null,
+    "lr": null,
+    "teacher": null,
+    "guidance": null,
+    "history": 4,
+    "estimator": "kalman",
+    "sole_contacts": false,
+    "short_weight": 1.0,
+    "task": "walk",
+    "profile": "goto",
+    "fall_penalty": -25.0,
+    "ppo": {
+      "lr": 0.001,
+      "std": 0.3,
+      "std_range": [
+        0.05,
+        0.15
+      ],
+      "entropy": 0.005,
+      "schedule": "adaptive",
+      "desired_kl": 0.01,
+      "recipe": "goto"
+    },
+    "actor_terms": [
+      "gyro",
+      "gravity",
+      "joint_pos",
+      "joint_vel",
+      "actions",
+      "ref_joints",
+      "ref_phase",
+      "goal"
+    ],
+    "actor_dim": 334,
+    "observed_actor_dim": 334,
+    "actor_hidden": [
+      256,
+      256
+    ],
+    "trainable_actor_params": 157463,
+    "critic_hidden": [
+      512,
+      256,
+      128
+    ],
+    "control_hz": 50,
+    "physics_hz": 200,
+    "action": "joint target = plan qcmd[clock + 1] + action_scale * action",
+    "domain_randomization": {
+      "foot_friction": [
+        0.5,
+        1.6
+      ],
+      "link_mass_inertia_scale": [
+        0.9,
+        1.1
+      ],
+      "torso_extra_mass_kg": [
+        -0.5,
+        2.5
+      ],
+      "torso_com_m": [
+        0.03,
+        0.015,
+        0.02
+      ],
+      "kp_scale": [
+        0.85,
+        1.15
+      ],
+      "kd_scale": [
+        0.85,
+        1.15
+      ],
+      "torque_limit_scale": [
+        0.9,
+        1.0
+      ],
+      "joint_friction_nm": {
+        "legs_waist": [
+          0.0,
+          0.6
+        ],
+        "arms": [
+          0.0,
+          0.3
+        ]
+      },
+      "joint_damping_nms": [
+        0.0,
+        0.1
+      ],
+      "command_delay_ms": [
+        0,
+        15
+      ],
+      "encoder_bias_rad": 0.01,
+      "sensor_noise": {
+        "gyro_rad_s": 0.2,
+        "gravity": 0.05,
+        "joint_pos_rad": 0.01,
+        "joint_vel_rad_s": 1.5
+      },
+      "sensor_bias": {
+        "gyro_rad_s": 0.02,
+        "gravity": 0.025
+      },
+      "observation_delay_ms": [
+        0,
+        20
+      ],
+      "odometry": {
+        "heading_drift_deg_s": 0.1,
+        "heading_bias_deg": 1.0,
+        "heading_noise_deg": 0.05,
+        "tilt_bias_rad": 0.02,
+        "start_noise_m": 0.02
+      },
+      "push_m_s": {
+        "every_s": [
+          1.0,
+          3.0
+        ],
+        "level0": 0.0,
+        "level1": 0.4,
+        "floor": 0.15
+      },
+      "accelerometer_m_s2": {
+        "noise": 0.3,
+        "bias": 0.1,
+        "used_by": "the Kalman estimator only"
+      },
+      "profile": "goto",
+      "ankle_encoder_bias_rad": 0.02
+    },
+    "started": "2026-11-19 11:49:06",
+    "train_wall_s": 13397.5,
+    "final_level": 1.0,
+    "env_steps": 786432000
+  }
+}

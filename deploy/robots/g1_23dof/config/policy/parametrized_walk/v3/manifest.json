@@ -1,0 +1,440 @@
+{
+  "format": "g1-parametrized-walk-v2",
+  "hardware_validated": false,
+  "estimator": "kalman",
+  "source_root": "/home/rwang/factory",
+  "actors": {
+    "goal-conditioned": {
+      "run": "abl_256_ppo_goto_s3",
+      "checkpoint_source": "/home/rwang/factory/parametrization/walk/runs/abl_256_ppo_goto_s3/selected.pt",
+      "checkpoint_sha256": "eea528fd6be4ba6d42b161b9e2cbf2e62b5409d5ff44d04040f208015a22663e",
+      "trained_with_estimator": "kalman",
+      "history": 4,
+      "profile": "goto",
+      "selection": {
+        "iteration": 7999,
+        "checkpoint": "model_7999.pt",
+        "sha256": "eea528fd6be4ba6d42b161b9e2cbf2e62b5409d5ff44d04040f208015a22663e",
+        "evalset_failed_of_runs": {
+          "off1": [
+            0,
+            216
+          ],
+          "off1.5": [
+            0,
+            216
+          ],
+          "off2": [
+            0,
+            216
+          ],
+          "off3": [
+            12,
+            216
+          ],
+          "push": [
+            1,
+            288
+          ],
+          "phys": [
+            0,
+            216
+          ]
+        },
+        "final_err_m_median_1x": 0.0784,
+        "final_err_m_p95_1x": 0.1795
+      },
+      "onnx_sha256": "aa44aa923a9fc399acf08c07a02ae4f4dd788d312a1edf28871c571ebffb3585"
+    },
+    "adapter": {
+      "run": "adapter20_r",
+      "checkpoint_source": "/home/rwang/factory/parametrization/walk/runs/adapter20_r/selected.pt",
+      "checkpoint_sha256": "6c62031b3131585811d945cec9ec791dcc3a8d1aafc9af231fe14b63cc2a2d2f",
+      "trained_with_estimator": "kalman",
+      "history": 4,
+      "profile": "robust",
+      "selection": {
+        "iteration": 1400,
+        "stable_arrival": 0.8426,
+        "nominal": 1.0,
+        "dr": 0.6851,
+        "worst_distance": 0.0156,
+        "failed": 0.045,
+        "final_err_m": 0.0697
+      },
+      "base_run": "base_r_seed2",
+      "base_checkpoint_sha256": "9e0fabd1c3e0271fcc4463bd821f6f047006582a6827f7ff15b953bfa5f41956",
+      "adapter_bound": 1.0,
+      "onnx_sha256": "722cf5b952da18a6847c9a29e327d9f9c068de24bea82916375f99a2110ba755"
+    }
+  },
+  "interface": {
+    "joint_order": [
+      "left_hip_pitch_joint",
+      "left_hip_roll_joint",
+      "left_hip_yaw_joint",
+      "left_knee_joint",
+      "left_ankle_pitch_joint",
+      "left_ankle_roll_joint",
+      "right_hip_pitch_joint",
+      "right_hip_roll_joint",
+      "right_hip_yaw_joint",
+      "right_knee_joint",
+      "right_ankle_pitch_joint",
+      "right_ankle_roll_joint",
+      "waist_yaw_joint",
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint"
+    ],
+    "action_order": [
+      "left_hip_pitch_joint",
+      "left_hip_roll_joint",
+      "left_hip_yaw_joint",
+      "left_knee_joint",
+      "left_ankle_pitch_joint",
+      "left_ankle_roll_joint",
+      "right_hip_pitch_joint",
+      "right_hip_roll_joint",
+      "right_hip_yaw_joint",
+      "right_knee_joint",
+      "right_ankle_pitch_joint",
+      "right_ankle_roll_joint",
+      "waist_yaw_joint",
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "left_wrist_roll_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint",
+      "right_wrist_roll_joint"
+    ],
+    "action_scale": [
+      0.5475464629911068,
+      0.35066146637882434,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.43857731392336724,
+      0.43857731392336724,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.5475464629911068,
+      0.35066146637882434,
+      0.43857731392336724,
+      0.43857731392336724,
+      0.5475464629911068,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.43857731392336724,
+      0.3,
+      0.3,
+      0.3,
+      0.3,
+      0.43857731392336724
+    ],
+    "default_joint_positions": [
+      -0.312,
+      0.0,
+      0.0,
+      0.669,
+      -0.363,
+      0.0,
+      -0.312,
+      0.0,
+      0.0,
+      0.669,
+      -0.363,
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.0,
+      0.6,
+      0.0,
+      0.2,
+      -0.2,
+      0.0,
+      0.6,
+      0.0
+    ],
+    "kp": [
+      40.17923863450712,
+      99.09842777666111,
+      40.17923863450712,
+      99.09842777666111,
+      28.50124619574858,
+      28.50124619574858,
+      40.17923863450712,
+      99.09842777666111,
+      40.17923863450712,
+      99.09842777666111,
+      28.50124619574858,
+      28.50124619574858,
+      40.17923863450712,
+      40.0,
+      40.0,
+      40.0,
+      40.0,
+      14.25062309787429,
+      40.0,
+      40.0,
+      40.0,
+      40.0,
+      14.25062309787429
+    ],
+    "kd": [
+      2.557889775413375,
+      6.308801853496639,
+      2.557889775413375,
+      6.308801853496639,
+      1.814445686584846,
+      1.814445686584846,
+      2.557889775413375,
+      6.308801853496639,
+      2.557889775413375,
+      6.308801853496639,
+      1.814445686584846,
+      1.814445686584846,
+      2.557889775413375,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      0.907222843292423,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      0.907222843292423
+    ],
+    "force_limits": [
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -139.0,
+        139.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -50.0,
+        50.0
+      ],
+      [
+        -88.0,
+        88.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -25.0,
+        25.0
+      ]
+    ],
+    "physics_dt": 0.005,
+    "decimation": 4,
+    "policy_dt": 0.02,
+    "dimensions": {
+      "nq": 30,
+      "nv": 29,
+      "nu": 23
+    }
+  },
+  "history": 4,
+  "library": {
+    "distances_m": [
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0,
+      1.1,
+      1.2,
+      1.3,
+      1.4,
+      1.5,
+      1.6,
+      1.7,
+      1.8,
+      1.9,
+      2.0,
+      2.1,
+      2.2,
+      2.3,
+      2.4,
+      2.5,
+      2.6,
+      2.7,
+      2.8,
+      2.9,
+      3.0,
+      3.1,
+      3.2,
+      3.3,
+      3.4,
+      3.5,
+      3.6,
+      3.7,
+      3.8,
+      3.9,
+      4.0,
+      4.1,
+      4.2,
+      4.3,
+      4.4,
+      4.5,
+      4.6,
+      4.7,
+      4.8,
+      4.9,
+      5.0
+    ],
+    "plans": 50,
+    "frames": 21800,
+    "fps": 50,
+    "longest_s": 14.4,
+    "ik_error_max_m": 0.0032534438651055098,
+    "pelvis_end_minus_distance_max_m": 0.0004635155200958252,
+    "qp_statuses": {
+      "delta-global": 4350
+    },
+    "frame": [
+      "qcmd/left_hip_pitch_joint",
+      "qcmd/left_hip_roll_joint",
+      "qcmd/left_hip_yaw_joint",
+      "qcmd/left_knee_joint",
+      "qcmd/left_ankle_pitch_joint",
+      "qcmd/left_ankle_roll_joint",
+      "qcmd/right_hip_pitch_joint",
+      "qcmd/right_hip_roll_joint",
+      "qcmd/right_hip_yaw_joint",
+      "qcmd/right_knee_joint",
+      "qcmd/right_ankle_pitch_joint",
+      "qcmd/right_ankle_roll_joint",
+      "qcmd/waist_yaw_joint",
+      "qcmd/left_shoulder_pitch_joint",
+      "qcmd/left_shoulder_roll_joint",
+      "qcmd/left_shoulder_yaw_joint",
+      "qcmd/left_elbow_joint",
+      "qcmd/left_wrist_roll_joint",
+      "qcmd/right_shoulder_pitch_joint",
+      "qcmd/right_shoulder_roll_joint",
+      "qcmd/right_shoulder_yaw_joint",
+      "qcmd/right_elbow_joint",
+      "qcmd/right_wrist_roll_joint",
+      "pelvis_x",
+      "pelvis_y",
+      "phase_sin",
+      "phase_cos",
+      "walking"
+    ]
+  },
+  "source_files": {
+    "env.py": "c15b620165ee2aee9501c5b8c8aedf327ce527aa1d5deff2d2494d00bc844500",
+    "odometry.py": "077e88cd8d3d989827f6d584469a23f8cdf4f8543472776420afe9d4a3c4aab9",
+    "plans.py": "124c9b0ef77baa88531fcbfd439b24250b6895a3c88273437b3ae89240cbdc9b",
+    "models.py": "9c0bffa26d32e960ab44df82875344947aa88ac572ceb972e7527a67a87419ac",
+    "evaluate.py": "faad7c7aac7529722e46ef9c243e377354a16949fe156d54fae4536343ff2c36",
+    "README.md": "f6cf851f9f9e1f116d829d8b2c76734bea973546af43240dc4353dc1f27cf8c4"
+  },
+  "files": {
+    "adapter/base_checkpoint.pt": "9e0fabd1c3e0271fcc4463bd821f6f047006582a6827f7ff15b953bfa5f41956",
+    "adapter/checkpoint.pt": "6c62031b3131585811d945cec9ec791dcc3a8d1aafc9af231fe14b63cc2a2d2f",
+    "adapter/policy.onnx": "722cf5b952da18a6847c9a29e327d9f9c068de24bea82916375f99a2110ba755",
+    "adapter/source_metadata.json": "a535fac0b39086bdd9c2d977dde352b00bd8c25f189318ca9c4b2861abe46613",
+    "goal-conditioned/checkpoint.pt": "eea528fd6be4ba6d42b161b9e2cbf2e62b5409d5ff44d04040f208015a22663e",
+    "goal-conditioned/policy.onnx": "aa44aa923a9fc399acf08c07a02ae4f4dd788d312a1edf28871c571ebffb3585",
+    "goal-conditioned/source_metadata.json": "04d4c7c90ea225e71068ac1940acbde2c09ad71b97a45158c1e9846308e5c79a",
+    "params/PolicyConfig.h": "9009cb9024459ebdbc2cca888d96f9b55f9ab54219eaa12ae4fa00b5f9f5b2f2",
+    "params/contract.json": "4a1701b96005d3548af8325a52880fde4714279794b3f62d2eee5aa32dd07550",
+    "params/estimator.json": "8ce2b96aeef245016271a42732d1eca19343e348c2096ee0e3617c9e2f0073e4",
+    "plans.bin": "7f05e2b2348a5716cfc3cec1557be12eceb3769930f08bd1324c5530a9fef44f"
+  }
+}

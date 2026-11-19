@@ -6,18 +6,61 @@ of two walk policies with the gamepad.
 
 | Policy | Trained as | Selected checkpoint | Inputs → outputs |
 |---|---|---|---|
-| Goal-conditioned | One policy across 0–20 m (approach 2), trained with the Kalman position filter and four sensor frames; first randomization profile | `goal20_hk2/selected.pt` (update 1600) | 334 → 23 |
+| Goal-conditioned | One policy across 0–5 m (approach 2), PPO alone with the box go-to policy's settings, fall penalty and randomization ranges; the Kalman position filter and four sensor frames | `abl_256_ppo_goto_s3/selected.pt` (update 8000) | 334 → 23 |
 | Adapter | Frozen 2 m base walker plus a bounded correction (approach 3); both retrained with the robust randomization profile, the Kalman filter and four sensor frames | `adapter20_r/selected.pt` (update 1400) on `base_r_seed2/selected.pt` (update 1900) | 334 → 23 |
 
 Checkpoints came from `factory/parametrization/walk/runs`. The self-contained
-deployment package is `deploy/robots/g1_23dof/config/policy/parametrized_walk/v2`.
+deployment package is `deploy/robots/g1_23dof/config/policy/parametrized_walk/v3`.
 
-**The v2 package has not run on a robot.** The C++ controller was checked against
+**The v3 package has not run on a robot.** The C++ controller was checked against
 the training environment and in simulation only; see [Checks](#checks) and
-[What is not verified](#what-is-not-verified). The first package, `v1` (`goal20`
-and `adapter20_k` on `base`, one sensor frame), did run on a G1 on 2026-11-17:
-both policies fell on a 1 m walk. [Why v2](#why-v2) says what was changed and
-what was measured.
+[What is not verified](#what-is-not-verified). Both earlier packages did run on a
+G1 and lost their balance on a 1 m walk: `v1` (`goal20` and `adapter20_k` on
+`base`, one sensor frame) on 2026-11-17, and `v2` (`goal20_hk2`, with the adapter
+v3 still ships) on 2026-11-18. [Why v3](#why-v3) says what was changed in the
+goal-conditioned policy and what was measured; [Why v2](#why-v2) is the earlier
+round. The adapter is v2's, unchanged.
+
+## Why v3
+
+v3 replaces the goal-conditioned policy and shortens the library to the 0–5 m it
+was trained on. The adapter and its base walker are v2's.
+
+The new policy (`abl_256_ppo_goto_s3`) was trained in `factory/parametrization/walk`
+as the box go-to policy was: PPO alone (no teacher guidance) with go-to's learning
+rate schedule, exploration noise and entropy bonus, go-to's fall penalty and go-to's
+randomization ranges, for 8,000 updates, with the same 256-256 actor, four sensor
+frames and Kalman estimate as v2. Of eight combinations tried (actor size, with or
+without teacher guidance, go-to's or wider randomization ranges), only this recipe
+reached go-to's level, and only after 6,000-8,000 updates; three seeds of it did.
+
+Failed runs in native MuJoCo with the compiled controller, sensor noise and
+accelerometer bias as measured on the robots, and the measured ankle or IMU
+offsets of two robots scaled by 1 to 3; walks of 0.3, 1, 2 and 5 m (go-to: its own
+1.5 m) from the Velocity policy or from five handover states recorded on the
+robot (`factory/parametrization/walk/docs/robustness_tests/evalset`):
+
+| Test (runs) | Go-to | v1 goal-conditioned | v2 goal-conditioned | v3 goal-conditioned |
+|---|---:|---:|---:|---:|
+| Offsets 1× (216) | 0 | 7 | 8 | 0 |
+| Offsets 1.5× (216) | 0 | 48 | 43 | 0 |
+| Offsets 2× (216) | 0 | 90 | 75 | 0 |
+| Offsets 3× (216) | 91 | 165 | 163 | 12 |
+| Pushes of 0.2-0.4 m/s at 1× (288) | 18 | 106 | 84 | 1 |
+| Physics variation at 1× (216) | 0 | 28 | 24 | 0 |
+
+The package in this repository was run through the whole set after export: all
+1,368 runs give the same result as the checkpoint tested before packaging. The
+table is without the [action-rate limit](#the-action-rate-limit); with the
+shipped limit the v3 column is 0, 0, 0, 12, 0, 0.
+
+- **Where it stops:** a median 8 cm from the goal at 1× offsets (18 cm at the
+  95th percentile), against 5 cm (12 cm) for v2; the error grows with distance.
+- **After arriving** its joints keep moving more than go-to's (mean joint speed
+  0.19 rad/s against 0.07 in the last 3 s of these runs).
+- **Not on the robot yet.** The earlier packages also completed simulated walks
+  at the measured offsets; this set is harder than the tests they passed, but it
+  is still simulation.
 
 ## Why v2
 
@@ -85,9 +128,9 @@ Every change is answered in the terminal with the distance that will be walked,
 for example `Walk distance: 3.5 m (terminal). It applies to the next walk.`
 Read that line before pressing a walk button: the gamepad has no display.
 
-- **Range and step:** 0.1 to 20.0 m in steps of 0.1 m (200 planned walks). A
+- **Range and step:** 0.1 to 5.0 m in steps of 0.1 m (50 planned walks). A
   request between two steps walks the nearest one (`3.14` → 3.1 m) and says so.
-- **Out of range:** a typed request outside 0.1–20 m is refused and the previous
+- **Out of range:** a typed request outside 0.1–5 m is refused and the previous
   distance kept. Gamepad steps stop at the ends. A bad `--distance` stops the
   launch before any connection to the robot.
 - **Shortest walk per policy:** 0.2 m for the goal-conditioned policy and 0.3 m
@@ -127,7 +170,7 @@ shoulder button first, then the key.
 | Adapter walk | **R1 + Y** | Goal-conditioned walk | Robot standing still after the walk |
 | Either walk | **R1 + X** | Velocity | The planned walk has played out |
 
-A walk takes about 2.4 s plus 2.4 s per metre (2 m: 7.4 s; 20 m: 50.4 s), after a
+A walk takes about 2.4 s plus 2.4 s per metre (2 m: 7.4 s; 5 m: 14.4 s), after a
 one-second hold on entry from Velocity. The terminal reports the start, the end
 of the plan, and when the robot stands still. An early press is not queued.
 
@@ -169,7 +212,7 @@ shorten a walk in progress other than **L2 + B** (Passive).
 |---|---|---|
 | Motor mapping, joint order, PD gains, action scales | 23-DoF G1 | Identical (checked at export) |
 | Passive / FixStand / Velocity / emergency exit | Velocity integration | Identical; FixStand ends on the walks' start pose |
-| Reference | One fixed plan per stage | One of 200 plans, chosen by the operator's distance at entry |
+| Reference | One fixed plan per stage | One of 50 plans, chosen by the operator's distance at entry |
 | Actor input | 376 values, four sensor frames | 334 values, four sensor frames |
 | Extra sensor | None | IMU accelerometer (position filter) |
 | Arm feedforward torque | Arm gravity compensation | None: these policies were trained on plain PD |
@@ -177,10 +220,55 @@ shorten a walk in progress other than **L2 + B** (Passive).
 | Settled test | Stillness and joints near the plan's end pose | Stillness only: these policies stand in their own posture |
 | Stage that never settles | Faults to Passive after 12 s | Keeps holding; Velocity stays available |
 
+## The action-rate limit
+
+Neither training nor the controller smooths the policies' output: each 20 ms
+step the joint target is the plan's plus the actor's correction. With sensor
+noise the goal-conditioned policy's correction changes by 0.05 rad per step on
+average while walking and by up to 2.0 rad in one step on an ankle (the adapter:
+up to 1.3 rad). As in the humanoid repository's deployment, each step's change
+of each raw action is therefore held to a per-joint `rate_limit` (raw action
+units per 20 ms step; `rate_limit` of each walk state in the profile, `null`
+for none). The limited action is the one applied, and the one the actor reads as
+its previous action. An action inside the limit is passed on unchanged.
+
+The limits come from `unitree_parametrized_skills/action_rates.json`: per joint,
+the largest change over healthy simulated runs (the two robots' measured offsets,
+sensor noise, pushes of 0.2–0.4 m/s; about 500 completed runs per policy), times
+a factor, at least 0.2.
+
+| Policy | Factor | Largest command step left | Why |
+|---|---:|---:|---|
+| Goal-conditioned | 0.5 | 1.0 rad (ankle pitch) | The tightest limit tested that costs no robustness (below) |
+| Adapter | 1.25 | 1.65 rad | A guard only, as in the humanoid repository: tighter limits were not tested for it |
+
+Failed runs of the goal-conditioned policy in the controller tests of
+[Why v3](#why-v3), by factor:
+
+| Factor | Offsets 1× | 1.5× | 2× | 3× | Pushes | Physics variation |
+|---|---:|---:|---:|---:|---:|---:|
+| no limit | 0 | 0 | 0 | 12 | 1 | 0 |
+| 1.25 | 0 | 0 | 0 | 12 | 1 | 0 |
+| **0.5 (shipped)** | 0 | 0 | 0 | 12 | 0 | 0 |
+| 0.25 | 0 | 1 | 5 | 36 | 12 | 0 |
+| 0.125 | 31 | 39 | 74 | 126 | 96 | 53 |
+
+- **It cuts peaks, not the ordinary jitter.** At 0.5 the limit acts on about 0.3%
+  of joint-steps; the mean change per step stays 0.05 rad. The policy needs its
+  fast corrections: at 0.125 it falls at the measured offsets.
+- **Changing it:** edit `factor` in `action_rates.json`, then
+  `python -m unitree_parametrized_skills.export --rate-limits` (rewrites only the
+  profile's limits; no rebuild). The preflight accepts 23 values of 0.05 to 20,
+  or `null`.
+- **Not in training.** The policies were trained without a limit; the tests above
+  are the evidence that they tolerate it.
+
 ## How accurate it is
 
-The numbers in this section were measured on the v1 policies and were not
-repeated for v2.
+The numbers in this section were measured on the v1 policies, with a library
+that reached 20 m, and were not repeated for v2 or v3. v3's library ends at 5 m;
+its goal-conditioned policy's error in the controller tests is in
+[Why v3](#why-v3).
 
 Measured in the training simulation (randomized physics and sensors, exact IMU
 heading, 48 trials per distance), final distance from the goal, median:
@@ -217,28 +305,31 @@ DDS. To run that check alone, from `build`:
 What was verified, all in software ([reports](unitree_parametrized_skills/validation)):
 
 - **C++ against training, step by step.** Sensors recorded in the mjlab training
-  environment for both policies at 0.3, 2.5 and 20 m (7,726 steps) were replayed
+  environment for both policies at 0.3, 2.5 and 5 m (4,126 steps) were replayed
   through the C++ controller. The reference clock matched at every step, the
-  observation within `8.3e-5` (leaving out the previous-action entries), the
-  position estimate within `0.083 mm`, the actor's correction within `7.7e-3` and
-  the joint targets within `3.4e-3 rad` (v2; the adapter turns the estimate's
-  last digits into larger corrections than v1's did, so the test's limits are
-  `1e-2` and `5e-3 rad`). On identical inputs the ONNX actors match the PyTorch
-  checkpoints within `2e-6`.
+  observation within `8.2e-5` (leaving out the previous-action entries), the
+  position estimate within `0.082 mm`, the actor's correction within `7.3e-3` and
+  the joint targets within `3.2e-3 rad` (v3; the largest are the adapter's, which
+  turns the estimate's last digits into larger corrections than v1's did, so the
+  test's limits are `1e-2` and `5e-3 rad`; the new goal-conditioned policy stays
+  within `1.7e-3` and `7.1e-4 rad`). On identical inputs the ONNX actors match the
+  PyTorch checkpoints within `2e-6`.
 - **Offsets, physics variation and pushes** in native MuJoCo with the C++
-  controller: the table in [Why v2](#why-v2).
-- **Native MuJoCo with the C++ controller in the loop (v1, not repeated for v2).** 50 runs: both policies,
+  controller: the table in [Why v3](#why-v3) for the goal-conditioned policy, and
+  in [Why v2](#why-v2) for the adapter.
+- **Native MuJoCo with the C++ controller in the loop (v1, not repeated since).** 50 runs: both policies,
   0.2–20 m, started directly, from the Velocity policy standing, and from the
   Velocity policy after walking and turning. No falls. Error 2–6 cm up to 10 m
   and 10–11 cm at 20 m.
-- **The real `g1_ctrl` over DDS against a simulated robot (v1, not repeated for v2)**, operated by script:
-  FixStand, Velocity, a typed distance, gamepad steps, a 2.4 m goal-conditioned
-  walk (3.5 cm error), walking 1.0 m again (5.1 cm), a hand-over to the adapter
-  for 1.0 m (5.0 cm), back to Velocity, and a refused 0.1 m adapter walk.
-- **Regression tests:** the 39 tests of `tests/test_parametrized_walk_deploy.py`
-  pass, including 13 rejected profiles and rejected changed artifacts. The
+- **The real `g1_ctrl` over DDS against a simulated robot (v3, with the action-rate limit)**, operated by script:
+  FixStand, Velocity, a typed distance, gamepad steps, a refused 35 m request, a 2.4 m
+  goal-conditioned walk (2.7 cm error), walking 1.0 m again (4.7 cm), a hand-over to the adapter
+  for 1.0 m (1.9 cm), back to Velocity, and a refused 0.1 m adapter walk. No missed
+  deadline or fault. This run has the nominal robot and clean sensors.
+- **Regression tests:** the 43 tests of `tests/test_parametrized_walk_deploy.py`
+  pass, including 15 rejected profiles and rejected changed artifacts. The
   repository's other 69 tests still pass, and the walk and box profiles pass their
-  preflight with the v2 build.
+  preflight with the v3 build.
 
 For optional reproduction from the repository root, with the training checkout
 beside this repository (`../factory`, and `../humanoid` for its planner):
@@ -256,11 +347,13 @@ SDK it was built with.
 
 ## What is not verified
 
-- **No hardware run of v2.** Balance, foot slip, joint friction and delays on the real
+- **No hardware run of v3.** Balance, foot slip, joint friction and delays on the real
   robot are covered only by the training randomization and the tests in
-  [Why v2](#why-v2). v1 fell on the robot.
-- **The goal-conditioned policy's margin.** It tolerates no more ankle offset
-  than v1 did. Try the adapter first.
+  [Why v3](#why-v3). v1 and v2 lost their balance on the robot.
+- **The adapter.** It is v2's, which lost its balance on the robot. Try the
+  goal-conditioned policy first.
+- **Beyond 5 m.** The goal-conditioned policy was trained on 0–5 m, so the
+  library ends there; the adapter, trained to 20 m, is limited with it.
 - **`shortest_m`.** The profile keeps v1's 0.2 m and 0.3 m. In the training
   environment the v2 adapter lost its posture in under 2% of randomized trials
   at 0.1–0.3 m, so its limit is now conservative.
@@ -280,25 +373,24 @@ change the grid, re-export into a new package directory and rebuild, since the
 build fingerprints `plans.bin`:
 
 ```bash
-mv deploy/robots/g1_23dof/config/policy/parametrized_walk/v2 /tmp/parametrized_walk_v2_old
-../factory/.venv/bin/python -m unitree_parametrized_skills.export --extra 3.14 7.25
+mv deploy/robots/g1_23dof/config/policy/parametrized_walk/v3 /tmp/parametrized_walk_v3_old
+../factory/.venv/bin/python -m unitree_parametrized_skills.export --extra 3.14 4.25
 cmake --build deploy/robots/g1_23dof/build -j4
 ```
 
-`--step` and `--max` change the grid (default 0.1 m to 20 m, a 30 MB library).
-The export plans each distance with the training planner, takes about two
-minutes, and rewrites `parametrized_walk.yaml` and the generated
-`params/PolicyConfig.h`. Beyond 20 m the policies were not trained; in simulation,
-with an exact heading, arrival within 10 cm fell to 38% (goal-conditioned) and 52%
-(adapter) at 25 m.
+`--step` and `--max` change the grid (default 0.1 m to 5 m, a 2.4 MB library).
+The export plans each distance with the training planner, takes under a minute,
+and rewrites `parametrized_walk.yaml` and the generated `params/PolicyConfig.h`.
+Beyond 5 m the goal-conditioned policy was not trained. The validation
+recordings (`record.py`) and several tests assume the 0.1–5 m grid.
 
 ## Files
 
 | Path | Contents |
 |---|---|
 | `deploy/robots/g1_23dof/config/parametrized_walk.yaml` | The launch profile |
-| `…/config/policy/parametrized_walk/v2` | ONNX actors, original checkpoints, `plans.bin`, generated constants, manifest with SHA256 |
+| `…/config/policy/parametrized_walk/v3` | ONNX actors, original checkpoints, `plans.bin`, generated constants, manifest with SHA256 |
 | `deploy/robots/g1_23dof/include/ParametrizedWalkPolicy.h` | Plan library, position filter, controller, distance selection (no DDS) |
 | `…/include/State_ParametrizedWalk.h` | The FSM state |
 | `…/include/ParametrizedWalkPreflight.h`, `ParametrizedWalkOperator.h` | Offline profile check; terminal and gamepad distance input |
-| `unitree_parametrized_skills/` | Export, recording, validation, simulation and loopback tools; archived training source |
+| `unitree_parametrized_skills/` | Export, recording, validation, simulation and loopback tools; archived training source; `action_rates.json` (the measured action rates behind the profile's `rate_limit`) |

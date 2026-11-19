@@ -301,6 +301,47 @@ Applied in training and in the randomized evaluation tier (pushes in training on
 The ranges are judgement, not measurements of a particular robot. They are recorded in each
 run's `run.json`.
 
+### Robust profile (after the first hardware trials)
+
+The first hardware trials (2026-11-17) ran `goal20` and `adapter20_k` on a G1. Both fell on a
+1 m walk. That robot's ankle encoders and IMU read 1–2° off and its accelerometer 0.14 m/s²,
+and in a controller-in-the-loop test both policies fell after sideways pushes of 0.2–0.3 m/s.
+Their training pushes had stayed near 0.1–0.16 m/s: pushes grew with the curriculum level,
+and the level ended at 0.2 (`goal20`) and 0.0 (`adapter20_k`).
+
+`--profile robust` (`env.PROFILES`) changes only these ranges; `robust_p` is the same with a
+push floor of 0.15 m/s.
+
+| What | First profile (`v1`) | `robust` |
+|---|---|---|
+| Encoder bias, ankles | ±0.01 rad | ±0.04 rad |
+| Encoder bias, other joints | ±0.01 rad | ±0.015 rad |
+| Gravity observation bias | ±0.025 | ±0.045 |
+| IMU tilt bias in the estimator | ±0.02 rad | ±0.045 rad |
+| Accelerometer bias, noise | 0.1, 0.3 m/s² | 0.25, 1.0 m/s² |
+| Pushes at level 0 and 1 | 0.1, 0.4 m/s | 0.3, 0.5 m/s |
+
+What it gave, measured with the deployed C++ controller in native MuJoCo on a 1 m walk
+(`../unitree_rl_mjlab_box/PARAMETRIZED_WALK.md`, "Why v2"):
+
+- **Approach 3 improved.** `base_r_seed2` and `adapter20_r` (four sensor frames, Kalman
+  estimate) first fall at three times that robot's ankle offsets (`adapter20_k`: at 1.5 times),
+  fall in 1 of 40 runs with the offsets plus physics variation (10 of 40), and stand 0.3 m/s
+  sideways pushes with the offsets (fell from 0.2 m/s). In the training env under the robust
+  tier it loses its posture in 0–9% of trials up to 4.2 m (`adapter20_k`: 17–29% from 0.75 m),
+  and at 0.1 m it arrives in 98% (37%).
+- **Approach 2 did not.** Eight retrained checkpoints (`goal20_r`, `_ra` to `_rg`: stronger
+  or gentler pushes, guidance floor 0.1, 4,000 updates, starting from `base_r_seed2`) did
+  worse in the same tests than `goal20_hk2`, trained with the first profile. Their teacher
+  (`teacher_goal20_rw`) has no falls under the robust tier, so the loss is in the student.
+  Alone among the widened ranges, the ankle encoder bias is what the students cannot handle.
+- Warm-starting a teacher from the first profile's teacher reached a higher push level than
+  training it from scratch (base 1.0 against 0.6, goal 0.45 against 0.0).
+
+The per-run numbers are in each run's `selection.json`; the deployed pair is `goal20_hk2` and
+`adapter20_r` on `base_r_seed2`. The scripts behind the controller-in-the-loop tests are kept,
+as they were run, in `docs/robustness_tests/` (they expect the scratch paths named in them).
+
 ### Head camera
 
 The robot's model carries the G1's head camera, a RealSense D435i, as the MuJoCo camera
@@ -376,6 +417,9 @@ GPU=2 parametrization/walk/pipeline.sh adapter 1.0     # the same with bound 1.0
 GPU=0 parametrization/walk/pipeline.sh report          # parametrization/walk/runs/report.json and parametrization/walk/docs/RESULTS.md
 GPU=3 parametrization/walk/pipeline.sh vary h          # a variation of both approaches: h, k, far, far_h, far_k, far_hk
 SHORT=3 GPU=4 parametrization/walk/pipeline.sh vary far_k   # ... with plans under 0.5 m drawn three times as often
+GPU=0 INIT=parametrization/walk/runs/teacher_base/model_1999.pt parametrization/walk/pipeline.sh robust base_teacher   # the robust profile: teacher (warm-started), ...
+GPU=0 TEACHER_BASE=teacher_base_rw parametrization/walk/pipeline.sh robust base 2      # ... base walker (seed 2), ...
+GPU=0 BASE=base_r_seed2 parametrization/walk/pipeline.sh robust adapter               # ... and its adapter; goal_teacher and goal likewise
 python -m parametrization.walk.calibrate goal20_hk     # the estimate's distance scale for one controller
 GPU=0 parametrization/walk/pipeline.sh variations goal_h,goal_k   # measure those → parametrization/walk/docs/VARIATIONS.md
 python -m parametrization.walk.check                   # observation contract, kinematics, odometry, plan playback

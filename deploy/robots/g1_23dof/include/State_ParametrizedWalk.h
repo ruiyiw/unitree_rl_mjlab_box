@@ -24,6 +24,16 @@ public:
         if (cfg["hold_s"]) hold_s_=cfg["hold_s"].as<float>();
         if (cfg["shortest_m"]) shortest_=cfg["shortest_m"].as<float>();
         if (cfg["odometry_scale"]) scale_=cfg["odometry_scale"].as<float>();
+        // rate_limit: each step's change of each raw action held to these 23 values (null or absent: no limit)
+        if (cfg["rate_limit"] && !cfg["rate_limit"].IsNull()) {
+            const auto limit=cfg["rate_limit"].as<std::vector<float>>();
+            if (limit.size()!=23) throw std::runtime_error("ParametrizedWalk: rate_limit needs 23 values");
+            parametrized_walk::Action values{};
+            std::copy(limit.begin(),limit.end(),values.begin());
+            controller_.rate_limit(values);
+        }
+        spdlog::info("ParametrizedWalk: {} policy, action-rate limit {}",parametrized_walk::kNames[policy_],
+                     controller_.rate_limited()?"set":"not set");
         if (cfg["again"]) {
             unitree::common::dsl::Parser parser(cfg["again"].as<std::string>());
             auto ast=parser.Parse();

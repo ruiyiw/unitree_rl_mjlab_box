@@ -25,6 +25,17 @@ float walk_start(void* p,float metres,float hold_s,const float* previous,float s
         return c->start(metres,hold_s,previous?&action:nullptr);
     } catch(const std::exception& e) {error=e.what();return -1;}
 }
+// The action-rate limit (23 values, raw action units per step); a null pointer removes it.
+int walk_rate_limit(void* p,const float* limit) {
+    try {
+        auto* c=static_cast<Controller*>(p);
+        if(!limit) {c->no_rate_limit();return 0;}
+        parametrized_walk::Action action{};
+        std::copy(limit,limit+23,action.begin());
+        c->rate_limit(action);
+        return 0;
+    } catch(const std::exception& e) {error=e.what();return 1;}
+}
 int walk_step(void* p,const float* telemetry,float* obs,float* action,float* target,int* state,float* estimate) {
     try {
         parametrized_walk::Sensors sensors{};
